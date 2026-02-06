@@ -1,0 +1,111 @@
+'use client';
+
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+  const supabase = createClient();
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      router.push('/dashboard');
+      router.refresh();
+    }
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-uzzai-primary/10 via-white to-uzzai-secondary/10 p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center space-y-4 pb-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-uzzai-primary to-uzzai-secondary rounded-2xl mx-auto flex items-center justify-center shadow-lg">
+            <span className="text-3xl font-bold text-white">Uzz</span>
+          </div>
+          <div>
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-uzzai-primary to-uzzai-secondary bg-clip-text text-transparent">
+              UzzOps
+            </CardTitle>
+            <CardDescription className="text-base mt-2">
+              Sistema de Gerenciamento UzzApp
+            </CardDescription>
+          </div>
+        </CardHeader>
+
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-6">
+            {error && (
+              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="seu@email.com"
+                className="h-11"
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">
+                Senha
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="h-11"
+                autoComplete="current-password"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-11 bg-gradient-to-r from-uzzai-primary to-uzzai-secondary hover:opacity-90 transition-opacity text-base font-medium"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </Button>
+
+            <div className="text-center text-sm text-gray-500 pt-4 border-t">
+              <p>Use as credenciais fornecidas pela equipe</p>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
