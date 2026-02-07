@@ -1,6 +1,16 @@
 import { FeaturesTable } from '@/components/features/features-table';
+import { createClient } from '@/lib/supabase/server';
 
-export default function FeaturesPage() {
+export default async function FeaturesPage() {
+  const supabase = await createClient();
+
+  // Buscar projeto UzzApp pelo código
+  const { data: project } = await supabase
+    .from('projects')
+    .select('id, code, name')
+    .eq('code', 'UZZAPP')
+    .single();
+
   return (
     <div className="space-y-6">
       <div>
@@ -10,7 +20,7 @@ export default function FeaturesPage() {
         </p>
       </div>
 
-      <FeaturesTable />
+      <FeaturesTable projectId={project?.id} />
     </div>
   );
 }

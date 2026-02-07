@@ -1,0 +1,42 @@
+# 📌 STATUS ATUAL DO PROJETO - UZZOPS
+
+**Objetivo Principal:** SPRINT 2 - Gestão de Features & Sprints
+**Data:** 06/02/2026
+
+---
+
+## 🚀 O que estamos fazendo AGORA?
+Estamos finalizando uma melhoria crítica no **Gerenciamento de Sprints** (solicitada durante o desenvolvimento do Sprint 2) para permitir uma gestão mais profissional antes de avançarmos para outras features.
+
+### 🔄 Desvio Atual: "Sprint Management Fase 1.5 - Gestão de Escopo"
+O usuário solicitou flexibilidade para alterar features em sprints ativos, mas com auditoria.
+- **Meta:** Permitir adicionar/remover features de sprints ativos mediante confirmação.
+- **Requisito:** Registrar QUEM mudou e QUANDO (Tabela `sprint_scope_changes`).
+- **UX:** Via de mão dupla (Vincular Sprint na tela de Feature e vice-versa).
+
+---
+
+## 📋 BACKLOG DO SPRINT 2 (Para Retornar em Breve)
+
+### ✅ Já Concluído
+1. **Backgrounds Transparentes & UI**
+   - Melhorias visuais no Shadcn/UI.
+2. **Modal "Nova Feature"**
+   - Criação rápida de features com validação e hooks.
+3. **Sprint Management (Fase 1 - Fundamentos)**
+   - Migration (`sprint_goal`, `duration`, `is_protected`).
+   - Proteção de escopo (travamento de duração).
+   - Vínculo Sprint <-> Features (API e UI).
+
+### ⏳ Pendente (Retomar após Fase 1.5)
+1. **Kanban Board**
+   - Visualização de tarefas por status.
+2. **Dashboard Overview**
+   - Gráficos de burn-down e velocity.
+3. **Gestão de Épicos**
+   - Agrupamento de features.
+
+---
+
+## 🛑 Ponto de Atenção
+Não expandir mais o escopo do "Sprint Management" após a entrega da **Auditoria de Escopo**. Voltar imediatamente para o **Kanban** ou **Dashboard**.

@@ -7,6 +7,27 @@
   --color-uzzai-warning: #f4d03f;
   --color-uzzai-dark: #1f1f1f;
   --color-uzzai-gray: #b0b0b0;
+
+  /* UI Colors - Light Mode (preparando para dark mode futuro) */
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+  --color-card: #ffffff;
+  --color-card-foreground: #111827;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #111827;
+  --color-primary: #2d6a5e;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f3f4f6;
+  --color-secondary-foreground: #111827;
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: #6b7280;
+  --color-accent: #f3f4f6;
+  --color-accent-foreground: #111827;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #2d6a5e;
 }
 
 /* Garantir que body tenha fundo branco e texto preto */

@@ -9,6 +9,8 @@ import { Loader2, ArrowLeft, Edit, Trash, CheckCircle2, Circle } from 'lucide-re
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { DoDSection } from '@/components/features/dod-section';
+import { FeatureSprintSelector } from '@/components/features/feature-sprint-selector';
 
 const statusLabels: Record<string, string> = {
   backlog: 'Backlog',
@@ -71,20 +73,12 @@ export default function FeatureDetailPage({
 
   const feature = data.data;
 
-  const dodItems = [
-    { key: 'dod_functional', label: 'Funcionando' },
-    { key: 'dod_tests', label: 'Testes' },
-    { key: 'dod_code_review', label: 'Code Review' },
-    { key: 'dod_documentation', label: 'Documentação' },
-    { key: 'dod_deployed', label: 'Deployed' },
-    { key: 'dod_user_acceptance', label: 'Aceite do Usuário' },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="space-y-2">
+          {/* ... (breadcrumbs/title) ... */}
           <Button variant="ghost" size="sm" asChild>
             <Link href="/features">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -99,7 +93,10 @@ export default function FeatureDetailPage({
           <h2 className="text-xl text-gray-700">{feature.name}</h2>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* SPRINT SELECTOR */}
+          <FeatureSprintSelector feature={feature} projectId={feature.project_id} />
+
           <Button variant="outline">
             <Edit className="w-4 h-4 mr-2" />
             Editar
@@ -130,39 +127,7 @@ export default function FeatureDetailPage({
               <CardTitle>Definition of Done</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {dodItems.map((item) => {
-                  const checked = feature[item.key as keyof typeof feature] as boolean;
-                  return (
-                    <div key={item.key} className="flex items-center gap-3">
-                      {checked ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-gray-300" />
-                      )}
-                      <span className={checked ? 'text-gray-900' : 'text-gray-500'}>
-                        {item.label}
-                      </span>
-                    </div>
-                  );
-                })}
-                <div className="pt-4 border-t">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">
-                      Progresso do DoD
-                    </span>
-                    <span className="text-sm font-bold text-uzzai-primary">
-                      {feature.dod_progress}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div
-                      className="bg-gradient-to-r from-uzzai-primary to-uzzai-secondary h-3 rounded-full transition-all"
-                      style={{ width: `${feature.dod_progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
+              <DoDSection feature={feature} editable={true} />
             </CardContent>
           </Card>
 
@@ -340,6 +305,6 @@ export default function FeatureDetailPage({
           </Card>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

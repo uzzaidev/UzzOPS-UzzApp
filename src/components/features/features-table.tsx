@@ -16,6 +16,9 @@ import { Input } from '@/components/ui/input';
 import { Loader2, Search, Plus, Eye, Edit, Trash } from 'lucide-react';
 import Link from 'next/link';
 import type { Feature } from '@/types';
+import { CreateFeatureModal } from './create-feature-modal';
+import { EditFeatureModal } from './edit-feature-modal';
+import { DeleteFeatureDialog } from './delete-feature-dialog';
 
 interface FeaturesTableProps {
   projectId?: string;
@@ -48,6 +51,10 @@ const versionColors: Record<string, string> = {
 
 export function FeaturesTable({ projectId }: FeaturesTableProps) {
   const [search, setSearch] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
   const [filters, setFilters] = useState({
     version: '',
     status: '',
@@ -135,7 +142,10 @@ export function FeaturesTable({ projectId }: FeaturesTableProps) {
             <option value="P3">P3 - Baixo</option>
           </select>
 
-          <Button className="bg-uzzai-primary hover:bg-uzzai-primary/90">
+          <Button
+            className="bg-uzzai-primary hover:bg-uzzai-primary/90"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Nova Feature
           </Button>
@@ -199,17 +209,18 @@ export function FeaturesTable({ projectId }: FeaturesTableProps) {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="w-16 bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-green-500 h-2 rounded-full"
-                          style={{ width: `${feature.dod_progress || 0}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-xs text-gray-600">
-                        {feature.dod_progress || 0}%
-                      </span>
-                    </div>
+                    <Badge
+                      variant="outline"
+                      className={
+                        feature.dod_progress === 100
+                          ? 'bg-green-100 text-green-800 border-green-300'
+                          : feature.dod_progress >= 50
+                            ? 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                            : 'bg-gray-100 text-gray-600 border-gray-300'
+                      }
+                    >
+                      {feature.dod_progress}% DoD
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
@@ -241,13 +252,25 @@ export function FeaturesTable({ projectId }: FeaturesTableProps) {
                           <Eye className="w-4 h-4" />
                         </Link>
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => {
+                          setSelectedFeature(feature);
+                          setIsEditModalOpen(true);
+                        }}
+                      >
                         <Edit className="w-4 h-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                        onClick={() => {
+                          setSelectedFeature(feature);
+                          setIsDeleteDialogOpen(true);
+                        }}
                       >
                         <Trash className="w-4 h-4" />
                       </Button>
@@ -267,6 +290,27 @@ export function FeaturesTable({ projectId }: FeaturesTableProps) {
           {features.length !== 1 ? 's' : ''}
         </p>
       </div>
+
+      {/* Modal criar feature */}
+      <CreateFeatureModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
+        projectId={projectId}
+      />
+
+      {/* Modal editar feature */}
+      <EditFeatureModal
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        feature={selectedFeature}
+      />
+
+      {/* Dialog deletar feature */}
+      <DeleteFeatureDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        feature={selectedFeature}
+      />
     </div>
   );
 }
