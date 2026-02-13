@@ -71,13 +71,41 @@ export function AddFeaturesToSprintModal({
         : availableFeatures;
 
     const handleAction = async (type: 'ADD' | 'REMOVE', featureId: string, force = false) => {
-        if (!sprintId) return;
+        if (!sprintId) {
+            console.error('[Modal] Missing sprintId');
+            alert('Erro: Sprint ID não encontrado');
+            return;
+        }
+
+        if (!featureId) {
+            console.error('[Modal] Missing featureId');
+            alert('Erro: Feature ID não encontrado');
+            return;
+        }
+
+        console.log('[Modal] handleAction called:', {
+            type,
+            featureId,
+            sprintId,
+            force,
+            timestamp: new Date().toISOString()
+        });
 
         try {
             if (type === 'ADD') {
+                console.log('[Modal] Calling addFeature.mutateAsync with:', {
+                    feature_id: featureId,
+                    force_override: force
+                });
                 await addFeature.mutateAsync({ feature_id: featureId, force_override: force });
+                console.log('[Modal] Feature added successfully');
             } else {
+                console.log('[Modal] Calling removeFeature.mutateAsync with:', {
+                    featureId,
+                    force_override: force
+                });
                 await removeFeature.mutateAsync({ featureId: featureId, force_override: force });
+                console.log('[Modal] Feature removed successfully');
             }
 
             // Sucesso - Limpar estados se necessário
@@ -86,14 +114,24 @@ export function AddFeaturesToSprintModal({
                 setPendingAction(null);
             }
         } catch (error: any) {
-            console.error(`Erro ao ${type} feature:`, error);
+            console.error(`[Modal] Erro ao ${type} feature:`, {
+                error,
+                type: typeof error,
+                keys: error ? Object.keys(error) : [],
+                message: error?.message,
+                code: error?.code,
+                status: error?.status,
+                details: error?.details
+            });
 
             // Interceptar proteção de escopo
             if (error?.code === 'SPRINT_PROTECTED' || error?.status === 403) {
+                console.log('[Modal] Sprint protegido detectado, abrindo confirmação');
                 setPendingAction({ type, featureId });
                 setConfirmOverrideOpen(true);
             } else {
-                const msg = error?.message || error?.details?.error || 'Erro desconhecido';
+                const msg = error?.message || error?.details?.error || error?.details?.message || JSON.stringify(error) || 'Erro desconhecido';
+                console.error('[Modal] Showing error alert:', msg);
                 alert(`Falha ao ${type === 'ADD' ? 'adicionar' : 'remover'}: ${msg}`);
             }
         }
@@ -168,7 +206,14 @@ export function AddFeaturesToSprintModal({
                                                     variant="ghost"
                                                     className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 hover:bg-red-50"
                                                     disabled={removeFeature.isPending}
-                                                    onClick={() => handleAction('REMOVE', feature.sprint_feature_id || feature.id)} // Usa feature.id se sprint_feature_id não vier
+                                                    onClick={() => {
+                                                        console.log('[Modal] Removing feature:', {
+                                                            feature_id: feature.id,
+                                                            sprint_feature_id: feature.sprint_feature_id,
+                                                            feature
+                                                        });
+                                                        handleAction('REMOVE', feature.id); // Sempre usa feature.id, não sprint_feature_id
+                                                    }}
                                                 >
                                                     {removeFeature.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                                                 </Button>

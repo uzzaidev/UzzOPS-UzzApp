@@ -1,4 +1,5 @@
----
+﻿---
+
 created: 2026-02-06T13:25
 updated: 2026-02-06T16:23
 project: Sistema de Gerenciamento UzzApp
@@ -6,21 +7,27 @@ type: Execution Plan
 status: Ready to Execute
 ---
 
-# PLANO DE EXECUÇÃO - SPRINTS PASSO A PASSO
+> [!IMPORTANT]
+> Documento legado/historico (frozen).
+> Fonte canônica atual: `docs/AI_PROJECT_CONTEXT_MASTER.md`, `docs/RESTART_CHECKLIST.md`, `README.md`, `docs/README_DOCUMENTATION.md`.
+> Use este arquivo apenas como referencia historica.
 
-**Versão:** 1.0.0
+
+# PLANO DE EXECUÃ‡ÃƒO - SPRINTS PASSO A PASSO
+
+**VersÃ£o:** 1.0.0
 **Data:** 2026-02-06
 **Autor:** Pedro Vitor Pagliarin + Claude AI
-**Status:** ✅ Pronto para Execução
+**Status:** âœ… Pronto para ExecuÃ§Ã£o
 
 ---
 
-## 📋 ÍNDICE
+## ðŸ“‹ ÃNDICE
 
 1. [Como Usar Este Documento](#1-como-usar-este-documento)
 2. [Sprint 0: Setup (1 semana)](#2-sprint-0-setup-1-semana)
 3. [Sprint 1: Fundamentos (2 semanas)](#3-sprint-1-fundamentos-2-semanas)
-4. [Sprint 2: Gestão Avançada (2 semanas)](#4-sprint-2-gestão-avançada-2-semanas)
+4. [Sprint 2: GestÃ£o AvanÃ§ada (2 semanas)](#4-sprint-2-gestÃ£o-avanÃ§ada-2-semanas)
 5. [Sprint 3: MVP Final (2 semanas)](#5-sprint-3-mvp-final-2-semanas)
 6. [Checklist de Deploy](#6-checklist-de-deploy)
 7. [Troubleshooting](#7-troubleshooting)
@@ -31,31 +38,31 @@ status: Ready to Execute
 
 ### 1.1 Objetivo
 
-Este documento é um **GUIA EXECUTÁVEL** com comandos concretos e checklists para implementar o Sistema de Gerenciamento UzzApp em 7 semanas (Sprint 0 + 3 Sprints do MVP).
+Este documento Ã© um **GUIA EXECUTÃVEL** com comandos concretos e checklists para implementar o Sistema de Gerenciamento UzzApp em 7 semanas (Sprint 0 + 3 Sprints do MVP).
 
-### 1.2 Convenções
+### 1.2 ConvenÃ§Ãµes
 
-**Ícones:**
-- ✅ **Ação obrigatória** (não pule)
-- 🔧 **Comando terminal** (copie e execute)
-- 📝 **Arquivo a criar/editar**
-- ⚠️ **Atenção/Cuidado**
-- 💡 **Dica/Sugestão**
+**Ãcones:**
+- âœ… **AÃ§Ã£o obrigatÃ³ria** (nÃ£o pule)
+- ðŸ”§ **Comando terminal** (copie e execute)
+- ðŸ“ **Arquivo a criar/editar**
+- âš ï¸ **AtenÃ§Ã£o/Cuidado**
+- ðŸ’¡ **Dica/SugestÃ£o**
 
-**Responsáveis:**
-- 🧑‍💻 **Pedro:** Gestor/PO + UX/UI + Frontend
-- 👨‍💻 **Luis:** Backend + Frontend
-- 📊 **Arthur:** Marketing
-- 💼 **Vitor:** Vendas
-- ⚖️ **Lucas:** Jurídico
+**ResponsÃ¡veis:**
+- ðŸ§‘â€ðŸ’» **Pedro:** Gestor/PO + UX/UI + Frontend
+- ðŸ‘¨â€ðŸ’» **Luis:** Backend + Frontend
+- ðŸ“Š **Arthur:** Marketing
+- ðŸ’¼ **Vitor:** Vendas
+- âš–ï¸ **Lucas:** JurÃ­dico
 
 ### 1.3 Estrutura de Cada Sprint
 
 Para cada sprint:
 1. **Goal** (objetivo principal)
 2. **Features** (user stories a implementar)
-3. **Checklist Dia a Dia** (tarefas executáveis)
-4. **Definition of Done** (critérios para considerar concluído)
+3. **Checklist Dia a Dia** (tarefas executÃ¡veis)
+4. **Definition of Done** (critÃ©rios para considerar concluÃ­do)
 
 ---
 
@@ -71,13 +78,13 @@ Para cada sprint:
 
 ---
 
-#### **DIA 1 (Segunda-feira) - Repositório & Next.js**
+#### **DIA 1 (Segunda-feira) - RepositÃ³rio & Next.js**
 
-**Responsável:** 👨‍💻 Luis + 🧑‍💻 Pedro
+**ResponsÃ¡vel:** ðŸ‘¨â€ðŸ’» Luis + ðŸ§‘â€ðŸ’» Pedro
 
-✅ **Ação 1: Criar repositório no GitHub**
+âœ… **AÃ§Ã£o 1: Criar repositÃ³rio no GitHub**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 # No terminal local
 mkdir uzzapp-management
@@ -86,31 +93,31 @@ cd uzzapp-management
 # Criar repo no GitHub via CLI (ou manualmente no site)
 gh repo create uzzapp-management --public --clone
 
-# Entrar no diretório
+# Entrar no diretÃ³rio
 cd uzzapp-management
 ```
 
 ---
 
-✅ **Ação 2: Inicializar Next.js 15**
+âœ… **AÃ§Ã£o 2: Inicializar Next.js 15**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
-# Usar pnpm (mais rápido)
+# Usar pnpm (mais rÃ¡pido)
 npx create-next-app@latest . --typescript --tailwind --app --import-alias "@/*"
 
 # Responder prompts:
-# ✔ Would you like to use ESLint? Yes
-# ✔ Would you like to use `src/` directory? Yes
-# ✔ Would you like to use App Router? Yes
-# ✔ Would you like to customize the default import alias? Yes (@/*)
+# âœ” Would you like to use ESLint? Yes
+# âœ” Would you like to use `src/` directory? Yes
+# âœ” Would you like to use App Router? Yes
+# âœ” Would you like to customize the default import alias? Yes (@/*)
 ```
 
 ---
 
-✅ **Ação 3: Instalar dependências do projeto**
+âœ… **AÃ§Ã£o 3: Instalar dependÃªncias do projeto**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 pnpm install @supabase/supabase-js@latest
 pnpm install @supabase/ssr@latest
@@ -130,18 +137,18 @@ pnpm install -D eslint-config-prettier
 
 ---
 
-✅ **Ação 4: Instalar Shadcn/ui**
+âœ… **AÃ§Ã£o 4: Instalar Shadcn/ui**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 npx shadcn@latest init
 
 # Responder prompts:
-# ✔ Which style would you like to use? › New York
-# ✔ Which color would you like to use as base color? › Slate
-# ✔ Do you want to use CSS variables for colors? › yes
+# âœ” Which style would you like to use? â€º New York
+# âœ” Which color would you like to use as base color? â€º Slate
+# âœ” Do you want to use CSS variables for colors? â€º yes
 
-# Instalar componentes básicos
+# Instalar componentes bÃ¡sicos
 npx shadcn@latest add button
 npx shadcn@latest add card
 npx shadcn@latest add input
@@ -157,66 +164,66 @@ npx shadcn@latest add dropdown-menu
 
 ---
 
-✅ **Ação 5: Estrutura de pastas**
+âœ… **AÃ§Ã£o 5: Estrutura de pastas**
 
-📝 Criar estrutura:
+ðŸ“ Criar estrutura:
 ```
 src/
-├── app/
-│   ├── (auth)/
-│   │   ├── login/
-│   │   │   └── page.tsx
-│   │   └── layout.tsx
-│   ├── (dashboard)/
-│   │   ├── dashboard/
-│   │   │   └── page.tsx
-│   │   ├── features/
-│   │   │   ├── page.tsx
-│   │   │   └── [id]/
-│   │   │       └── page.tsx
-│   │   ├── sprints/
-│   │   │   └── page.tsx
-│   │   ├── team/
-│   │   │   └── page.tsx
-│   │   ├── risks/
-│   │   │   └── page.tsx
-│   │   └── layout.tsx
-│   ├── api/
-│   │   ├── auth/
-│   │   ├── projects/
-│   │   ├── features/
-│   │   ├── sprints/
-│   │   ├── team/
-│   │   └── risks/
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   ├── ui/ (shadcn components)
-│   ├── dashboard/
-│   ├── features/
-│   ├── sprints/
-│   └── shared/
-├── lib/
-│   ├── supabase/
-│   │   ├── client.ts
-│   │   ├── server.ts
-│   │   └── middleware.ts
-│   ├── utils.ts
-│   └── validations.ts
-├── types/
-│   ├── database.ts
-│   └── index.ts
-└── hooks/
-    ├── useFeatures.ts
-    ├── useSprints.ts
-    └── useAuth.ts
+â”œâ”€â”€ app/
+â”‚   â”œâ”€â”€ (auth)/
+â”‚   â”‚   â”œâ”€â”€ login/
+â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â””â”€â”€ layout.tsx
+â”‚   â”œâ”€â”€ (dashboard)/
+â”‚   â”‚   â”œâ”€â”€ dashboard/
+â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â”œâ”€â”€ features/
+â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ [id]/
+â”‚   â”‚   â”‚       â””â”€â”€ page.tsx
+â”‚   â”‚   â”œâ”€â”€ sprints/
+â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â”œâ”€â”€ team/
+â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â”œâ”€â”€ risks/
+â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â””â”€â”€ layout.tsx
+â”‚   â”œâ”€â”€ api/
+â”‚   â”‚   â”œâ”€â”€ auth/
+â”‚   â”‚   â”œâ”€â”€ projects/
+â”‚   â”‚   â”œâ”€â”€ features/
+â”‚   â”‚   â”œâ”€â”€ sprints/
+â”‚   â”‚   â”œâ”€â”€ team/
+â”‚   â”‚   â””â”€â”€ risks/
+â”‚   â”œâ”€â”€ layout.tsx
+â”‚   â””â”€â”€ page.tsx
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ ui/ (shadcn components)
+â”‚   â”œâ”€â”€ dashboard/
+â”‚   â”œâ”€â”€ features/
+â”‚   â”œâ”€â”€ sprints/
+â”‚   â””â”€â”€ shared/
+â”œâ”€â”€ lib/
+â”‚   â”œâ”€â”€ supabase/
+â”‚   â”‚   â”œâ”€â”€ client.ts
+â”‚   â”‚   â”œâ”€â”€ server.ts
+â”‚   â”‚   â””â”€â”€ middleware.ts
+â”‚   â”œâ”€â”€ utils.ts
+â”‚   â””â”€â”€ validations.ts
+â”œâ”€â”€ types/
+â”‚   â”œâ”€â”€ database.ts
+â”‚   â””â”€â”€ index.ts
+â””â”€â”€ hooks/
+    â”œâ”€â”€ useFeatures.ts
+    â”œâ”€â”€ useSprints.ts
+    â””â”€â”€ useAuth.ts
 ```
 
 ---
 
-✅ **Ação 6: Configurar Prettier**
+âœ… **AÃ§Ã£o 6: Configurar Prettier**
 
-📝 Criar `.prettierrc`:
+ðŸ“ Criar `.prettierrc`:
 ```json
 {
   "semi": true,
@@ -230,31 +237,31 @@ src/
 
 ---
 
-✅ **Ação 7: Primeiro commit**
+âœ… **AÃ§Ã£o 7: Primeiro commit**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 git add .
 git commit -m "feat: Initial Next.js 15 setup with Tailwind and Shadcn/ui"
 git push origin main
 ```
 
-**Status fim do dia 1:** ✅ Next.js rodando localmente em `localhost:3000`
+**Status fim do dia 1:** âœ… Next.js rodando localmente em `localhost:3000`
 
 ---
 
-#### **DIA 2 (Terça-feira) - Supabase Setup**
+#### **DIA 2 (TerÃ§a-feira) - Supabase Setup**
 
-**Responsável:** 👨‍💻 Luis
+**ResponsÃ¡vel:** ðŸ‘¨â€ðŸ’» Luis
 
-✅ **Ação 1: Criar projeto no Supabase**
+âœ… **AÃ§Ã£o 1: Criar projeto no Supabase**
 
 1. Acessar https://supabase.com
 2. Criar novo projeto:
    - **Name:** uzzapp-management
    - **Database Password:** [escolher senha forte]
-   - **Region:** South America (São Paulo)
-   - **Plan:** Free (para começar)
+   - **Region:** South America (SÃ£o Paulo)
+   - **Plan:** Free (para comeÃ§ar)
 3. Anotar:
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`
@@ -262,9 +269,9 @@ git push origin main
 
 ---
 
-✅ **Ação 2: Configurar variáveis de ambiente**
+âœ… **AÃ§Ã£o 2: Configurar variÃ¡veis de ambiente**
 
-📝 Criar `.env.local`:
+ðŸ“ Criar `.env.local`:
 ```bash
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
@@ -275,7 +282,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJxxx...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-📝 Adicionar ao `.gitignore`:
+ðŸ“ Adicionar ao `.gitignore`:
 ```
 .env.local
 .env*.local
@@ -283,9 +290,9 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ---
 
-✅ **Ação 3: Rodar migrations (criar tabelas)**
+âœ… **AÃ§Ã£o 3: Rodar migrations (criar tabelas)**
 
-📝 Criar `supabase/migrations/001_init.sql`:
+ðŸ“ Criar `supabase/migrations/001_init.sql`:
 ```sql
 -- Enable extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -451,11 +458,11 @@ CREATE TRIGGER update_risks_updated_at
 
 ---
 
-✅ **Ação 4: Executar migrations**
+âœ… **AÃ§Ã£o 4: Executar migrations**
 
-🔧 Comandos (no SQL Editor do Supabase Dashboard):
+ðŸ”§ Comandos (no SQL Editor do Supabase Dashboard):
 1. Acessar https://supabase.com/dashboard/project/xxx/sql
-2. Copiar e colar o conteúdo de `001_init.sql`
+2. Copiar e colar o conteÃºdo de `001_init.sql`
 3. Clicar em "Run"
 4. Verificar que as tabelas foram criadas
 
@@ -476,9 +483,9 @@ supabase db push
 
 ---
 
-✅ **Ação 5: Seed inicial (dados de teste)**
+âœ… **AÃ§Ã£o 5: Seed inicial (dados de teste)**
 
-📝 Criar `supabase/seed.sql`:
+ðŸ“ Criar `supabase/seed.sql`:
 ```sql
 -- Criar projeto UzzApp
 INSERT INTO projects (tenant_id, code, name, description, status, progress, start_date)
@@ -506,9 +513,9 @@ Executar no SQL Editor.
 
 ---
 
-✅ **Ação 6: Criar Supabase clients**
+âœ… **AÃ§Ã£o 6: Criar Supabase clients**
 
-📝 Criar `src/lib/supabase/client.ts`:
+ðŸ“ Criar `src/lib/supabase/client.ts`:
 ```typescript
 import { createBrowserClient } from '@supabase/ssr';
 
@@ -520,7 +527,7 @@ export function createClient() {
 }
 ```
 
-📝 Criar `src/lib/supabase/server.ts`:
+ðŸ“ Criar `src/lib/supabase/server.ts`:
 ```typescript
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
@@ -550,24 +557,24 @@ export async function createClient() {
 
 ---
 
-✅ **Ação 7: Commit**
+âœ… **AÃ§Ã£o 7: Commit**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 git add .
 git commit -m "feat: Setup Supabase with migrations and seed data"
 git push origin main
 ```
 
-**Status fim do dia 2:** ✅ Supabase conectado, tabelas criadas, seed rodado
+**Status fim do dia 2:** âœ… Supabase conectado, tabelas criadas, seed rodado
 
 ---
 
 #### **DIA 3 (Quarta-feira) - Deploy & CI/CD**
 
-**Responsável:** 👨‍💻 Luis + 🧑‍💻 Pedro
+**ResponsÃ¡vel:** ðŸ‘¨â€ðŸ’» Luis + ðŸ§‘â€ðŸ’» Pedro
 
-✅ **Ação 1: Deploy inicial na Vercel**
+âœ… **AÃ§Ã£o 1: Deploy inicial na Vercel**
 
 1. Acessar https://vercel.com
 2. Clicar em "Add New Project"
@@ -586,9 +593,9 @@ git push origin main
 
 ---
 
-✅ **Ação 2: Configurar CI/CD (GitHub Actions)**
+âœ… **AÃ§Ã£o 2: Configurar CI/CD (GitHub Actions)**
 
-📝 Criar `.github/workflows/ci.yml`:
+ðŸ“ Criar `.github/workflows/ci.yml`:
 ```yaml
 name: CI
 
@@ -628,13 +635,13 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 ```
 
-Adicionar secrets no GitHub (Settings → Secrets and variables → Actions).
+Adicionar secrets no GitHub (Settings â†’ Secrets and variables â†’ Actions).
 
 ---
 
-✅ **Ação 3: Criar layout base**
+âœ… **AÃ§Ã£o 3: Criar layout base**
 
-📝 Criar `src/app/(dashboard)/layout.tsx`:
+ðŸ“ Criar `src/app/(dashboard)/layout.tsx`:
 ```typescript
 import { Sidebar } from '@/components/shared/sidebar';
 import { Topbar } from '@/components/shared/topbar';
@@ -656,7 +663,7 @@ export default function DashboardLayout({
 }
 ```
 
-📝 Criar `src/components/shared/sidebar.tsx`:
+ðŸ“ Criar `src/components/shared/sidebar.tsx`:
 ```typescript
 import Link from 'next/link';
 import { Home, FileText, Calendar, Users, AlertTriangle } from 'lucide-react';
@@ -699,7 +706,7 @@ export function Sidebar() {
 }
 ```
 
-📝 Criar `src/components/shared/topbar.tsx`:
+ðŸ“ Criar `src/components/shared/topbar.tsx`:
 ```typescript
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -726,9 +733,9 @@ export function Topbar() {
 
 ---
 
-✅ **Ação 4: Criar página de dashboard placeholder**
+âœ… **AÃ§Ã£o 4: Criar pÃ¡gina de dashboard placeholder**
 
-📝 Criar `src/app/(dashboard)/dashboard/page.tsx`:
+ðŸ“ Criar `src/app/(dashboard)/dashboard/page.tsx`:
 ```typescript
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -781,9 +788,9 @@ export default function DashboardPage() {
 
 ---
 
-✅ **Ação 5: Testar localmente e fazer deploy**
+âœ… **AÃ§Ã£o 5: Testar localmente e fazer deploy**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 # Testar
 pnpm dev
@@ -794,26 +801,26 @@ git commit -m "feat: Add dashboard layout and placeholder page"
 git push origin main
 ```
 
-**Status fim do dia 3:** ✅ Deploy funcionando, layout básico pronto
+**Status fim do dia 3:** âœ… Deploy funcionando, layout bÃ¡sico pronto
 
 ---
 
 #### **DIA 4 (Quinta-feira) - Auth + Testes**
 
-**Responsável:** 👨‍💻 Luis
+**ResponsÃ¡vel:** ðŸ‘¨â€ðŸ’» Luis
 
-✅ **Ação 1: Configurar Supabase Auth**
+âœ… **AÃ§Ã£o 1: Configurar Supabase Auth**
 
 No Supabase Dashboard:
-1. Authentication → Email Auth → Enable
-2. Configuration → Site URL: `https://uzzapp-management.vercel.app`
-3. Configuration → Redirect URLs: adicionar `http://localhost:3000/**`
+1. Authentication â†’ Email Auth â†’ Enable
+2. Configuration â†’ Site URL: `https://uzzapp-management.vercel.app`
+3. Configuration â†’ Redirect URLs: adicionar `http://localhost:3000/**`
 
 ---
 
-✅ **Ação 2: Criar páginas de login**
+âœ… **AÃ§Ã£o 2: Criar pÃ¡ginas de login**
 
-📝 Criar `src/app/(auth)/login/page.tsx`:
+ðŸ“ Criar `src/app/(auth)/login/page.tsx`:
 ```typescript
 'use client';
 
@@ -892,9 +899,9 @@ export default function LoginPage() {
 
 ---
 
-✅ **Ação 3: Middleware de autenticação**
+âœ… **AÃ§Ã£o 3: Middleware de autenticaÃ§Ã£o**
 
-📝 Criar `src/middleware.ts`:
+ðŸ“ Criar `src/middleware.ts`:
 ```typescript
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -937,12 +944,12 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Redirecionar para login se não autenticado
+  // Redirecionar para login se nÃ£o autenticado
   if (!user && !request.nextUrl.pathname.startsWith('/login')) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Redirecionar para dashboard se já autenticado e tentando acessar login
+  // Redirecionar para dashboard se jÃ¡ autenticado e tentando acessar login
   if (user && request.nextUrl.pathname.startsWith('/login')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
@@ -957,23 +964,23 @@ export const config = {
 
 ---
 
-✅ **Ação 4: Criar primeiro usuário**
+âœ… **AÃ§Ã£o 4: Criar primeiro usuÃ¡rio**
 
-No Supabase Dashboard → Authentication → Users → Add User:
+No Supabase Dashboard â†’ Authentication â†’ Users â†’ Add User:
 - Email: pedro@uzzai.com
 - Password: [escolher senha]
 - Auto Confirm: Yes
 
 ---
 
-✅ **Ação 5: Setup testes (Jest)**
+âœ… **AÃ§Ã£o 5: Setup testes (Jest)**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 pnpm install -D jest @testing-library/react @testing-library/jest-dom jest-environment-jsdom
 ```
 
-📝 Criar `jest.config.js`:
+ðŸ“ Criar `jest.config.js`:
 ```javascript
 const nextJest = require('next/jest');
 
@@ -989,12 +996,12 @@ const customJestConfig = {
 module.exports = createJestConfig(customJestConfig);
 ```
 
-📝 Criar `jest.setup.js`:
+ðŸ“ Criar `jest.setup.js`:
 ```javascript
 import '@testing-library/jest-dom';
 ```
 
-📝 Adicionar script ao `package.json`:
+ðŸ“ Adicionar script ao `package.json`:
 ```json
 {
   "scripts": {
@@ -1006,24 +1013,24 @@ import '@testing-library/jest-dom';
 
 ---
 
-✅ **Ação 6: Commit**
+âœ… **AÃ§Ã£o 6: Commit**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 git add .
 git commit -m "feat: Add authentication with Supabase and middleware"
 git push origin main
 ```
 
-**Status fim do dia 4:** ✅ Auth funcionando, testes configurados
+**Status fim do dia 4:** âœ… Auth funcionando, testes configurados
 
 ---
 
 #### **DIA 5 (Sexta-feira) - Sprint Planning Sprint 1**
 
-**Responsável:** 🧑‍💻 Pedro (facilita) + 👨‍💻 Luis
+**ResponsÃ¡vel:** ðŸ§‘â€ðŸ’» Pedro (facilita) + ðŸ‘¨â€ðŸ’» Luis
 
-✅ **Ação 1: Sprint Planning Meeting (2 horas)**
+âœ… **AÃ§Ã£o 1: Sprint Planning Meeting (2 horas)**
 
 **Agenda:**
 1. Review do Sprint 0 (15 min)
@@ -1033,44 +1040,44 @@ git push origin main
 
 **Quadro:**
 ```
-Sprint 1 Goal: "Autenticação + Dashboard + Gestão de Features funcionando"
+Sprint 1 Goal: "AutenticaÃ§Ã£o + Dashboard + GestÃ£o de Features funcionando"
 
 Backlog do Sprint 1:
-├─ US-008: Autenticação ✅ (JÁ FEITO no Sprint 0!)
-├─ US-001: Dashboard Overview (3 dias)
-│  ├─ Task: Criar API /api/projects/:id/overview [Luis - 1d]
-│  ├─ Task: Componente DashboardCard [Pedro - 0.5d]
-│  ├─ Task: Componente ProgressBar [Pedro - 0.5d]
-│  ├─ Task: Integrar API com componentes [Pedro - 0.5d]
-│  └─ Task: Testes E2E do dashboard [Pedro - 0.5d]
-└─ US-002: Gestão de Features (5 dias)
-   ├─ Task: Criar tabela features (JÁ FEITO)
-   ├─ Task: Criar API CRUD /api/features [Luis - 2d]
-   ├─ Task: Página de listagem /features [Pedro - 1d]
-   ├─ Task: Formulário de criação [Pedro - 1d]
-   ├─ Task: Página de detalhes /features/:id [Pedro - 0.5d]
-   └─ Task: Testes E2E [Pedro - 0.5d]
+â”œâ”€ US-008: AutenticaÃ§Ã£o âœ… (JÃ FEITO no Sprint 0!)
+â”œâ”€ US-001: Dashboard Overview (3 dias)
+â”‚  â”œâ”€ Task: Criar API /api/projects/:id/overview [Luis - 1d]
+â”‚  â”œâ”€ Task: Componente DashboardCard [Pedro - 0.5d]
+â”‚  â”œâ”€ Task: Componente ProgressBar [Pedro - 0.5d]
+â”‚  â”œâ”€ Task: Integrar API com componentes [Pedro - 0.5d]
+â”‚  â””â”€ Task: Testes E2E do dashboard [Pedro - 0.5d]
+â””â”€ US-002: GestÃ£o de Features (5 dias)
+   â”œâ”€ Task: Criar tabela features (JÃ FEITO)
+   â”œâ”€ Task: Criar API CRUD /api/features [Luis - 2d]
+   â”œâ”€ Task: PÃ¡gina de listagem /features [Pedro - 1d]
+   â”œâ”€ Task: FormulÃ¡rio de criaÃ§Ã£o [Pedro - 1d]
+   â”œâ”€ Task: PÃ¡gina de detalhes /features/:id [Pedro - 0.5d]
+   â””â”€ Task: Testes E2E [Pedro - 0.5d]
 
 Capacity: Pedro (5d) + Luis (5d) = 10 dias
 Estimated: 8 dias
-Buffer: 2 dias ✅
+Buffer: 2 dias âœ…
 ```
 
 ---
 
-✅ **Ação 2: Criar issues no GitHub**
+âœ… **AÃ§Ã£o 2: Criar issues no GitHub**
 
 Para cada task, criar issue:
-- Título: `[Sprint-1] Task: Criar API /api/projects/:id/overview`
+- TÃ­tulo: `[Sprint-1] Task: Criar API /api/projects/:id/overview`
 - Labels: `sprint-1`, `backend`, `assigned:luis`
 - Assignee: Luis
 - Milestone: Sprint 1
 
 ---
 
-✅ **Ação 3: Atualizar README**
+âœ… **AÃ§Ã£o 3: Atualizar README**
 
-📝 Editar `README.md`:
+ðŸ“ Editar `README.md`:
 ```markdown
 # UzzApp Management System
 
@@ -1102,9 +1109,9 @@ pnpm build
 ## Current Sprint
 
 **Sprint 1** (Semana 1-2)
-- ✅ US-008: Autenticação (Done)
-- 🚧 US-001: Dashboard Overview (In Progress)
-- 📝 US-002: Gestão de Features (Todo)
+- âœ… US-008: AutenticaÃ§Ã£o (Done)
+- ðŸš§ US-001: Dashboard Overview (In Progress)
+- ðŸ“ US-002: GestÃ£o de Features (Todo)
 
 ## Team
 
@@ -1112,38 +1119,38 @@ pnpm build
 - Luis: Backend + Frontend
 - Arthur: Marketing
 - Vitor: Vendas
-- Lucas: Jurídico
+- Lucas: JurÃ­dico
 ```
 
 ---
 
-✅ **Ação 4: Retrospective do Sprint 0**
+âœ… **AÃ§Ã£o 4: Retrospective do Sprint 0**
 
 **Formato: Start/Stop/Continue**
 
 **START:**
-- Daily standups às 9h (15 min)
-- Code review obrigatório antes de merge
+- Daily standups Ã s 9h (15 min)
+- Code review obrigatÃ³rio antes de merge
 
 **STOP:**
 - Commits muito grandes (quebrar em atomic commits)
 
 **CONTINUE:**
 - Pair programming para features complexas
-- Documentar decisões importantes
+- Documentar decisÃµes importantes
 
 ---
 
-✅ **Ação 5: Commit e celebrar**
+âœ… **AÃ§Ã£o 5: Commit e celebrar**
 
-🔧 Comandos:
+ðŸ”§ Comandos:
 ```bash
 git add .
 git commit -m "docs: Update README and Sprint 1 planning"
 git push origin main
 ```
 
-**Status fim do Sprint 0:** 🎉 **MVP PRONTO PARA COMEÇAR!**
+**Status fim do Sprint 0:** ðŸŽ‰ **MVP PRONTO PARA COMEÃ‡AR!**
 
 ---
 
@@ -1151,15 +1158,15 @@ git push origin main
 
 ### 3.1 Goal do Sprint
 
-> **"Autenticação ✅ + Dashboard com KPIs + CRUD completo de Features."**
+> **"AutenticaÃ§Ã£o âœ… + Dashboard com KPIs + CRUD completo de Features."**
 
-**Entrega:** Dashboard mostrando dados reais + Página de gestão de features funcionando.
+**Entrega:** Dashboard mostrando dados reais + PÃ¡gina de gestÃ£o de features funcionando.
 
 ### 3.2 Features do Sprint 1
 
-- ✅ US-008: Autenticação (JÁ FEITO)
-- 🚧 US-001: Dashboard Overview
-- 📝 US-002: Gestão de Features
+- âœ… US-008: AutenticaÃ§Ã£o (JÃ FEITO)
+- ðŸš§ US-001: Dashboard Overview
+- ðŸ“ US-002: GestÃ£o de Features
 
 ### 3.3 Checklist Sprint 1
 
@@ -1169,28 +1176,28 @@ git push origin main
 
 **Segunda (Dia 1):**
 - Daily standup 9h
-- 👨‍💻 Luis: Começar API `/api/projects/:id/overview`
-- 🧑‍💻 Pedro: Começar componentes do Dashboard (Cards)
+- ðŸ‘¨â€ðŸ’» Luis: ComeÃ§ar API `/api/projects/:id/overview`
+- ðŸ§‘â€ðŸ’» Pedro: ComeÃ§ar componentes do Dashboard (Cards)
 
-**Terça (Dia 2):**
+**TerÃ§a (Dia 2):**
 - Daily standup 9h
-- 👨‍💻 Luis: Finalizar API overview + testar com Postman
-- 🧑‍💻 Pedro: Finalizar Dashboard components + integrar API
+- ðŸ‘¨â€ðŸ’» Luis: Finalizar API overview + testar com Postman
+- ðŸ§‘â€ðŸ’» Pedro: Finalizar Dashboard components + integrar API
 
 **Quarta (Dia 3):**
 - Daily standup 9h
-- 👨‍💻 Luis: Começar API CRUD `/api/features`
-- 🧑‍💻 Pedro: Testes E2E do dashboard + ajustes
+- ðŸ‘¨â€ðŸ’» Luis: ComeÃ§ar API CRUD `/api/features`
+- ðŸ§‘â€ðŸ’» Pedro: Testes E2E do dashboard + ajustes
 
 **Quinta (Dia 4):**
 - Daily standup 9h
-- 👨‍💻 Luis: Continuar API CRUD (GET list, POST create)
-- 🧑‍💻 Pedro: Começar página `/features` (lista)
+- ðŸ‘¨â€ðŸ’» Luis: Continuar API CRUD (GET list, POST create)
+- ðŸ§‘â€ðŸ’» Pedro: ComeÃ§ar pÃ¡gina `/features` (lista)
 
 **Sexta (Dia 5):**
 - Daily standup 9h
-- 👨‍💻 Luis: Finalizar API CRUD (GET :id, PATCH, DELETE)
-- 🧑‍💻 Pedro: Continuar página features (integrar API)
+- ðŸ‘¨â€ðŸ’» Luis: Finalizar API CRUD (GET :id, PATCH, DELETE)
+- ðŸ§‘â€ðŸ’» Pedro: Continuar pÃ¡gina features (integrar API)
 - **Sprint Review interno (16h):** Demo do Dashboard funcionando
 
 ---
@@ -1199,30 +1206,30 @@ git push origin main
 
 **Segunda (Dia 6):**
 - Daily standup 9h
-- 👨‍💻 Luis: Ajustes na API baseados no feedback
-- 🧑‍💻 Pedro: Criar formulário de feature (modal)
+- ðŸ‘¨â€ðŸ’» Luis: Ajustes na API baseados no feedback
+- ðŸ§‘â€ðŸ’» Pedro: Criar formulÃ¡rio de feature (modal)
 
-**Terça (Dia 7):**
+**TerÃ§a (Dia 7):**
 - Daily standup 9h
-- 🧑‍💻 Pedro: Finalizar formulário + validações (Zod)
-- 👨‍💻 Luis: Code review + ajudar Pedro
+- ðŸ§‘â€ðŸ’» Pedro: Finalizar formulÃ¡rio + validaÃ§Ãµes (Zod)
+- ðŸ‘¨â€ðŸ’» Luis: Code review + ajudar Pedro
 
 **Quarta (Dia 8):**
 - Daily standup 9h
-- 🧑‍💻 Pedro: Criar página de detalhes `/features/:id`
-- 👨‍💻 Luis: Preparar próximo sprint (US-003)
+- ðŸ§‘â€ðŸ’» Pedro: Criar pÃ¡gina de detalhes `/features/:id`
+- ðŸ‘¨â€ðŸ’» Luis: Preparar prÃ³ximo sprint (US-003)
 
 **Quinta (Dia 9):**
 - Daily standup 9h
-- 🧑‍💻 Pedro: Testes E2E de features
-- 👨‍💻 Luis: Testes unitários da API
+- ðŸ§‘â€ðŸ’» Pedro: Testes E2E de features
+- ðŸ‘¨â€ðŸ’» Luis: Testes unitÃ¡rios da API
 
 **Sexta (Dia 10):**
 - Daily standup 9h
 - **Sprint Review (14h):** Demo para toda equipe
 - **Retrospective (16h):** O que melhorar?
-- **Sprint Planning Sprint 2 (17h):** Planejar próximas 2 semanas
-- **Deploy em produção** 🚀
+- **Sprint Planning Sprint 2 (17h):** Planejar prÃ³ximas 2 semanas
+- **Deploy em produÃ§Ã£o** ðŸš€
 
 ---
 
@@ -1232,41 +1239,41 @@ git push origin main
 - [x] API `/api/projects/:id/overview` retorna JSON com KPIs
 - [x] Dashboard mostra 4 cards: Status, Progresso, Features, Equipe
 - [x] Progresso calcula automaticamente: `(features_done / features_total) * 100`
-- [x] Seção "Tempo de Execução" com barra visual
+- [x] SeÃ§Ã£o "Tempo de ExecuÃ§Ã£o" com barra visual
 - [x] Dashboard responsivo (mobile, tablet, desktop)
 - [x] Testes E2E: Cypress testa loading do dashboard
 - [x] Code review aprovado
-- [x] Deploy em produção
+- [x] Deploy em produÃ§Ã£o
 - [x] Pedro validou
 
-**US-002: Gestão de Features**
+**US-002: GestÃ£o de Features**
 - [x] API CRUD completa: GET, POST, PATCH, DELETE
-- [x] Página `/features` lista features em tabela
-- [x] Filtros funcionam: versão, status, categoria
-- [x] Botão "Nova Feature" abre modal
-- [x] Formulário cria feature com validação (Zod)
-- [x] Página `/features/:id` mostra detalhes
+- [x] PÃ¡gina `/features` lista features em tabela
+- [x] Filtros funcionam: versÃ£o, status, categoria
+- [x] BotÃ£o "Nova Feature" abre modal
+- [x] FormulÃ¡rio cria feature com validaÃ§Ã£o (Zod)
+- [x] PÃ¡gina `/features/:id` mostra detalhes
 - [x] Busca por nome funciona
 - [x] Testes E2E: criar, editar, deletar feature
 - [x] Code review aprovado
-- [x] Deploy em produção
+- [x] Deploy em produÃ§Ã£o
 - [x] Pedro validou
 
 ---
 
-## 4. SPRINT 2: GESTÃO AVANÇADA (2 SEMANAS)
+## 4. SPRINT 2: GESTÃƒO AVANÃ‡ADA (2 SEMANAS)
 
 ### 4.1 Goal do Sprint
 
-> **"Definition of Done tracking + Gestão de Sprints + Atribuição de responsáveis funcionando."**
+> **"Definition of Done tracking + GestÃ£o de Sprints + AtribuiÃ§Ã£o de responsÃ¡veis funcionando."**
 
-**Entrega:** Features com DoD rastreável + Sprints criados + Timeline visual.
+**Entrega:** Features com DoD rastreÃ¡vel + Sprints criados + Timeline visual.
 
 ### 4.2 Features do Sprint 2
 
 - US-003: Definition of Done Tracker
-- US-004: Gestão de Sprints
-- US-005: Atribuição de Responsáveis e Prazos
+- US-004: GestÃ£o de Sprints
+- US-005: AtribuiÃ§Ã£o de ResponsÃ¡veis e Prazos
 - US-006: Timeline Visual (Gantt Simplificado)
 
 ### 4.3 Checklist Sprint 2
@@ -1279,15 +1286,15 @@ git push origin main
 
 ### 5.1 Goal do Sprint
 
-> **"Gestão de Riscos + Testes completos + Deploy do MVP em produção estável."**
+> **"GestÃ£o de Riscos + Testes completos + Deploy do MVP em produÃ§Ã£o estÃ¡vel."**
 
 **Entrega:** MVP completo, testado e documentado.
 
 ### 5.2 Features do Sprint 3
 
-- US-007: Gestão de Riscos Básica
+- US-007: GestÃ£o de Riscos BÃ¡sica
 - Testes E2E completos (Playwright)
-- Documentação final
+- DocumentaÃ§Ã£o final
 - Onboarding da equipe
 
 ### 5.3 Checklist Sprint 3
@@ -1305,8 +1312,8 @@ git push origin main
 - [ ] Sem errors no console do browser
 - [ ] Sem TypeScript errors
 - [ ] README atualizado
-- [ ] Variáveis de ambiente configuradas na Vercel
-- [ ] Migrations rodadas no Supabase de produção
+- [ ] VariÃ¡veis de ambiente configuradas na Vercel
+- [ ] Migrations rodadas no Supabase de produÃ§Ã£o
 - [ ] Backup do banco feito
 
 ### 6.2 Deploy
@@ -1314,8 +1321,8 @@ git push origin main
 - [ ] Merge para `main` via Pull Request
 - [ ] CI/CD passa (GitHub Actions)
 - [ ] Vercel auto-deploy
-- [ ] Verificar URL de produção: https://uzzapp-management.vercel.app
-- [ ] Testar login em produção
+- [ ] Verificar URL de produÃ§Ã£o: https://uzzapp-management.vercel.app
+- [ ] Testar login em produÃ§Ã£o
 - [ ] Testar features principais
 
 ### 6.3 Post-Deploy
@@ -1332,34 +1339,34 @@ git push origin main
 ### 7.1 Problemas Comuns
 
 **Problema:** `Error: Database connection failed`
-**Solução:**
-1. Verificar `.env.local` tem as variáveis corretas
-2. Testar conexão: `SELECT 1` no SQL Editor do Supabase
-3. Verificar firewall/VPN não está bloqueando
+**SoluÃ§Ã£o:**
+1. Verificar `.env.local` tem as variÃ¡veis corretas
+2. Testar conexÃ£o: `SELECT 1` no SQL Editor do Supabase
+3. Verificar firewall/VPN nÃ£o estÃ¡ bloqueando
 
 ---
 
 **Problema:** `Error: Authentication required`
-**Solução:**
+**SoluÃ§Ã£o:**
 1. Fazer logout e login novamente
 2. Limpar cookies do browser
-3. Verificar middleware.ts está funcionando
+3. Verificar middleware.ts estÃ¡ funcionando
 
 ---
 
 **Problema:** Build falha na Vercel
-**Solução:**
-1. Verificar variáveis de ambiente na Vercel
+**SoluÃ§Ã£o:**
+1. Verificar variÃ¡veis de ambiente na Vercel
 2. Rodar `pnpm build` localmente para reproduzir erro
 3. Verificar logs de build na Vercel
 
 ---
 
-**Problema:** Supabase Realtime não funciona
-**Solução:**
-1. Verificar RLS policies não estão bloqueando
+**Problema:** Supabase Realtime nÃ£o funciona
+**SoluÃ§Ã£o:**
+1. Verificar RLS policies nÃ£o estÃ£o bloqueando
 2. Testar query manualmente no SQL Editor
-3. Verificar usuário tem permissão
+3. Verificar usuÃ¡rio tem permissÃ£o
 
 ---
 
@@ -1375,10 +1382,10 @@ export default {
       colors: {
         uzzai: {
           primary: '#2D6A5E', // Verde escuro
-          secondary: '#4A90A4', // Azul médio (turquesa)
+          secondary: '#4A90A4', // Azul mÃ©dio (turquesa)
           warning: '#F4D03F', // Amarelo/Dourado
           dark: '#1F1F1F', // Preto/Charcoal
-          gray: '#B0B0B0', // Cinza médio
+          gray: '#B0B0B0', // Cinza mÃ©dio
         },
       },
     },
@@ -1388,29 +1395,30 @@ export default {
 
 **Uso:**
 - **Headers:** `bg-uzzai-primary`
-- **Botões principais:** `bg-uzzai-primary hover:bg-uzzai-primary/90`
+- **BotÃµes principais:** `bg-uzzai-primary hover:bg-uzzai-primary/90`
 - **Links:** `text-uzzai-secondary`
 - **Alertas:** `bg-uzzai-warning`
 
 ---
 
-## 9. CONCLUSÃO
+## 9. CONCLUSÃƒO
 
-Este documento é seu **GUIA EXECUTÁVEL** para os próximos 7 semanas. Siga passo a passo, marque os checkboxes conforme avança, e você terá um MVP funcional do Sistema de Gerenciamento UzzApp.
+Este documento Ã© seu **GUIA EXECUTÃVEL** para os prÃ³ximos 7 semanas. Siga passo a passo, marque os checkboxes conforme avanÃ§a, e vocÃª terÃ¡ um MVP funcional do Sistema de Gerenciamento UzzApp.
 
-**Próximos documentos a consultar:**
+**PrÃ³ximos documentos a consultar:**
 - `BACKLOG_INICIAL.md` - Todas as user stories detalhadas
-- `PLANO_EXECUCAO_SISTEMA_GERENCIAMENTO_UZZAPP.md` - Visão estratégica completa
+- `PLANO_EXECUCAO_SISTEMA_GERENCIAMENTO_UZZAPP.md` - VisÃ£o estratÃ©gica completa
 
-**Boa sorte! 🚀**
+**Boa sorte! ðŸš€**
 
 ---
 
 **Autor:** Pedro Vitor Pagliarin + Claude AI
 **Data:** 2026-02-06
-**Versão:** 1.0.0
-**Status:** ✅ Pronto para Execução
+**VersÃ£o:** 1.0.0
+**Status:** âœ… Pronto para ExecuÃ§Ã£o
 
 ---
 
 *"Think Smart, Think Uzz.Ai"*
+

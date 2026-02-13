@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import type { ProjectOverview } from '@/types';
+import { tenantFetch } from '@/lib/api-client';
 
 export function useProjectOverview(projectId: string) {
   return useQuery<ProjectOverview>({
     queryKey: ['project-overview', projectId],
     queryFn: async () => {
-      const res = await fetch(`/api/projects/${projectId}/overview`);
+      const res = await tenantFetch(`/api/projects/${projectId}/overview`);
       if (!res.ok) {
         throw new Error('Falha ao buscar overview do projeto');
       }

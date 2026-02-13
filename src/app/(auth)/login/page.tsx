@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -30,7 +31,7 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push('/dashboard');
+      router.push('/projects');
       router.refresh();
     }
   }
@@ -100,8 +101,13 @@ export default function LoginPage() {
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
 
-            <div className="text-center text-sm text-gray-500 pt-4 border-t">
-              <p>Use as credenciais fornecidas pela equipe</p>
+            <div className="text-center text-sm text-gray-500 pt-4 border-t space-y-1">
+              <p>
+                Não tem conta?{' '}
+                <Link href="/register" className="text-uzzai-primary hover:underline font-medium">
+                  Solicitar acesso
+                </Link>
+              </p>
             </div>
           </form>
         </CardContent>

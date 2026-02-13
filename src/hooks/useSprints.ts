@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Sprint, NewSprint, SprintUpdate } from '@/types';
+import { tenantFetch } from '@/lib/api-client';
 
 // Hook: Lista de sprints de um projeto
 export function useSprints(projectId?: string) {
@@ -8,7 +9,7 @@ export function useSprints(projectId?: string) {
         queryFn: async () => {
             if (!projectId) throw new Error('projectId é obrigatório');
 
-            const res = await fetch(`/api/sprints?project_id=${projectId}`);
+            const res = await tenantFetch(`/api/sprints?project_id=${projectId}`);
             if (!res.ok) {
                 const error = await res.json();
                 throw new Error(error.error || 'Falha ao buscar sprints');
@@ -24,7 +25,7 @@ export function useSprint(id: string) {
     return useQuery<{ data: Sprint }>({
         queryKey: ['sprint', id],
         queryFn: async () => {
-            const res = await fetch(`/api/sprints/${id}`);
+            const res = await tenantFetch(`/api/sprints/${id}`);
             if (!res.ok) {
                 const error = await res.json();
                 throw new Error(error.error || 'Falha ao buscar sprint');
@@ -40,8 +41,8 @@ export function useCreateSprint() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (data: NewSprint) => {
-            const res = await fetch('/api/sprints', {
+        mutationFn: async (data: Omit<NewSprint, 'tenant_id'>) => {
+            const res = await tenantFetch('/api/sprints', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
@@ -68,7 +69,7 @@ export function useUpdateSprint() {
 
     return useMutation({
         mutationFn: async ({ id, data }: { id: string; data: SprintUpdate }) => {
-            const res = await fetch(`/api/sprints/${id}`, {
+            const res = await tenantFetch(`/api/sprints/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
@@ -96,7 +97,7 @@ export function useDeleteSprint() {
 
     return useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/sprints/${id}`, {
+            const res = await tenantFetch(`/api/sprints/${id}`, {
                 method: 'DELETE',
             });
 
@@ -126,7 +127,7 @@ export function useSprintFeatures(sprintId?: string) {
         queryFn: async () => {
             if (!sprintId) throw new Error('sprintId é obrigatório');
 
-            const res = await fetch(`/api/sprints/${sprintId}/features`);
+            const res = await tenantFetch(`/api/sprints/${sprintId}/features`);
             if (!res.ok) {
                 const error = await res.json();
                 throw new Error(error.error || 'Falha ao buscar features do sprint');
@@ -143,7 +144,7 @@ export function useAddFeatureToSprint(sprintId: string) {
 
     return useMutation({
         mutationFn: async ({ feature_id, priority, force_override }: { feature_id: string; priority?: number; force_override?: boolean }) => {
-            const res = await fetch(`/api/sprints/${sprintId}/features`, {
+            const res = await tenantFetch(`/api/sprints/${sprintId}/features`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ feature_id, priority, force_override }),
@@ -152,17 +153,26 @@ export function useAddFeatureToSprint(sprintId: string) {
             if (!res.ok) {
                 let errorData;
                 try {
-                    errorData = await res.json();
+                    const text = await res.text();
+                    console.log('[Hook] Raw error response:', text);
+                    errorData = text ? JSON.parse(text) : { error: res.statusText || 'Resposta vazia do servidor' };
                 } catch (e) {
-                    errorData = { error: res.statusText };
+                    console.error('[Hook] Failed to parse error response:', e);
+                    errorData = { error: res.statusText || 'Erro ao processar resposta do servidor' };
                 }
 
-                console.error('[Hook] Error adding feature:', { status: res.status, error: JSON.stringify(errorData) });
+                console.error('[Hook] Error adding feature:', {
+                    status: res.status,
+                    statusText: res.statusText,
+                    errorData,
+                    sprintId,
+                    feature_id
+                });
 
                 // Repassa o erro com código para tratamento no componente ou cria um objeto de erro padronizado
                 throw {
                     status: res.status,
-                    message: errorData.error || 'Erro desconhecido',
+                    message: errorData.error || errorData.message || 'Erro desconhecido',
                     code: errorData.code,
                     details: errorData
                 };
@@ -189,7 +199,7 @@ export function useRemoveFeatureFromSprint(sprintId: string) {
             queryParams.set('feature_id', featureId);
             if (force_override) queryParams.set('force_override', 'true');
 
-            const res = await fetch(`/api/sprints/${sprintId}/features?${queryParams.toString()}`, {
+            const res = await tenantFetch(`/api/sprints/${sprintId}/features?${queryParams.toString()}`, {
                 method: 'DELETE',
             });
 

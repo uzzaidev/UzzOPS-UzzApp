@@ -2,19 +2,35 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, FileText, Calendar, Users, AlertTriangle, Settings } from 'lucide-react';
+import { Home, FileText, Calendar, Users, AlertTriangle, BarChart3, Star, Spade, Network, ShieldCheck, ClipboardList, Settings, FolderOpen, TrendingUp, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const menuItems = [
-  { icon: Home, label: 'Dashboard', href: '/dashboard' },
-  { icon: FileText, label: 'Features', href: '/features' },
-  { icon: Calendar, label: 'Sprints', href: '/sprints' },
-  { icon: Users, label: 'Team', href: '/team' },
-  { icon: AlertTriangle, label: 'Risks', href: '/risks' },
-];
+interface SidebarProps {
+  projectId: string;
+  projectName: string;
+}
 
-export function Sidebar() {
+function getMenuItems(projectId: string) {
+  return [
+    { icon: Home, label: 'Dashboard', href: `/projects/${projectId}/dashboard` },
+    { icon: FileText, label: 'Features/Bugs', href: `/projects/${projectId}/features` },
+    { icon: Calendar, label: 'Sprints', href: `/projects/${projectId}/sprints` },
+    { icon: BarChart3, label: 'Métricas', href: `/projects/${projectId}/metrics` },
+    { icon: TrendingUp, label: 'Progresso', href: `/projects/${projectId}/progress` },
+    { icon: Megaphone, label: 'Marketing', href: `/projects/${projectId}/marketing` },
+    { icon: Star, label: 'MVP Board', href: `/projects/${projectId}/mvp-board` },
+    { icon: Spade, label: 'Planning Poker', href: `/projects/${projectId}/planning-poker` },
+    { icon: Network, label: 'Mapa Backlog', href: `/projects/${projectId}/backlog-map` },
+    { icon: ShieldCheck, label: 'DoD Evolutivo', href: `/projects/${projectId}/dod` },
+    { icon: ClipboardList, label: 'Daily Scrum', href: `/projects/${projectId}/daily` },
+    { icon: Users, label: 'Team', href: `/projects/${projectId}/team` },
+    { icon: AlertTriangle, label: 'Risks', href: `/projects/${projectId}/risks` },
+  ];
+}
+
+export function Sidebar({ projectId, projectName }: SidebarProps) {
   const pathname = usePathname();
+  const menuItems = getMenuItems(projectId);
 
   return (
     <aside className="w-64 bg-gradient-to-b from-uzzai-primary to-uzzai-primary/90 text-white flex flex-col">
@@ -31,11 +47,23 @@ export function Sidebar() {
         </div>
       </div>
 
+      {/* Project indicator */}
+      <div className="px-6 py-3 border-b border-white/10">
+        <Link
+          href="/projects"
+          className="flex items-center gap-2 text-white/80 hover:text-white transition-colors group"
+        >
+          <FolderOpen className="w-4 h-4" />
+          <span className="text-sm font-medium truncate">{projectName}</span>
+          <span className="text-xs text-white/50 group-hover:text-white/70 ml-auto shrink-0">Trocar</span>
+        </Link>
+      </div>
+
       {/* Menu */}
       <nav className="flex-1 px-4 py-6 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
 
           return (
             <Link
@@ -72,3 +100,6 @@ export function Sidebar() {
     </aside>
   );
 }
+
+
+

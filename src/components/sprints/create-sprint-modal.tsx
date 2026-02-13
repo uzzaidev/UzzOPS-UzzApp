@@ -36,7 +36,6 @@ interface CreateSprintModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     projectId?: string;
-    tenantId?: string;
 }
 
 const formSchema = z
@@ -65,7 +64,7 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function CreateSprintModal({ open, onOpenChange, projectId, tenantId }: CreateSprintModalProps) {
+export function CreateSprintModal({ open, onOpenChange, projectId }: CreateSprintModalProps) {
     const createSprint = useCreateSprint();
 
     const form = useForm<FormValues>({
@@ -84,14 +83,13 @@ export function CreateSprintModal({ open, onOpenChange, projectId, tenantId }: C
     });
 
     const onSubmit = async (data: FormValues) => {
-        if (!projectId || !tenantId) {
+        if (!projectId) {
             alert('Projeto não identificado');
             return;
         }
 
         try {
             await createSprint.mutateAsync({
-                tenant_id: tenantId,
                 project_id: projectId,
                 ...data,
             });

@@ -39,19 +39,48 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+  const isPublicAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/pending');
+
   // Redirecionar para login se não autenticado e tentando acessar rota protegida
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+  if (!user && !isPublicAuthRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Redirecionar para dashboard se já autenticado e tentando acessar login
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Redirecionar para projetos se já autenticado e tentando acessar login/register
+  if (user && (pathname.startsWith('/login') || pathname.startsWith('/register'))) {
+    return NextResponse.redirect(new URL('/projects', request.url));
+  }
+
+  // Verificar se usuário pendente tenta acessar o dashboard
+  if (user && !isPublicAuthRoute) {
+    const { data: member } = await supabase
+      .from('company_members')
+      .select('status')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (member && member.status === 'pending' && !pathname.startsWith('/pending')) {
+      return NextResponse.redirect(new URL('/pending', request.url));
+    }
+  }
+
+  // Usuário aprovado tentando acessar /pending → vai para projetos
+  if (user && pathname.startsWith('/pending')) {
+    const { data: member } = await supabase
+      .from('company_members')
+      .select('status')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!member || member.status === 'active') {
+      return NextResponse.redirect(new URL('/projects', request.url));
+    }
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 };

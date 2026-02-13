@@ -1,5 +1,57 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { requireTenant, requireAdmin } from '@/lib/tenant';
+import { z } from 'zod';
+
+const featureUpdateSchema = z.object({
+  code: z.string().trim().min(1).optional(),
+  name: z.string().trim().min(1).optional(),
+  description: z.string().trim().nullable().optional(),
+  category: z.string().trim().min(1).optional(),
+  version: z.enum(['MVP', 'V1', 'V2', 'V3', 'V4']).optional(),
+  status: z.enum(['backlog', 'todo', 'in_progress', 'review', 'testing', 'done', 'blocked']).optional(),
+  priority: z.enum(['P0', 'P1', 'P2', 'P3']).optional(),
+  moscow: z.enum(['Must', 'Should', 'Could', 'Wont']).nullable().optional(),
+  gut_g: z.number().int().min(1).max(5).nullable().optional(),
+  gut_u: z.number().int().min(1).max(5).nullable().optional(),
+  gut_t: z.number().int().min(1).max(5).nullable().optional(),
+  responsible: z.array(z.string()).nullable().optional(),
+  due_date: z.string().date().nullable().optional(),
+  story_points: z.number().int().min(0).nullable().optional(),
+  business_value: z.number().int().min(0).nullable().optional(),
+  work_effort: z.number().int().min(0).nullable().optional(),
+  work_item_type: z.enum(['feature', 'bug']).optional(),
+  solution_notes: z.string().trim().nullable().optional(),
+  dod_custom_items: z.array(z.string().trim().min(1)).optional(),
+  dod_functional: z.boolean().optional(),
+  dod_tests: z.boolean().optional(),
+  dod_code_review: z.boolean().optional(),
+  dod_documentation: z.boolean().optional(),
+  dod_deployed: z.boolean().optional(),
+  dod_user_acceptance: z.boolean().optional(),
+  is_mvp: z.boolean().optional(),
+  acceptance_criteria: z.string().nullable().optional(),
+  invest_checklist: z.record(z.string(), z.boolean().nullable()).nullable().optional(),
+  is_epic: z.boolean().optional(),
+  decomposed_at: z.string().datetime().nullable().optional(),
+  is_spike: z.boolean().optional(),
+  spike_timebox_hours: z.number().int().min(0).nullable().optional(),
+  spike_outcome: z.string().nullable().optional(),
+  spike_converted_to_story_id: z.string().uuid().nullable().optional(),
+}).strict();
+
+async function resolveFeatureTenantId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  featureId: string
+) {
+  const { data } = await supabase
+    .from('features')
+    .select('tenant_id')
+    .eq('id', featureId)
+    .single();
+
+  return data?.tenant_id ?? null;
+}
 
 export async function GET(
   request: Request,
@@ -8,6 +60,9 @@ export async function GET(
   try {
     const { id } = await params;
     const supabase = await createClient();
+    const tenantId = await resolveFeatureTenantId(supabase, id);
+    const { error: authError } = await requireTenant(supabase, { tenantId });
+    if (authError) return authError;
 
     const { data: feature, error } = await supabase
       .from('features')
@@ -15,6 +70,7 @@ export async function GET(
         *,
         project:projects(id, code, name),
         tasks:tasks(*),
+        attachments:feature_attachments(*),
         sprint_features(
             id,
             sprint:sprints(id, name, status)
@@ -27,16 +83,12 @@ export async function GET(
       return NextResponse.json({ error: 'Feature não encontrada' }, { status: 404 });
     }
 
-    // Flattern sprint info for easier frontend consumption
-    // Assumindo que uma feature só pode estar em UM sprint ativo/futuro por vez, ou pegamos o último.
-    // O backend idealmente deveria garantir unicidade, mas o schema é N:N.
-    // Vamos pegar o primeiro sprint encontrado (ou lógica de "current").
     const currentSprintFeature = feature.sprint_features?.[0];
     const enrichedFeature = {
       ...feature,
       sprint: currentSprintFeature?.sprint,
       sprint_id: currentSprintFeature?.sprint?.id,
-      sprint_feature_id: currentSprintFeature?.id // Para remoção se necessário
+      sprint_feature_id: currentSprintFeature?.id,
     };
 
     return NextResponse.json({ data: enrichedFeature });
@@ -53,10 +105,21 @@ export async function PATCH(
   try {
     const { id } = await params;
     const supabase = await createClient();
-    const body = await request.json();
+    const tenantId = await resolveFeatureTenantId(supabase, id);
+    const { error: authError } = await requireTenant(supabase, { tenantId });
+    if (authError) return authError;
 
-    // Validação: Se tentando marcar como "done", verificar DoD
-    if (body.status === 'done') {
+    const body = await request.json();
+    const parsed = featureUpdateSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Payload inválido', details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const updateData = parsed.data;
+
+    if (updateData.status === 'done') {
       const { data: currentFeature } = await supabase
         .from('features')
         .select('dod_progress')
@@ -70,19 +133,6 @@ export async function PATCH(
         );
       }
     }
-
-    // Remover campos que não devem ser atualizados (incluindo dod_progress que é calculado)
-    const {
-      id: _id,
-      tenant_id,
-      project_id,
-      created_at,
-      updated_at,
-      dod_progress, // Campo calculado, não deve ser enviado
-      gut_score, // Também calculado
-      bv_w_ratio, // Também calculado
-      ...updateData
-    } = body;
 
     const { data: feature, error } = await supabase
       .from('features')
@@ -110,6 +160,9 @@ export async function DELETE(
   try {
     const { id } = await params;
     const supabase = await createClient();
+    const tenantId = await resolveFeatureTenantId(supabase, id);
+    const { error: authError } = await requireAdmin(supabase, { tenantId });
+    if (authError) return authError;
 
     const { error } = await supabase.from('features').delete().eq('id', id);
 

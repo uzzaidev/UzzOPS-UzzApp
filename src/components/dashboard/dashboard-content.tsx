@@ -3,7 +3,7 @@
 import { useProjectOverview } from '@/hooks/useProjectOverview';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, TrendingUp, Users, FileText, AlertCircle } from 'lucide-react';
+import { Loader2, TrendingUp, Users, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -32,7 +32,7 @@ export function DashboardContent({ projectId }: DashboardContentProps) {
     );
   }
 
-  const { project, totalFeatures, featuresDone, featuresInProgress, progress, teamSize, currentSprint, criticalRisks } = overview;
+  const { project, totalFeatures, featuresDone, featuresInProgress, progress, avgDodProgress, teamSize, currentSprint, criticalRisks } = overview;
 
   return (
     <div className="space-y-6">
@@ -64,7 +64,7 @@ export function DashboardContent({ projectId }: DashboardContentProps) {
       )}
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         <Card className="border-l-4 border-l-uzzai-primary hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
@@ -115,6 +115,29 @@ export function DashboardContent({ projectId }: DashboardContentProps) {
             <div className="text-xs text-gray-500 mt-2 space-y-1">
               <p>✅ {featuresDone} concluídas</p>
               <p>🚧 {featuresInProgress} em progresso</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className={`border-l-4 hover:shadow-lg transition-shadow ${avgDodProgress >= 80 ? 'border-l-green-500' : avgDodProgress >= 50 ? 'border-l-yellow-500' : 'border-l-red-500'}`}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              DoD Compliance
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-baseline gap-2">
+              <p className={`text-3xl font-bold ${avgDodProgress >= 80 ? 'text-green-600' : avgDodProgress >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                {avgDodProgress}%
+              </p>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">Média de Definition of Done</p>
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+              <div
+                className={`h-2 rounded-full transition-all ${avgDodProgress >= 80 ? 'bg-green-500' : avgDodProgress >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                style={{ width: `${avgDodProgress}%` }}
+              ></div>
             </div>
           </CardContent>
         </Card>

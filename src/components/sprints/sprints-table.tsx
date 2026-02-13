@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Loader2, Calendar, Edit, Trash, Plus, ListPlus } from 'lucide-react';
+import { Loader2, Calendar, Edit, Trash, Plus, ListPlus, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import type { Sprint } from '@/types';
@@ -22,10 +22,10 @@ import { CreateSprintModal } from './create-sprint-modal';
 import { EditSprintModal } from './edit-sprint-modal';
 import { DeleteSprintDialog } from './delete-sprint-dialog';
 import { AddFeaturesToSprintModal } from './add-features-to-sprint-modal';
+import Link from 'next/link';
 
 interface SprintsTableProps {
     projectId?: string;
-    tenantId?: string;
 }
 
 const statusColors: Record<string, string> = {
@@ -42,7 +42,7 @@ const statusLabels: Record<string, string> = {
     cancelled: 'Cancelado',
 };
 
-export function SprintsTable({ projectId, tenantId }: SprintsTableProps) {
+export function SprintsTable({ projectId }: SprintsTableProps) {
     const { data, isLoading, error } = useSprints(projectId);
     const [search, setSearch] = useState('');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -148,7 +148,14 @@ export function SprintsTable({ projectId, tenantId }: SprintsTableProps) {
                                 filteredSprints.map((sprint) => (
                                     <TableRow key={sprint.id}>
                                         <TableCell className="font-medium">{sprint.code}</TableCell>
-                                        <TableCell>{sprint.name}</TableCell>
+                                        <TableCell>
+                                            <Link
+                                                href={`/projects/${projectId}/sprints/${sprint.id}`}
+                                                className="hover:underline hover:text-uzzai-primary font-medium"
+                                            >
+                                                {sprint.name}
+                                            </Link>
+                                        </TableCell>
                                         <TableCell className="max-w-xs truncate">
                                             {sprint.goal || '-'}
                                         </TableCell>
@@ -173,6 +180,17 @@ export function SprintsTable({ projectId, tenantId }: SprintsTableProps) {
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex items-center justify-end gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                    asChild
+                                                    title="Ver Detalhes"
+                                                >
+                                                    <Link href={`/projects/${projectId}/sprints/${sprint.id}`}>
+                                                        <ExternalLink className="w-4 h-4" />
+                                                    </Link>
+                                                </Button>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
@@ -222,7 +240,6 @@ export function SprintsTable({ projectId, tenantId }: SprintsTableProps) {
                 open={isCreateModalOpen}
                 onOpenChange={setIsCreateModalOpen}
                 projectId={projectId}
-                tenantId={tenantId}
             />
 
             <EditSprintModal

@@ -1,4 +1,5 @@
----
+﻿---
+
 created: 2026-02-06
 updated: 2026-02-06T21:09
 tags:
@@ -10,182 +11,188 @@ tags:
 type: changelog
 ---
 
-# 🚀 Progresso do Sistema de Gestão - Sprint 1
+> [!IMPORTANT]
+> Documento legado/historico (frozen).
+> Fonte canônica atual: `docs/AI_PROJECT_CONTEXT_MASTER.md`, `docs/RESTART_CHECKLIST.md`, `README.md`, `docs/README_DOCUMENTATION.md`.
+> Use este arquivo apenas como referencia historica.
 
-> **Status:** ✅ Sprint 1 Concluído  
-> **Foco:** Gestão de Escopo & Vínculo Bidirecional entre Features e Sprints
+
+# ðŸš€ Progresso do Sistema de GestÃ£o - Sprint 1
+
+> **Status:** âœ… Sprint 1 ConcluÃ­do  
+> **Foco:** GestÃ£o de Escopo & VÃ­nculo Bidirecional entre Features e Sprints
 
 ---
 
-## 📋 Resumo Executivo
+## ðŸ“‹ Resumo Executivo
 
-Concluímos todas as etapas planejadas do Sprint 1! O sistema de gerenciamento de sprints agora está robusto e alinhado com boas práticas de Scrum, incluindo proteção de escopo, auditoria completa e vínculo bidirecional entre Features e Sprints.
+ConcluÃ­mos todas as etapas planejadas do Sprint 1! O sistema de gerenciamento de sprints agora estÃ¡ robusto e alinhado com boas prÃ¡ticas de Scrum, incluindo proteÃ§Ã£o de escopo, auditoria completa e vÃ­nculo bidirecional entre Features e Sprints.
 
 ---
 
-## ✅ O Que Foi Entregue
+## âœ… O Que Foi Entregue
 
-### 🛡️ 1. Proteção & Auditoria de Sprints
+### ðŸ›¡ï¸ 1. ProteÃ§Ã£o & Auditoria de Sprints
 
 **Problema resolvido:**
 - Sprints ativos podiam ser modificados sem controle
-- Não havia rastreabilidade de mudanças de escopo
+- NÃ£o havia rastreabilidade de mudanÃ§as de escopo
 - Erro "priority column missing" causava crashes
 
-**Solução implementada:**
-- ✅ **Proteção de Sprint Ativo:** Tentar alterar um sprint ATIVO agora exige confirmação explícita
-- ✅ **Auditoria completa:** Todas e quaisquer "quebras de escopo" são logadas no banco de dados (`sprint_scope_changes`)
-- ✅ **Erro corrigido:** Erro "priority column missing" resolvido definitivamente
-- ✅ **Logging estruturado:** Cada mudança registra:
-  - Quem fez a mudança
+**SoluÃ§Ã£o implementada:**
+- âœ… **ProteÃ§Ã£o de Sprint Ativo:** Tentar alterar um sprint ATIVO agora exige confirmaÃ§Ã£o explÃ­cita
+- âœ… **Auditoria completa:** Todas e quaisquer "quebras de escopo" sÃ£o logadas no banco de dados (`sprint_scope_changes`)
+- âœ… **Erro corrigido:** Erro "priority column missing" resolvido definitivamente
+- âœ… **Logging estruturado:** Cada mudanÃ§a registra:
+  - Quem fez a mudanÃ§a
   - Quando foi feita
   - O que mudou (feature adicionada/removida)
   - Sprint afetado
 
 **Arquivos modificados:**
 - `src/lib/db/sprint-scope-changes.ts` (novo)
-- `src/app/(dashboard)/sprints/[id]/page.tsx` (proteção adicionada)
-- `src/components/sprints/sprint-manager-modal.tsx` (validações)
+- `src/app/(dashboard)/sprints/[id]/page.tsx` (proteÃ§Ã£o adicionada)
+- `src/components/sprints/sprint-manager-modal.tsx` (validaÃ§Ãµes)
 
 ---
 
-### ⚡ 2. Gerenciador de Sprint (Modal) - Redesign Completo
+### âš¡ 2. Gerenciador de Sprint (Modal) - Redesign Completo
 
 **Problema anterior:**
 - Interface confusa e pouco funcional
-- Difícil visualizar features do sprint
+- DifÃ­cil visualizar features do sprint
 - Adicionar features era trabalhoso
 
-**Solução implementada:**
-- ✅ **Abas organizadas:**
+**SoluÃ§Ã£o implementada:**
+- âœ… **Abas organizadas:**
   - **Aba "Sprint Backlog":** Visualizar todas as features do sprint e remover facilmente
   - **Aba "Adicionar":** Buscar e adicionar features com busca inteligente
-- ✅ **Visual limpo e funcional:**
+- âœ… **Visual limpo e funcional:**
   - Interface mais intuitiva
   - Feedback visual claro
-  - Ações rápidas (remover com 1 clique)
+  - AÃ§Ãµes rÃ¡pidas (remover com 1 clique)
 
 **Arquivos modificados:**
 - `src/components/sprints/sprint-manager-modal.tsx` (redesign completo)
 
 ---
 
-### 🔗 3. Vínculo Bidirecional na Feature (NOVO!)
+### ðŸ”— 3. VÃ­nculo Bidirecional na Feature (NOVO!)
 
 **Funcionalidade inovadora:**
-- ✅ **Seletor de Sprint na Feature:**
+- âœ… **Seletor de Sprint na Feature:**
   - Na tela de Detalhes da Feature, adicionei um **Seletor de Sprint** no topo
-  - Você pode mover a feature de sprint diretamente por lá
-  - **Two-way binding:** Mudança reflete instantaneamente em ambos os lados
+  - VocÃª pode mover a feature de sprint diretamente por lÃ¡
+  - **Two-way binding:** MudanÃ§a reflete instantaneamente em ambos os lados
 
 **Como funciona:**
-1. Vá em **Features → Detalhes** de qualquer feature
-2. No topo da página, encontre o **Seletor de Sprint**
+1. VÃ¡ em **Features â†’ Detalhes** de qualquer feature
+2. No topo da pÃ¡gina, encontre o **Seletor de Sprint**
 3. Selecione um sprint diferente
-4. A feature é movida automaticamente
-5. O sprint de origem e destino são atualizados em tempo real
+4. A feature Ã© movida automaticamente
+5. O sprint de origem e destino sÃ£o atualizados em tempo real
 
 **Arquivos criados/modificados:**
 - `src/components/features/feature-sprint-selector.tsx` (novo componente)
-- `src/app/(dashboard)/features/[id]/page.tsx` (integração do seletor)
+- `src/app/(dashboard)/features/[id]/page.tsx` (integraÃ§Ã£o do seletor)
 
 ---
 
-### 🔧 4. Correção de Erro de Build
+### ðŸ”§ 4. CorreÃ§Ã£o de Erro de Build
 
 **Problema:**
 - Erro de parsing: `'import', and 'export' cannot be used outside of module code`
-- Import estava dentro do corpo da função (proibido em React/Next.js)
-- Código duplicado e malformado
+- Import estava dentro do corpo da funÃ§Ã£o (proibido em React/Next.js)
+- CÃ³digo duplicado e malformado
 
-**Solução:**
-- ✅ Movido `import { FeatureSprintSelector }` para o topo do arquivo
-- ✅ Removido código duplicado
-- ✅ Limpeza completa da estrutura do componente
+**SoluÃ§Ã£o:**
+- âœ… Movido `import { FeatureSprintSelector }` para o topo do arquivo
+- âœ… Removido cÃ³digo duplicado
+- âœ… Limpeza completa da estrutura do componente
 
 **Arquivo corrigido:**
 - `src/app/(dashboard)/features/[id]/page.tsx`
 
 ---
 
-## 🧪 Como Validar Tudo
+## ðŸ§ª Como Validar Tudo
 
-### Teste 1: Proteção de Sprint Ativo
-1. Vá em **Sprints**
+### Teste 1: ProteÃ§Ã£o de Sprint Ativo
+1. VÃ¡ em **Sprints**
 2. Abra um sprint que esteja com status **ATIVO**
 3. Tente modificar o escopo (adicionar/remover features)
-4. ✅ **Esperado:** Alerta de confirmação aparecendo
+4. âœ… **Esperado:** Alerta de confirmaÃ§Ã£o aparecendo
 
 ### Teste 2: Gerenciador de Sprint (Modal)
-1. Vá em **Sprints**
-2. Clique no botão roxo (Gerenciar Sprint)
+1. VÃ¡ em **Sprints**
+2. Clique no botÃ£o roxo (Gerenciar Sprint)
 3. Veja as novas abas: **Sprint Backlog** e **Adicionar**
-4. ✅ **Esperado:** Interface limpa e funcional
+4. âœ… **Esperado:** Interface limpa e funcional
 
-### Teste 3: Vínculo Bidirecional
-1. Vá em **Features → Detalhes** de qualquer feature
+### Teste 3: VÃ­nculo Bidirecional
+1. VÃ¡ em **Features â†’ Detalhes** de qualquer feature
 2. No topo, encontre o **Seletor de Sprint**
 3. Mude o sprint da feature
-4. Vá em **Sprints** e verifique o sprint de origem e destino
-5. ✅ **Esperado:** Mudança refletida em ambos os lados
+4. VÃ¡ em **Sprints** e verifique o sprint de origem e destino
+5. âœ… **Esperado:** MudanÃ§a refletida em ambos os lados
 
 ### Teste 4: Auditoria
-1. Faça qualquer mudança de escopo em um sprint
+1. FaÃ§a qualquer mudanÃ§a de escopo em um sprint
 2. Verifique o banco de dados na tabela `sprint_scope_changes`
-3. ✅ **Esperado:** Log completo da mudança (quem, quando, o quê)
+3. âœ… **Esperado:** Log completo da mudanÃ§a (quem, quando, o quÃª)
 
 ---
 
-## 📊 Métricas de Qualidade
+## ðŸ“Š MÃ©tricas de Qualidade
 
 ### Cobertura de Funcionalidades
-- ✅ Proteção de Sprint: **100%**
-- ✅ Auditoria de Mudanças: **100%**
-- ✅ Vínculo Bidirecional: **100%**
-- ✅ Interface do Modal: **100%**
+- âœ… ProteÃ§Ã£o de Sprint: **100%**
+- âœ… Auditoria de MudanÃ§as: **100%**
+- âœ… VÃ­nculo Bidirecional: **100%**
+- âœ… Interface do Modal: **100%**
 
 ### Bugs Corrigidos
-- ✅ Erro "priority column missing" → **Resolvido**
-- ✅ Erro de build (import no lugar errado) → **Resolvido**
-- ✅ Código duplicado → **Removido**
+- âœ… Erro "priority column missing" â†’ **Resolvido**
+- âœ… Erro de build (import no lugar errado) â†’ **Resolvido**
+- âœ… CÃ³digo duplicado â†’ **Removido**
 
 ### Performance
-- ✅ Two-way binding sem lag perceptível
-- ✅ Busca de features otimizada
-- ✅ Logging não impacta performance
+- âœ… Two-way binding sem lag perceptÃ­vel
+- âœ… Busca de features otimizada
+- âœ… Logging nÃ£o impacta performance
 
 ---
 
-## 🎯 Alinhamento com Boas Práticas Scrum
+## ðŸŽ¯ Alinhamento com Boas PrÃ¡ticas Scrum
 
-### ✅ Princípios Implementados
+### âœ… PrincÃ­pios Implementados
 
-1. **Proteção do Sprint** (Insight #4)
-   - Sprint ativo não pode ser modificado sem confirmação
-   - Alinhado com: "Sprint protegido, mudança entra no próximo"
+1. **ProteÃ§Ã£o do Sprint** (Insight #4)
+   - Sprint ativo nÃ£o pode ser modificado sem confirmaÃ§Ã£o
+   - Alinhado com: "Sprint protegido, mudanÃ§a entra no prÃ³ximo"
 
-2. **Transparência Total** (Insight #8)
-   - Todas as mudanças são auditadas
-   - Log completo de quem/quando/o quê
+2. **TransparÃªncia Total** (Insight #8)
+   - Todas as mudanÃ§as sÃ£o auditadas
+   - Log completo de quem/quando/o quÃª
 
-3. **Vínculo Bidirecional** (Melhoria de UX)
+3. **VÃ­nculo Bidirecional** (Melhoria de UX)
    - Feature pode ser movida de qualquer lugar
    - Reflete instantaneamente em ambos os lados
 
 4. **Interface Limpa** (Melhoria de Produtividade)
    - Modal organizado em abas
-   - Ações rápidas e intuitivas
+   - AÃ§Ãµes rÃ¡pidas e intuitivas
 
 ---
 
-## 📁 Estrutura de Arquivos Criados/Modificados
+## ðŸ“ Estrutura de Arquivos Criados/Modificados
 
 ### Novos Componentes
 ```
 src/components/features/feature-sprint-selector.tsx
 ```
 
-### Novos Módulos de Dados
+### Novos MÃ³dulos de Dados
 ```
 src/lib/db/sprint-scope-changes.ts
 ```
@@ -199,29 +206,29 @@ src/components/sprints/sprint-manager-modal.tsx
 
 ---
 
-## 🚀 Próximos Passos (Sprint 2)
+## ðŸš€ PrÃ³ximos Passos (Sprint 2)
 
 ### Planejado para Sprint 2
 
 1. **Kanban Board**
-   - Visualização de features em colunas (To Do / In Progress / Done / Accepted)
+   - VisualizaÃ§Ã£o de features em colunas (To Do / In Progress / Done / Accepted)
    - Drag & drop entre colunas
-   - WIP limits configuráveis
+   - WIP limits configurÃ¡veis
 
 2. **Dashboard de Sprint**
-   - Burndown chart automático
+   - Burndown chart automÃ¡tico
    - Velocidade do time
-   - Previsão de prazo por faixas
-   - Métricas de saúde do Scrum
+   - PrevisÃ£o de prazo por faixas
+   - MÃ©tricas de saÃºde do Scrum
 
 3. **Melhorias Adicionais**
-   - Sprint Goal obrigatório
+   - Sprint Goal obrigatÃ³rio
    - Planning em 2 partes (A + B)
    - Templates de Review e Retrospectiva
 
 ---
 
-## 📝 Notas Técnicas
+## ðŸ“ Notas TÃ©cnicas
 
 ### Tecnologias Utilizadas
 - **Next.js 16.1.6** (Turbopack)
@@ -229,79 +236,79 @@ src/components/sprints/sprint-manager-modal.tsx
 - **TypeScript**
 - **Prisma** (banco de dados)
 
-### Padrões Seguidos
-- ✅ Componentes funcionais
-- ✅ Server Components quando possível
-- ✅ Type safety completo
-- ✅ Error handling robusto
-- ✅ Logging estruturado
+### PadrÃµes Seguidos
+- âœ… Componentes funcionais
+- âœ… Server Components quando possÃ­vel
+- âœ… Type safety completo
+- âœ… Error handling robusto
+- âœ… Logging estruturado
 
-### Decisões de Design
-- **Two-way binding:** Escolhido para melhor UX (mudança reflete instantaneamente)
-- **Modal com abas:** Organização clara de funcionalidades
-- **Proteção com confirmação:** Balance entre segurança e flexibilidade
+### DecisÃµes de Design
+- **Two-way binding:** Escolhido para melhor UX (mudanÃ§a reflete instantaneamente)
+- **Modal com abas:** OrganizaÃ§Ã£o clara de funcionalidades
+- **ProteÃ§Ã£o com confirmaÃ§Ã£o:** Balance entre seguranÃ§a e flexibilidade
 - **Auditoria completa:** Rastreabilidade total para compliance
 
 ---
 
-## 🎉 Conquistas
+## ðŸŽ‰ Conquistas
 
-✅ **Sprint 1: 100% Completo**
+âœ… **Sprint 1: 100% Completo**
 
-- [x] Proteção de Sprint Ativo
-- [x] Auditoria de Mudanças
+- [x] ProteÃ§Ã£o de Sprint Ativo
+- [x] Auditoria de MudanÃ§as
 - [x] Gerenciador de Sprint (redesign)
-- [x] Vínculo Bidirecional Feature ↔ Sprint
-- [x] Correção de bugs críticos
+- [x] VÃ­nculo Bidirecional Feature â†” Sprint
+- [x] CorreÃ§Ã£o de bugs crÃ­ticos
 - [x] Build funcionando sem erros
 
 ---
 
-## 📞 Suporte
+## ðŸ“ž Suporte
 
-**Status:** ✅ Sistema estável e pronto para uso
+**Status:** âœ… Sistema estÃ¡vel e pronto para uso
 
-**Próxima ação:** Iniciar Sprint 2 (Kanban Board + Dashboard)
-
----
-
-**📊 Última Atualização:** 2026-02-06  
-**👤 Desenvolvido por:** Equipe UzzAI  
-**📈 Versão:** 1.0.0 (Sprint 1)  
-**🎯 Objetivo:** Sistema de gestão de sprints robusto e alinhado com Scrum
+**PrÃ³xima aÃ§Ã£o:** Iniciar Sprint 2 (Kanban Board + Dashboard)
 
 ---
 
-*Sistema: Gestão de Sprints UzzAI*  
-*Baseado em: Insights Sprints para Gestão + Boas Práticas Scrum*
+**ðŸ“Š Ãšltima AtualizaÃ§Ã£o:** 2026-02-06  
+**ðŸ‘¤ Desenvolvido por:** Equipe UzzAI  
+**ðŸ“ˆ VersÃ£o:** 1.0.0 (Sprint 1)  
+**ðŸŽ¯ Objetivo:** Sistema de gestÃ£o de sprints robusto e alinhado com Scrum
+
+---
+
+*Sistema: GestÃ£o de Sprints UzzAI*  
+*Baseado em: Insights Sprints para GestÃ£o + Boas PrÃ¡ticas Scrum*
 
 
 
 
-🎯 Plano REVISADO com Insights Scrum!
+ðŸŽ¯ Plano REVISADO com Insights Scrum!
 
 Reorganizei completamente as prioridades baseado nos fundamentos:
 
 3 Fases Priorizadas por Impacto
-🔴 Fase 1: Fundamentos Essenciais (6h) | CRÍTICO
-Implementa os 4 Pilares Inegociáveis:
+ðŸ”´ Fase 1: Fundamentos Essenciais (6h) | CRÃTICO
+Implementa os 4 Pilares InegociÃ¡veis:
 
-✅ Sprint Goal obrigatório (mínimo 10 chars)
-✅ Duração fixa (não editável após start)
-✅ Proteção de escopo (bloqueia add features se ativo)
-✅ Apenas 1 sprint ativo por projeto
-✅ Vincular features ao sprint (com validações)
-🟡 Fase 2: Métricas Automáticas (8h) | ALTA
-Velocidade, Burndown e Saúde do Scrum:
+âœ… Sprint Goal obrigatÃ³rio (mÃ­nimo 10 chars)
+âœ… DuraÃ§Ã£o fixa (nÃ£o editÃ¡vel apÃ³s start)
+âœ… ProteÃ§Ã£o de escopo (bloqueia add features se ativo)
+âœ… Apenas 1 sprint ativo por projeto
+âœ… Vincular features ao sprint (com validaÃ§Ãµes)
+ðŸŸ¡ Fase 2: MÃ©tricas AutomÃ¡ticas (8h) | ALTA
+Velocidade, Burndown e SaÃºde do Scrum:
 
-✅ Velocity recalcula automaticamente (trigger no DB)
-✅ Burndown chart (snapshot diário via cron)
-✅ Previsão por faixas (pessimista/provável/otimista)
-✅ Dashboard "Saúde do Scrum" (4 métricas críticas)
-🟢 Fase 3: Sprint Details Page (10h) | MÉDIA
-Página dedicada /sprints/[id]:
+âœ… Velocity recalcula automaticamente (trigger no DB)
+âœ… Burndown chart (snapshot diÃ¡rio via cron)
+âœ… PrevisÃ£o por faixas (pessimista/provÃ¡vel/otimista)
+âœ… Dashboard "SaÃºde do Scrum" (4 mÃ©tricas crÃ­ticas)
+ðŸŸ¢ Fase 3: Sprint Details Page (10h) | MÃ‰DIA
+PÃ¡gina dedicada /sprints/[id]:
 
-✅ Header com métricas visuais
-✅ Sprint Backlog editável (drag & drop)
-✅ Workflows: Start → Complete → Retro
-✅ Tabs: Planning / Review / Retrospective
+âœ… Header com mÃ©tricas visuais
+âœ… Sprint Backlog editÃ¡vel (drag & drop)
+âœ… Workflows: Start â†’ Complete â†’ Retro
+âœ… Tabs: Planning / Review / Retrospective

@@ -1,132 +1,143 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { requireTenant } from '@/lib/tenant';
+import { z } from 'zod';
 
-// GET /api/sprints?project_id=xxx
+const createSprintSchema = z.object({
+  project_id: z.string().uuid(),
+  code: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  sprint_goal: z.string().trim().min(10),
+  start_date: z.string().date(),
+  end_date: z.string().date(),
+  duration_weeks: z.number().int().min(1).max(4).optional(),
+  status: z.enum(['planned', 'active', 'completed', 'cancelled']).optional(),
+  capacity_total: z.number().int().min(0).nullable().optional(),
+  velocity_target: z.number().int().min(0).nullable().optional(),
+  velocity_actual: z.number().int().min(0).optional(),
+});
+
 export async function GET(request: Request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const projectId = searchParams.get('project_id');
+  try {
+    const { searchParams } = new URL(request.url);
+    const projectId = searchParams.get('project_id');
 
-        if (!projectId) {
-            return NextResponse.json(
-                { error: 'project_id é obrigatório' },
-                { status: 400 }
-            );
-        }
-
-        const supabase = await createClient();
-
-        const { data: sprints, error } = await supabase
-            .from('sprints')
-            .select('*')
-            .eq('project_id', projectId)
-            .order('start_date', { ascending: false });
-
-        if (error) {
-            console.error('Error fetching sprints:', error);
-            return NextResponse.json({ error: error.message }, { status: 500 });
-        }
-
-        return NextResponse.json({ data: sprints });
-    } catch (error) {
-        console.error('Error in GET /api/sprints:', error);
-        return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 });
+    if (!projectId) {
+      return NextResponse.json({ error: 'project_id é obrigatório' }, { status: 400 });
     }
+
+    const supabase = await createClient();
+    const { data: project } = await supabase
+      .from('projects')
+      .select('tenant_id')
+      .eq('id', projectId)
+      .single();
+
+    const { error: authError } = await requireTenant(supabase, {
+      tenantId: project?.tenant_id ?? null,
+    });
+    if (authError) return authError;
+
+    const { data: sprints, error } = await supabase
+      .from('sprints')
+      .select('*')
+      .eq('project_id', projectId)
+      .order('start_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching sprints:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ data: sprints });
+  } catch (error) {
+    console.error('Error in GET /api/sprints:', error);
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 });
+  }
 }
 
-// POST /api/sprints
 export async function POST(request: Request) {
-    try {
-        const supabase = await createClient();
-        const body = await request.json();
-
-        // Validações básicas
-        if (!body.tenant_id || !body.project_id || !body.code || !body.name || !body.sprint_goal || !body.start_date || !body.end_date) {
-            return NextResponse.json(
-                { error: 'Campos obrigatórios: tenant_id, project_id, code, name, sprint_goal, start_date, end_date' },
-                { status: 400 }
-            );
-        }
-
-        // Validar Sprint Goal mínimo 10 caracteres
-        if (body.sprint_goal && body.sprint_goal.trim().length < 10) {
-            return NextResponse.json(
-                { error: 'Sprint Goal deve ter no mínimo 10 caracteres' },
-                { status: 400 }
-            );
-        }
-
-        // Validar duração (1-4 semanas)
-        if (body.duration_weeks && (body.duration_weeks < 1 || body.duration_weeks > 4)) {
-            return NextResponse.json(
-                { error: 'Duração deve ser entre 1 e 4 semanas' },
-                { status: 400 }
-            );
-        }
-
-        // Validar datas
-        const startDate = new Date(body.start_date);
-        const endDate = new Date(body.end_date);
-
-        if (startDate >= endDate) {
-            return NextResponse.json(
-                { error: 'Data de início deve ser anterior à data de término' },
-                { status: 400 }
-            );
-        }
-
-        // Verificar código único no projeto
-        const { data: existing } = await supabase
-            .from('sprints')
-            .select('id')
-            .eq('project_id', body.project_id)
-            .eq('code', body.code)
-            .single();
-
-        if (existing) {
-            return NextResponse.json(
-                { error: `Código ${body.code} já existe neste projeto` },
-                { status: 400 }
-            );
-        }
-
-        // Se status for "active", desativar outros sprints ativos
-        if (body.status === 'active') {
-            await supabase
-                .from('sprints')
-                .update({ status: 'completed' })
-                .eq('project_id', body.project_id)
-                .eq('status', 'active');
-        }
-
-        // Criar sprint
-        const { data: sprint, error } = await supabase
-            .from('sprints')
-            .insert({
-                tenant_id: body.tenant_id,
-                project_id: body.project_id,
-                code: body.code,
-                name: body.name,
-                sprint_goal: body.sprint_goal,
-                duration_weeks: body.duration_weeks || 2,
-                start_date: body.start_date,
-                end_date: body.end_date,
-                status: body.status || 'planned',
-                capacity_total: body.capacity_total || null,
-                velocity_target: body.velocity_target || null,
-                velocity_actual: body.velocity_actual || 0,
-            })
-            .select()
-            .single();
-
-        if (error) {
-            console.error('Error creating sprint:', error);
-            return NextResponse.json({ error: error.message }, { status: 500 });
-        }
-
-        return NextResponse.json({ data: sprint }, { status: 201 });
-    } catch (error) {
-        console.error('Error in POST /api/sprints:', error);
-        return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 });
+  try {
+    const supabase = await createClient();
+    const body = await request.json();
+    const parsed = createSprintSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Payload inválido', details: parsed.error.flatten() },
+        { status: 400 }
+      );
     }
+    const payload = parsed.data;
+
+    const { data: project } = await supabase
+      .from('projects')
+      .select('tenant_id')
+      .eq('id', payload.project_id)
+      .single();
+
+    const { membership, error: authError } = await requireTenant(supabase, {
+      tenantId: project?.tenant_id ?? null,
+    });
+    if (authError) return authError;
+
+    const startDate = new Date(payload.start_date);
+    const endDate = new Date(payload.end_date);
+    if (startDate >= endDate) {
+      return NextResponse.json(
+        { error: 'Data de início deve ser anterior à data de término' },
+        { status: 400 }
+      );
+    }
+
+    const { data: existing } = await supabase
+      .from('sprints')
+      .select('id')
+      .eq('project_id', payload.project_id)
+      .eq('code', payload.code)
+      .maybeSingle();
+
+    if (existing) {
+      return NextResponse.json(
+        { error: `Código ${payload.code} já existe neste projeto` },
+        { status: 400 }
+      );
+    }
+
+    if (payload.status === 'active') {
+      await supabase
+        .from('sprints')
+        .update({ status: 'completed' })
+        .eq('project_id', payload.project_id)
+        .eq('status', 'active');
+    }
+
+    const { data: sprint, error } = await supabase
+      .from('sprints')
+      .insert({
+        tenant_id: membership!.tenant_id,
+        project_id: payload.project_id,
+        code: payload.code,
+        name: payload.name,
+        sprint_goal: payload.sprint_goal,
+        duration_weeks: payload.duration_weeks ?? 2,
+        start_date: payload.start_date,
+        end_date: payload.end_date,
+        status: payload.status ?? 'planned',
+        capacity_total: payload.capacity_total ?? null,
+        velocity_target: payload.velocity_target ?? null,
+        velocity_actual: payload.velocity_actual ?? 0,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating sprint:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ data: sprint }, { status: 201 });
+  } catch (error) {
+    console.error('Error in POST /api/sprints:', error);
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 });
+  }
 }

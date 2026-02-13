@@ -1,42 +1,48 @@
-# 📌 STATUS ATUAL DO PROJETO - UZZOPS
+﻿> [!IMPORTANT]
+> Documento legado/historico (frozen).
+> Fonte canônica atual: `docs/AI_PROJECT_CONTEXT_MASTER.md`, `docs/RESTART_CHECKLIST.md`, `README.md`, `docs/README_DOCUMENTATION.md`.
+> Use este arquivo apenas como referencia historica.
 
-**Objetivo Principal:** SPRINT 2 - Gestão de Features & Sprints
+# ðŸ“Œ STATUS ATUAL DO PROJETO - UZZOPS
+
+**Objetivo Principal:** SPRINT 2 - GestÃ£o de Features & Sprints
 **Data:** 06/02/2026
 
 ---
 
-## 🚀 O que estamos fazendo AGORA?
-Estamos finalizando uma melhoria crítica no **Gerenciamento de Sprints** (solicitada durante o desenvolvimento do Sprint 2) para permitir uma gestão mais profissional antes de avançarmos para outras features.
+## ðŸš€ O que estamos fazendo AGORA?
+Estamos finalizando uma melhoria crÃ­tica no **Gerenciamento de Sprints** (solicitada durante o desenvolvimento do Sprint 2) para permitir uma gestÃ£o mais profissional antes de avanÃ§armos para outras features.
 
-### 🔄 Desvio Atual: "Sprint Management Fase 1.5 - Gestão de Escopo"
-O usuário solicitou flexibilidade para alterar features em sprints ativos, mas com auditoria.
-- **Meta:** Permitir adicionar/remover features de sprints ativos mediante confirmação.
+### ðŸ”„ Desvio Atual: "Sprint Management Fase 1.5 - GestÃ£o de Escopo"
+O usuÃ¡rio solicitou flexibilidade para alterar features em sprints ativos, mas com auditoria.
+- **Meta:** Permitir adicionar/remover features de sprints ativos mediante confirmaÃ§Ã£o.
 - **Requisito:** Registrar QUEM mudou e QUANDO (Tabela `sprint_scope_changes`).
-- **UX:** Via de mão dupla (Vincular Sprint na tela de Feature e vice-versa).
+- **UX:** Via de mÃ£o dupla (Vincular Sprint na tela de Feature e vice-versa).
 
 ---
 
-## 📋 BACKLOG DO SPRINT 2 (Para Retornar em Breve)
+## ðŸ“‹ BACKLOG DO SPRINT 2 (Para Retornar em Breve)
 
-### ✅ Já Concluído
+### âœ… JÃ¡ ConcluÃ­do
 1. **Backgrounds Transparentes & UI**
    - Melhorias visuais no Shadcn/UI.
 2. **Modal "Nova Feature"**
-   - Criação rápida de features com validação e hooks.
+   - CriaÃ§Ã£o rÃ¡pida de features com validaÃ§Ã£o e hooks.
 3. **Sprint Management (Fase 1 - Fundamentos)**
    - Migration (`sprint_goal`, `duration`, `is_protected`).
-   - Proteção de escopo (travamento de duração).
-   - Vínculo Sprint <-> Features (API e UI).
+   - ProteÃ§Ã£o de escopo (travamento de duraÃ§Ã£o).
+   - VÃ­nculo Sprint <-> Features (API e UI).
 
-### ⏳ Pendente (Retomar após Fase 1.5)
+### â³ Pendente (Retomar apÃ³s Fase 1.5)
 1. **Kanban Board**
-   - Visualização de tarefas por status.
+   - VisualizaÃ§Ã£o de tarefas por status.
 2. **Dashboard Overview**
-   - Gráficos de burn-down e velocity.
-3. **Gestão de Épicos**
+   - GrÃ¡ficos de burn-down e velocity.
+3. **GestÃ£o de Ã‰picos**
    - Agrupamento de features.
 
 ---
 
-## 🛑 Ponto de Atenção
-Não expandir mais o escopo do "Sprint Management" após a entrega da **Auditoria de Escopo**. Voltar imediatamente para o **Kanban** ou **Dashboard**.
+## ðŸ›‘ Ponto de AtenÃ§Ã£o
+NÃ£o expandir mais o escopo do "Sprint Management" apÃ³s a entrega da **Auditoria de Escopo**. Voltar imediatamente para o **Kanban** ou **Dashboard**.
+

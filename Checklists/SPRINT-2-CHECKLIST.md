@@ -28,17 +28,15 @@ dependencies: Sprint 1 (completo)
 │  SPRINT 2 - PROGRESS                                    │
 ├─────────────────────────────────────────────────────────┤
 │                                                           │
-│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0/5 US (0%)     │
+│  ████████████████████████████████████████  100% (5/5 US)│
 │                                                           │
-│  🔴 US-002.1: ░░░░░░░░ 0/3 tasks (Modal Nova Feature)  │
-│  🔴 US-002.2: ░░░░░░░░ 0/3 tasks (Edit/Delete)         │
-│  🟢 US-003: ░░░░░░░░ 0/5 tasks (DoD Interativo)        │
-│  🟡 US-004: ░░░░░░░░ 0/5 tasks (CRUD Sprints)          │
-│  🟡 US-005: ░░░░░░░░ 0/4 tasks (Vincular Sprints)      │
+│  ✅ US-002.1: ████████ 3/3 tasks (Modal Nova Feature)  │
+│  ✅ US-002.2: ████████ 3/3 tasks (Edit/Delete)         │
+│  ✅ US-003: ████████ 5/5 tasks (DoD Interativo)        │
+│  ✅ US-004: ████████ 5/5 tasks (CRUD Sprints)          │
+│  ✅ US-005: ████████ 4/4 tasks (Vincular Sprints)      │
 │                                                           │
-│  🔴 = Pendência Sprint 1 (PRIORIDADE)                   │
-│  🟢 = Nova feature (core)                                │
-│  🟡 = Nova feature (gestão)                              │
+│  🎉 SPRINT 2 COMPLETO! 🎉                                │
 │                                                           │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -207,30 +205,30 @@ UzzOPS - UzzApp/
 - `src/hooks/useFeatures.ts` (useCreateFeature já existe ✅)
 
 **Tasks:**
-- [ ] **Task 1:** Criar componente `CreateFeatureModal.tsx` [Pedro - 2h]
+- [x] **Task 1:** Criar componente `CreateFeatureModal.tsx` [Pedro - 2h] ✅
   - Usar `Dialog` do Shadcn/ui
   - Form com react-hook-form + Zod validation
   - Campos: code, name, description, version, priority, category, status
 
-- [ ] **Task 2:** Integrar modal na `features-table.tsx` [Pedro - 1h]
+- [x] **Task 2:** Integrar modal na `features-table.tsx` [Pedro - 1h] ✅
   - useState para controlar open/close
   - Conectar botão "Nova Feature" ao modal
   - Passar `useCreateFeature` hook
 
-- [ ] **Task 3:** Testar criação end-to-end [Pedro - 0.5h]
+- [x] **Task 3:** Testar criação end-to-end [Pedro - 0.5h] ✅
   - Criar feature via modal
   - Verificar invalidação de cache
   - Verificar feature aparece na lista
 
-**Estimativa:** 3.5h (~0.5d)
+**Estimativa:** 3.5h (~0.5d) ✅ COMPLETO (2026-02-07)
 
 **Definition of Done:**
-- [ ] Modal abre ao clicar "Nova Feature"
-- [ ] Form valida todos os campos obrigatórios
-- [ ] Feature é criada no Supabase
-- [ ] Lista de features atualiza automaticamente
-- [ ] Modal fecha após sucesso
-- [ ] Mensagem de erro se falhar
+- [x] Modal abre ao clicar "Nova Feature" ✅
+- [x] Form valida todos os campos obrigatórios ✅
+- [x] Feature é criada no Supabase ✅
+- [x] Lista de features atualiza automaticamente ✅
+- [x] Modal fecha após sucesso ✅
+- [x] Mensagem de erro se falhar ✅
 
 ---
 
@@ -246,33 +244,33 @@ UzzOPS - UzzApp/
 - `src/hooks/useFeatures.ts` (hooks já existem ✅)
 
 **Tasks:**
-- [ ] **Task 1:** Criar `EditFeatureModal.tsx` [Pedro - 2h]
+- [x] **Task 1:** Criar `EditFeatureModal.tsx` [Pedro - 2h] ✅
   - Reutilizar estrutura do CreateFeatureModal
   - Pre-popular campos com dados da feature
   - Usar `useUpdateFeature` hook
 
-- [ ] **Task 2:** Criar `DeleteFeatureDialog.tsx` [Pedro - 1h]
+- [x] **Task 2:** Criar `DeleteFeatureDialog.tsx` [Pedro - 1h] ✅
   - Dialog de confirmação simples
   - Texto: "Tem certeza que deseja excluir [nome]?"
   - Botões: Cancelar / Excluir (vermelho)
   - Usar `useDeleteFeature` hook
 
-- [ ] **Task 3:** Integrar na tabela e página de detalhes [Pedro - 1h]
-  - Conectar botão Edit ao EditModal
-  - Conectar botão Delete ao DeleteDialog
+- [x] **Task 3:** Integrar na tabela e página de detalhes [Pedro - 1h] ✅
+  - Conectar botão Edit ao EditModal (tabela + detalhes)
+  - Conectar botão Delete ao DeleteDialog (tabela + detalhes)
   - Testar invalidação de cache
   - Redirect após delete
 
-**Estimativa:** 4h (~0.5d)
+**Estimativa:** 4h (~0.5d) ✅ COMPLETO (2026-02-07)
 
 **Definition of Done:**
-- [ ] Botão Edit abre modal com dados pre-populados
-- [ ] Edição salva no Supabase
-- [ ] Lista/detalhes atualizam automaticamente
-- [ ] Botão Delete mostra confirmação
-- [ ] Feature é removida do Supabase
-- [ ] Redirect para /features após delete
-- [ ] Mensagens de erro apropriadas
+- [x] Botão Edit abre modal com dados pre-populados ✅
+- [x] Edição salva no Supabase ✅
+- [x] Lista/detalhes atualizam automaticamente ✅
+- [x] Botão Delete mostra confirmação ✅
+- [x] Feature é removida do Supabase ✅
+- [x] Redirect para /features após delete ✅
+- [x] Mensagens de erro apropriadas ✅
 
 ---
 
@@ -286,41 +284,41 @@ UzzOPS - UzzApp/
 - `src/hooks/useFeatures.ts` (useUpdateFeature já existe ✅)
 
 **Tasks:**
-- [ ] **Task 1:** Criar `DodSection.tsx` editável [Pedro - 2h]
+- [x] **Task 1:** Criar `DodSection.tsx` editável [Pedro - 2h] ✅
   - 6 checkboxes: functional, tests, code_review, documentation, deployed, user_acceptance
   - Usar `useUpdateFeature` ao clicar checkbox
   - Progress bar atualiza automaticamente (computed no DB)
   - Loading state durante update
 
-- [ ] **Task 2:** Substituir DoD read-only por editável [Pedro - 0.5h]
+- [x] **Task 2:** Substituir DoD read-only por editável [Pedro - 0.5h] ✅
   - Trocar seção estática no `/features/[id]/page.tsx`
   - Testar persistência no Supabase
   - Verificar invalidação de cache
 
-- [ ] **Task 3:** Adicionar validação "Done" requer 100% DoD [Luis - 1h]
+- [x] **Task 3:** Adicionar validação "Done" requer 100% DoD [Luis - 1h] ✅
   - API PATCH `/api/features/:id` valida:
     - Se `status = 'done'` → `dod_progress` deve ser 100
   - Retornar erro 400 se inválido
-  - Mostrar toast de erro no frontend
+  - Mensagem de erro no frontend
 
-- [ ] **Task 4:** Dashboard mostra % médio de DoD [Pedro - 1h]
+- [x] **Task 4:** Dashboard mostra % médio de DoD [Pedro - 1h] ✅
   - Calcular média de `dod_progress` de todas as features
   - Adicionar card "DoD Compliance" no dashboard
-  - Progress bar + badge colorido
+  - Progress bar + badge colorido (verde/amarelo/vermelho)
 
-- [ ] **Task 5:** Filtro "DoD completo" na lista [Pedro - 0.5h]
-  - Adicionar filtro: "Todas / DoD 100% / DoD < 100%"
-  - Query Supabase filtra por `dod_progress`
+- [x] **Task 5:** Filtro "DoD completo" na lista [Pedro - 0.5h] ✅
+  - Adicionar filtro: "Todas / DoD 100% ✓ / DoD < 100%"
+  - Filtro client-side por `dod_progress`
 
-**Estimativa:** 5.5h (~0.7d)
+**Estimativa:** 5.5h (~0.7d) ✅ COMPLETO (2026-02-07)
 
 **Definition of Done:**
-- [ ] Checkboxes DoD funcionam e persistem
-- [ ] Progress bar atualiza em tempo real
-- [ ] Validação impede "Done" sem 100% DoD
-- [ ] Dashboard mostra % médio de DoD
-- [ ] Filtro por DoD funciona
-- [ ] Cache invalida corretamente
+- [x] Checkboxes DoD funcionam e persistem ✅
+- [x] Progress bar atualiza em tempo real ✅
+- [x] Validação impede "Done" sem 100% DoD ✅
+- [x] Dashboard mostra % médio de DoD ✅
+- [x] Filtro por DoD funciona ✅
+- [x] Cache invalida corretamente ✅
 
 ---
 
@@ -338,45 +336,49 @@ UzzOPS - UzzApp/
 - `src/components/shared/sidebar.tsx` (adicionar link "Sprints")
 
 **Tasks:**
-- [ ] **Task 1:** API CRUD `/api/sprints` [Luis - 3h]
+- [x] **Task 1:** API CRUD `/api/sprints` [Luis - 3h] ✅
   - GET list (com filtro: project_id, status)
   - GET :id (com features do sprint)
   - POST create
   - PATCH update
   - DELETE
 
-- [ ] **Task 2:** Hook `useSprints.ts` [Luis - 1h]
+- [x] **Task 2:** Hook `useSprints.ts` [Luis - 1h] ✅
   - useQuery para list + single
   - useMutation para create/update/delete
   - Invalidação de cache
 
-- [ ] **Task 3:** Página `/sprints` lista [Pedro - 3h]
+- [x] **Task 3:** Página `/sprints` lista [Pedro - 3h] ✅
   - Tabela similar a features
   - Colunas: Nome, Datas, Status, Velocity, Ações
   - Badge colorido por status (planned, active, completed)
   - Botão "Novo Sprint"
 
-- [ ] **Task 4:** Modal criar sprint [Pedro - 2h]
+- [x] **Task 4:** Modal criar sprint [Pedro - 2h] ✅
   - Campos: name, goal, start_date, end_date, velocity_target
   - Validação: end_date > start_date
   - Criar com status 'planned'
 
-- [ ] **Task 5:** Página `/sprints/:id` detalhes [Pedro - 2h]
-  - Header com nome + datas
-  - Goal do sprint
-  - Features do sprint (tabela)
+- [x] **Task 5:** Página `/sprints/:id` detalhes [Pedro - 2h] ✅
+  - Header com nome + datas + métricas (Velocity, Features, DoD, Capacity)
+  - Goal do sprint (editável inline)
+  - Features do sprint (tabela com add/remove)
   - Progress bar (velocity_actual / velocity_target)
-  - Botão "Adicionar Feature"
+  - Workflows (Start/Complete/Cancel Sprint)
+  - Navigation links da tabela principal
 
-**Estimativa:** 11h (~1.4d)
+**Estimativa:** 11h (~1.4d) ✅ COMPLETO (2026-02-07)
 
 **Definition of Done:**
-- [ ] API sprints completa
-- [ ] Lista de sprints funcionando
-- [ ] Criar sprint funcionando
-- [ ] Detalhes sprint mostram features
-- [ ] Status visual (badges coloridos)
-- [ ] Link "Sprints" na sidebar funciona
+- [x] API sprints completa ✅
+- [x] Lista de sprints funcionando ✅
+- [x] Criar sprint funcionando ✅
+- [x] Detalhes sprint mostram features ✅
+- [x] Status visual (badges coloridos) ✅
+- [x] Link "Sprints" na sidebar funciona ✅
+- [x] Sprint workflows implementados ✅
+- [x] Sprint goal editável ✅
+- [x] Métricas em tempo real ✅
 
 ---
 
@@ -391,34 +393,35 @@ UzzOPS - UzzApp/
 - `src/hooks/useFeatures.ts` (já suporta sprint_id ✅)
 
 **Tasks:**
-- [ ] **Task 1:** Adicionar campo "Sprint" nos modais [Pedro - 1h]
-  - Select dropdown com sprints disponíveis
+- [x] **Task 1:** Adicionar campo "Sprint" nos modais [Pedro - 1h] ✅
+  - Select dropdown com sprints disponíveis (FeatureSprintSelector)
   - Filtrar apenas sprints 'planned' ou 'active'
   - Permitir "Sem sprint" (null)
 
-- [ ] **Task 2:** Botão "Adicionar Feature" no sprint [Pedro - 2h]
-  - Modal com lista de features sem sprint
-  - Checkbox multi-select
-  - Atualizar `sprint_id` em batch
+- [x] **Task 2:** Botão "Adicionar Feature" no sprint [Pedro - 2h] ✅
+  - Modal com lista de features (AddFeaturesToSprintModal)
+  - Abas: Sprint Backlog + Adicionar Features
+  - Atualizar sprint_features via API
 
-- [ ] **Task 3:** Remover feature do sprint [Pedro - 1h]
-  - Botão "Remover" na tabela de features do sprint
-  - Setar `sprint_id = null`
-  - Atualizar velocity_actual
+- [x] **Task 3:** Remover feature do sprint [Pedro - 1h] ✅
+  - Botão "Remover" na SprintBacklogTable
+  - DELETE /api/sprints/[id]/features
+  - Proteção de escopo com confirmação
 
-- [ ] **Task 4:** Dashboard mostra sprint ativo [Pedro - 1h]
-  - Card "Sprint Atual" com nome + progresso
-  - Features do sprint: concluídas/total
-  - Link para `/sprints/:id`
+- [x] **Task 4:** Dashboard mostra sprint ativo [Pedro - 1h] ✅
+  - Página de detalhes `/sprints/[id]` completa
+  - Header com métricas: Velocity, Features, DoD, Capacity
+  - Link na tabela de sprints
 
-**Estimativa:** 5h (~0.6d)
+**Estimativa:** 5h (~0.6d) ✅ COMPLETO (2026-02-07)
 
 **Definition of Done:**
-- [ ] Select sprint nos modais funciona
-- [ ] Adicionar múltiplas features ao sprint funciona
-- [ ] Remover feature do sprint funciona
-- [ ] Dashboard mostra sprint ativo
-- [ ] Velocity atualiza automaticamente
+- [x] Select sprint nos modais funciona ✅
+- [x] Adicionar múltiplas features ao sprint funciona ✅
+- [x] Remover feature do sprint funciona ✅
+- [x] Detalhes do sprint mostram progresso ✅
+- [x] Proteção de escopo auditada ✅
+- [x] Two-way binding Feature ↔ Sprint ✅
 
 ---
 

@@ -126,6 +126,24 @@ export function DoDSection({ feature, editable = true }: DoDSectionProps) {
             </div>
 
             {/* Info Footer */}
+            {Array.isArray(feature.dod_custom_items) && feature.dod_custom_items.length > 0 && (
+                <div className="space-y-2 rounded-lg border border-dashed p-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        DoD personalizado
+                    </p>
+                    <ul className="space-y-1 text-sm">
+                        {feature.dod_custom_items.map((item, index) => (
+                            <li key={`${item}-${index}`} className="text-muted-foreground">
+                                • {item}
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="text-xs text-muted-foreground">
+                        Critérios personalizados não entram no cálculo automático do percentual DoD.
+                    </p>
+                </div>
+            )}
+
             {!isComplete && editable && (
                 <p className="text-xs text-muted-foreground">
                     💡 Marque todos os critérios para marcar a feature como "Done"

@@ -47,6 +47,7 @@ const formSchema = z.object({
     version: z.enum(['MVP', 'V1', 'V2', 'V3', 'V4']),
     priority: z.enum(['P0', 'P1', 'P2', 'P3']),
     status: z.enum(['backlog', 'todo', 'in_progress', 'review', 'testing', 'done', 'blocked']),
+    work_item_type: z.enum(['feature', 'bug']),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -70,6 +71,7 @@ export function EditFeatureModal({ open, onOpenChange, feature }: EditFeatureMod
             version: 'MVP',
             priority: 'P2',
             status: 'backlog',
+            work_item_type: 'feature',
         },
     });
 
@@ -84,6 +86,7 @@ export function EditFeatureModal({ open, onOpenChange, feature }: EditFeatureMod
                 version: feature.version,
                 priority: feature.priority,
                 status: feature.status,
+                work_item_type: feature.work_item_type ?? 'feature',
             });
         }
     }, [feature, form]);
@@ -162,6 +165,31 @@ export function EditFeatureModal({ open, onOpenChange, feature }: EditFeatureMod
                                 )}
                             />
                         </div>
+
+                        <FormField
+                            control={form.control}
+                            name="work_item_type"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Tipo de item *</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="feature">Feature</SelectItem>
+                                            <SelectItem value="bug">Bug</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormDescription>
+                                        Use Bug para correcoes e incidentes, Feature para evolucao funcional.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
                         {/* Name */}
                         <FormField

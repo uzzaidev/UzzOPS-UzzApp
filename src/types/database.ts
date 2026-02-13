@@ -28,6 +28,67 @@ export interface Database {
           updated_at?: string;
         };
       };
+      profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          full_name: string;
+          avatar_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          full_name?: string;
+          avatar_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          full_name?: string;
+          avatar_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      company_members: {
+        Row: {
+          id: string;
+          user_id: string;
+          tenant_id: string;
+          role: 'admin' | 'member' | 'viewer';
+          status: 'active' | 'pending' | 'inactive';
+          invited_by: string | null;
+          joined_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          tenant_id: string;
+          role?: 'admin' | 'member' | 'viewer';
+          status?: 'active' | 'pending' | 'inactive';
+          invited_by?: string | null;
+          joined_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          tenant_id?: string;
+          role?: 'admin' | 'member' | 'viewer';
+          status?: 'active' | 'pending' | 'inactive';
+          invited_by?: string | null;
+          joined_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       projects: {
         Row: {
           id: string;
@@ -105,6 +166,9 @@ export interface Database {
           business_value: number | null;
           work_effort: number | null;
           bv_w_ratio: number | null;
+          work_item_type: 'feature' | 'bug';
+          solution_notes: string | null;
+          dod_custom_items: string[];
           created_at: string;
           updated_at: string;
         };
@@ -134,6 +198,9 @@ export interface Database {
           story_points?: number | null;
           business_value?: number | null;
           work_effort?: number | null;
+          work_item_type?: 'feature' | 'bug';
+          solution_notes?: string | null;
+          dod_custom_items?: string[];
           created_at?: string;
           updated_at?: string;
         };
@@ -163,8 +230,46 @@ export interface Database {
           story_points?: number | null;
           business_value?: number | null;
           work_effort?: number | null;
+          work_item_type?: 'feature' | 'bug';
+          solution_notes?: string | null;
+          dod_custom_items?: string[];
           created_at?: string;
           updated_at?: string;
+        };
+      };
+      feature_attachments: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          feature_id: string;
+          file_name: string;
+          file_path: string;
+          mime_type: string | null;
+          file_size: number | null;
+          uploaded_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          feature_id: string;
+          file_name: string;
+          file_path: string;
+          mime_type?: string | null;
+          file_size?: number | null;
+          uploaded_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          tenant_id?: string;
+          feature_id?: string;
+          file_name?: string;
+          file_path?: string;
+          mime_type?: string | null;
+          file_size?: number | null;
+          uploaded_by?: string | null;
+          created_at?: string;
         };
       };
       sprints: {
@@ -223,8 +328,11 @@ export interface Database {
           tenant_id: string;
           name: string;
           email: string;
+          user_id: string | null;
           avatar_url: string | null;
           role: string;
+          permission_level: 'admin' | 'member';
+          status: 'active' | 'pending' | 'inactive';
           department: string | null;
           allocation_percent: number;
           velocity_avg: number | null;
@@ -237,8 +345,11 @@ export interface Database {
           tenant_id: string;
           name: string;
           email: string;
+          user_id?: string | null;
           avatar_url?: string | null;
           role: string;
+          permission_level?: 'admin' | 'member';
+          status?: 'active' | 'pending' | 'inactive';
           department?: string | null;
           allocation_percent?: number;
           velocity_avg?: number | null;
@@ -251,8 +362,11 @@ export interface Database {
           tenant_id?: string;
           name?: string;
           email?: string;
+          user_id?: string | null;
           avatar_url?: string | null;
           role?: string;
+          permission_level?: 'admin' | 'member';
+          status?: 'active' | 'pending' | 'inactive';
           department?: string | null;
           allocation_percent?: number;
           velocity_avg?: number | null;

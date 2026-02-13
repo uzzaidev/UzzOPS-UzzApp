@@ -1,3 +1,8 @@
+﻿> [!IMPORTANT]
+> Documento legado/historico (frozen).
+> Fonte canônica atual: `docs/AI_PROJECT_CONTEXT_MASTER.md`, `docs/RESTART_CHECKLIST.md`, `README.md`, `docs/README_DOCUMENTATION.md`.
+> Use este arquivo apenas como referencia historica.
+
 created: 2026-02-02 updated: 2026-02-06T20:07 tags:
 
 scrum
@@ -5,339 +10,339 @@ sprints
 gestao
 insights
 sistema type: insights
-🎯 Insights sobre Sprints para Sistema de Gestão UzzAI
-Análise baseada na documentação Scrum completa
-Foco: Aplicação prática no sistema de gestão empresarial
+ðŸŽ¯ Insights sobre Sprints para Sistema de GestÃ£o UzzAI
+AnÃ¡lise baseada na documentaÃ§Ã£o Scrum completa
+Foco: AplicaÃ§Ã£o prÃ¡tica no sistema de gestÃ£o empresarial
 
-🔥 INSIGHT #1: Sprint é Contrato de Foco, Não Período de Trabalho
-💡 O que isso significa
-Sprint não é "período de trabalho" — é um contrato de foco com 4 pilares:
+ðŸ”¥ INSIGHT #1: Sprint Ã© Contrato de Foco, NÃ£o PerÃ­odo de Trabalho
+ðŸ’¡ O que isso significa
+Sprint nÃ£o Ã© "perÃ­odo de trabalho" â€” Ã© um contrato de foco com 4 pilares:
 
-⏰ Tempo fixo (timebox) — Duração NÃO muda
-📦 Escopo negociado e congelado — Nada entra no meio
-🎯 Objetivo claro (Sprint Goal) — 1 frase que resume o "porquê"
-✅ Entrega demonstrável — PO consegue validar no final
-🎯 Aplicação no Sistema de Gestão
+â° Tempo fixo (timebox) â€” DuraÃ§Ã£o NÃƒO muda
+ðŸ“¦ Escopo negociado e congelado â€” Nada entra no meio
+ðŸŽ¯ Objetivo claro (Sprint Goal) â€” 1 frase que resume o "porquÃª"
+âœ… Entrega demonstrÃ¡vel â€” PO consegue validar no final
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 No seu sistema, cada Sprint deve ter:
 
-## Sprint [N] - [Data Início] a [Data Fim]
+## Sprint [N] - [Data InÃ­cio] a [Data Fim]
 **Sprint Goal:** [1 frase clara]
-**Duração:** [X semanas] - FIXO (não negocia)
-**Histórias:** [Lista congelada no início]
+**DuraÃ§Ã£o:** [X semanas] - FIXO (nÃ£o negocia)
+**HistÃ³rias:** [Lista congelada no inÃ­cio]
 **Entrega:** [O que PO vai validar na Review]
-Regra de ouro: Se algo "urgente" aparecer → vai pro backlog, entra no próximo Sprint. Sprint atual é sagrado.
+Regra de ouro: Se algo "urgente" aparecer â†’ vai pro backlog, entra no prÃ³ximo Sprint. Sprint atual Ã© sagrado.
 
-🔥 INSIGHT #2: Duração Fixa = Previsibilidade Real
-💡 Por que isso é crítico
-Problema comum: "Vamos estender só dessa vez porque não deu"
+ðŸ”¥ INSIGHT #2: DuraÃ§Ã£o Fixa = Previsibilidade Real
+ðŸ’¡ Por que isso Ã© crÃ­tico
+Problema comum: "Vamos estender sÃ³ dessa vez porque nÃ£o deu"
 
-Consequência:
+ConsequÃªncia:
 
-❌ Velocidade não estabiliza (base de dados muda sempre)
-❌ Previsão de prazo vira mentira
-❌ Time perde confiança no processo
-Solução:
+âŒ Velocidade nÃ£o estabiliza (base de dados muda sempre)
+âŒ PrevisÃ£o de prazo vira mentira
+âŒ Time perde confianÃ§a no processo
+SoluÃ§Ã£o:
 
-✅ Sprint termina na data, com o que foi possível entregar
-✅ Escopo flexível, prazo fixo
-✅ O que não couber, volta para backlog e entra no próximo Sprint
-📊 Dados da Documentação
-Métrica	Threshold Saudável	Red Flag
-Duração do Sprint	Exatamente igual por 3+ ciclos	Variação > 0 dias
-% Interrupção	< 10%	> 25%
+âœ… Sprint termina na data, com o que foi possÃ­vel entregar
+âœ… Escopo flexÃ­vel, prazo fixo
+âœ… O que nÃ£o couber, volta para backlog e entra no prÃ³ximo Sprint
+ðŸ“Š Dados da DocumentaÃ§Ã£o
+MÃ©trica	Threshold SaudÃ¡vel	Red Flag
+DuraÃ§Ã£o do Sprint	Exatamente igual por 3+ ciclos	VariaÃ§Ã£o > 0 dias
+% InterrupÃ§Ã£o	< 10%	> 25%
 Carry-over	< 15%	> 30%
-🎯 Aplicação no Sistema de Gestão
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Implementar:
 
-Campo "Duração Sprint" (ex.: 2 semanas) — não editável após Sprint iniciado
-Métrica automática: "Sprints com duração fixa há 3+ ciclos?" (SIM/NÃO)
-Alerta: Se Sprint mudou duração → investigar causa raiz
+Campo "DuraÃ§Ã£o Sprint" (ex.: 2 semanas) â€” nÃ£o editÃ¡vel apÃ³s Sprint iniciado
+MÃ©trica automÃ¡tica: "Sprints com duraÃ§Ã£o fixa hÃ¡ 3+ ciclos?" (SIM/NÃƒO)
+Alerta: Se Sprint mudou duraÃ§Ã£o â†’ investigar causa raiz
 Dashboard: Mostrar "Sprint atual" com countdown visual (dias restantes)
 Script para SM:
 
-"Sprint termina na data combinada. Podemos re-priorizar o que entra, mas não estendemos o timebox. O que não couber, volta para o backlog e entra no próximo Sprint."
+"Sprint termina na data combinada. Podemos re-priorizar o que entra, mas nÃ£o estendemos o timebox. O que nÃ£o couber, volta para o backlog e entra no prÃ³ximo Sprint."
 
-🔥 INSIGHT #3: Sprint Zero = Preparação com Timebox, Não Waterfall
-💡 Quando usar Sprint Zero
-✅ Use quando:
+ðŸ”¥ INSIGHT #3: Sprint Zero = PreparaÃ§Ã£o com Timebox, NÃ£o Waterfall
+ðŸ’¡ Quando usar Sprint Zero
+âœ… Use quando:
 
 Time novo em Scrum (nunca trabalhou assim)
-Projeto greenfield (sem código, sem ambiente)
+Projeto greenfield (sem cÃ³digo, sem ambiente)
 Ferramentas precisam ser configuradas
-Papéis não definidos (quem é PO? SM?)
+PapÃ©is nÃ£o definidos (quem Ã© PO? SM?)
 Backlog inicial vazio (precisa workshop)
-❌ NÃO use quando:
+âŒ NÃƒO use quando:
 
-Time já rodou Scrum antes
-É desculpa para "fase de análise infinita"
+Time jÃ¡ rodou Scrum antes
+Ã‰ desculpa para "fase de anÃ¡lise infinita"
 Time quer evitar disciplina de Sprint curto
-⚠️ Risco: Sprint Zero Virar Waterfall
+âš ï¸ Risco: Sprint Zero Virar Waterfall
 Sinais de alerta:
 
-Duração > 2 semanas
+DuraÃ§Ã£o > 2 semanas
 "Vamos estender Sprint Zero mais 1 semana"
-Nenhum incremento entregue (só documentos)
-Time não capacitado ao final
-Correção:
+Nenhum incremento entregue (sÃ³ documentos)
+Time nÃ£o capacitado ao final
+CorreÃ§Ã£o:
 
-Timebox rígido: 1-2 semanas, não negocia
-Incremento obrigatório: protótipo, ambiente funcionando, backlog inicial
-Sprint 1 começa imediatamente após Sprint Zero (sem gap)
-🎯 Aplicação no Sistema de Gestão
+Timebox rÃ­gido: 1-2 semanas, nÃ£o negocia
+Incremento obrigatÃ³rio: protÃ³tipo, ambiente funcionando, backlog inicial
+Sprint 1 comeÃ§a imediatamente apÃ³s Sprint Zero (sem gap)
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Criar template "Sprint Zero Backlog" com 6 buckets:
 
-Bucket A: Objetivo de negócio e governança
-Bucket B: Linguagem comum (User Stories, protótipos)
-Bucket C: Papéis capacitados (PO, SM, time)
+Bucket A: Objetivo de negÃ³cio e governanÃ§a
+Bucket B: Linguagem comum (User Stories, protÃ³tipos)
+Bucket C: PapÃ©is capacitados (PO, SM, time)
 Bucket D: Ferramentas e ambiente (board, Git, CI/CD)
-Bucket E: Acordos essenciais (DoD v1, cadência, ritos)
-Bucket F: Necessidades específicas do projeto
-Checklist de saída:
+Bucket E: Acordos essenciais (DoD v1, cadÃªncia, ritos)
+Bucket F: Necessidades especÃ­ficas do projeto
+Checklist de saÃ­da:
 
- Backlog inicial priorizado (top 10-20 histórias)
+ Backlog inicial priorizado (top 10-20 histÃ³rias)
  DoD v1 escrito e acordado
- Cadência de Sprint definida (ex.: 2 semanas)
+ CadÃªncia de Sprint definida (ex.: 2 semanas)
  Ferramentas prontas (board, Git, staging)
- Sprint 1 planejado (top 3-5 histórias selecionadas)
-🔥 INSIGHT #4: Proteção do Sprint = Responsabilidade do SM
-💡 O que é Proteção do Sprint
-Durante o Sprint, NÃO pode:
+ Sprint 1 planejado (top 3-5 histÃ³rias selecionadas)
+ðŸ”¥ INSIGHT #4: ProteÃ§Ã£o do Sprint = Responsabilidade do SM
+ðŸ’¡ O que Ã© ProteÃ§Ã£o do Sprint
+Durante o Sprint, NÃƒO pode:
 
-❌ Entrar história nova
-❌ "Só mais isso" do PO
-❌ "Insight genial" do dev que muda objetivo
-❌ Trabalho urgente de fora
+âŒ Entrar histÃ³ria nova
+âŒ "SÃ³ mais isso" do PO
+âŒ "Insight genial" do dev que muda objetivo
+âŒ Trabalho urgente de fora
 O que PODE mudar:
 
-✅ Quebrar tarefas melhor
-✅ Trocar quem faz
-✅ Refinar subtarefas
-✅ Melhorar qualidade sem aumentar escopo
-🛡️ Responsabilidades do SM
-Visíveis:
+âœ… Quebrar tarefas melhor
+âœ… Trocar quem faz
+âœ… Refinar subtarefas
+âœ… Melhorar qualidade sem aumentar escopo
+ðŸ›¡ï¸ Responsabilidades do SM
+VisÃ­veis:
 
-Impedir entrada de novas histórias
-Garantir recursos (acesso, infra, permissões)
+Impedir entrada de novas histÃ³rias
+Garantir recursos (acesso, infra, permissÃµes)
 Remover bloqueios
 Garantir ritos (daily/review/retro)
 Manter foco no Sprint Goal
-Invisíveis (os piores):
+InvisÃ­veis (os piores):
 
-Estranheza com ausência de hierarquia
-Medo de "autogestão"
+Estranheza com ausÃªncia de hierarquia
+Medo de "autogestÃ£o"
 Gente esperando ordens
 Conflitos de prioridade internos
-🎯 Aplicação no Sistema de Gestão
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Implementar:
 
-Regra automática: Histórias só podem ser adicionadas ao Sprint durante Planning
-Campo "Status Sprint": PROTEGIDO (não permite adicionar histórias)
-Log de tentativas: Registrar quando alguém tenta adicionar história no meio do Sprint
-Métrica: "% de interrupção" = (tarefas fora backlog / total tarefas) × 100
+Regra automÃ¡tica: HistÃ³rias sÃ³ podem ser adicionadas ao Sprint durante Planning
+Campo "Status Sprint": PROTEGIDO (nÃ£o permite adicionar histÃ³rias)
+Log de tentativas: Registrar quando alguÃ©m tenta adicionar histÃ³ria no meio do Sprint
+MÃ©trica: "% de interrupÃ§Ã£o" = (tarefas fora backlog / total tarefas) Ã— 100
 Script do SM (automatizar como lembrete):
 
-"Boa ideia. Vamos colocar no backlog e avaliar no próximo Planning. Agora, nosso compromisso é entregar o Sprint Goal."
+"Boa ideia. Vamos colocar no backlog e avaliar no prÃ³ximo Planning. Agora, nosso compromisso Ã© entregar o Sprint Goal."
 
-🔥 INSIGHT #5: Velocidade = Métrica Central, Mas Precisa Estabilizar
-💡 Como Velocidade Funciona
-Fórmula:
+ðŸ”¥ INSIGHT #5: Velocidade = MÃ©trica Central, Mas Precisa Estabilizar
+ðŸ’¡ Como Velocidade Funciona
+FÃ³rmula:
 
 Velocidade = Story Points entregues ("Done") por Sprint
 Quando estabiliza:
 
 Sprints 1-2: Oscila (time aprendendo)
-Sprints 3-6: Começa a estabilizar (variação < 20%)
-Sprint 6+: Estável, previsível
-📊 Variáveis que Afetam Velocidade
+Sprints 3-6: ComeÃ§a a estabilizar (variaÃ§Ã£o < 20%)
+Sprint 6+: EstÃ¡vel, previsÃ­vel
+ðŸ“Š VariÃ¡veis que Afetam Velocidade
 Fator	Impacto	Como Controlar
-Tamanho do time	↑ time → ↑ velocidade (não linear)	Manter time estável (5-9 pessoas ideal)
-Duração Sprint	Sprint 2 sem ≈ 2× Sprint 1 sem	Fixar duração (não mudar)
-Dedicação	Time 50% dedicado → metade da velocidade	Medir % dedicação real
-Débito técnico	↑ débito → ↓ velocidade	Incluir refatoração (15-20% capacidade)
-Definition of Done	DoD fraco → velocidade fake alta	DoD rigoroso (testado, integrado)
-Interrupções	Cada interrupção "come" capacidade	Medir % interrupção; bloquear urgências
-🎯 Aplicação no Sistema de Gestão
+Tamanho do time	â†‘ time â†’ â†‘ velocidade (nÃ£o linear)	Manter time estÃ¡vel (5-9 pessoas ideal)
+DuraÃ§Ã£o Sprint	Sprint 2 sem â‰ˆ 2Ã— Sprint 1 sem	Fixar duraÃ§Ã£o (nÃ£o mudar)
+DedicaÃ§Ã£o	Time 50% dedicado â†’ metade da velocidade	Medir % dedicaÃ§Ã£o real
+DÃ©bito tÃ©cnico	â†‘ dÃ©bito â†’ â†“ velocidade	Incluir refatoraÃ§Ã£o (15-20% capacidade)
+Definition of Done	DoD fraco â†’ velocidade fake alta	DoD rigoroso (testado, integrado)
+InterrupÃ§Ãµes	Cada interrupÃ§Ã£o "come" capacidade	Medir % interrupÃ§Ã£o; bloquear urgÃªncias
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Dashboard de Velocidade:
 
 ## Velocidade do Time
 **Sprint Atual:** [X pontos]
-**Média (últimos 3 Sprints):** [Y pontos]
-**Tendência:** [↑ Estável | ↓ Caindo | ↑ Subindo]
-**Gráfico:**
+**MÃ©dia (Ãºltimos 3 Sprints):** [Y pontos]
+**TendÃªncia:** [â†‘ EstÃ¡vel | â†“ Caindo | â†‘ Subindo]
+**GrÃ¡fico:**
 - Sprint 1: 18 pts
 - Sprint 2: 20 pts
 - Sprint 3: 22 pts
 - Sprint 4: 21 pts
-- Média: 20.25 pts/Sprint
-**Previsão de Prazo:**
+- MÃ©dia: 20.25 pts/Sprint
+**PrevisÃ£o de Prazo:**
 - Backlog restante: 120 pontos
-- Velocidade média: 20 pts/Sprint
-- Sprints restantes: 120 ÷ 20 = 6 Sprints
-- Prazo: 6 × 2 semanas = 12 semanas
-Alertas automáticos:
+- Velocidade mÃ©dia: 20 pts/Sprint
+- Sprints restantes: 120 Ã· 20 = 6 Sprints
+- Prazo: 6 Ã— 2 semanas = 12 semanas
+Alertas automÃ¡ticos:
 
-⚠️ Velocidade variando > 30% entre Sprints (sem causa explicável)
-⚠️ Velocidade caindo 2+ Sprints consecutivos
-⚠️ "Done falso" detectado (histórias voltando para retrabalho > 20%)
-🔥 INSIGHT #6: Previsão por Faixas (Não Promessa Impossível)
-💡 Por que Faixas Funcionam
-Problema: Prometer "180 pontos em 18 semanas exatas" é irresponsável.
+âš ï¸ Velocidade variando > 30% entre Sprints (sem causa explicÃ¡vel)
+âš ï¸ Velocidade caindo 2+ Sprints consecutivos
+âš ï¸ "Done falso" detectado (histÃ³rias voltando para retrabalho > 20%)
+ðŸ”¥ INSIGHT #6: PrevisÃ£o por Faixas (NÃ£o Promessa ImpossÃ­vel)
+ðŸ’¡ Por que Faixas Funcionam
+Problema: Prometer "180 pontos em 18 semanas exatas" Ã© irresponsÃ¡vel.
 
-Solução: Trabalhar com faixas de velocidade e apresentar cenários.
+SoluÃ§Ã£o: Trabalhar com faixas de velocidade e apresentar cenÃ¡rios.
 
-📊 Exemplo Prático
+ðŸ“Š Exemplo PrÃ¡tico
 Contexto:
 
 Sprint: 2 semanas
 Velocidade observada: Sprint 1=18, Sprint 2=20, Sprint 3=22
 Backlog: 180 pontos
-Cálculo:
+CÃ¡lculo:
 
 Velocidade:
 - Pessimista: 18 pontos/sprint (pior caso observado)
-- Provável: 20 pontos/sprint (média)
+- ProvÃ¡vel: 20 pontos/sprint (mÃ©dia)
 - Otimista: 22 pontos/sprint (melhor caso)
 Prazo (Sprints):
-- Pessimista: 180÷18 = 10 Sprints → 20 semanas
-- Provável: 180÷20 = 9 Sprints → 18 semanas
-- Otimista: 180÷22 = 8,2 Sprints → ~16 semanas
-Apresentação para patrocinador:
+- Pessimista: 180Ã·18 = 10 Sprints â†’ 20 semanas
+- ProvÃ¡vel: 180Ã·20 = 9 Sprints â†’ 18 semanas
+- Otimista: 180Ã·22 = 8,2 Sprints â†’ ~16 semanas
+ApresentaÃ§Ã£o para patrocinador:
 
 "Estimamos entre 16 e 20 semanas, com maior probabilidade de 18 semanas. Vamos recalibrar a cada Sprint Review conforme velocidade se estabiliza."
 
-🎯 Aplicação no Sistema de Gestão
-Widget "Previsão de Prazo":
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
+Widget "PrevisÃ£o de Prazo":
 
-## Previsão de Release
+## PrevisÃ£o de Release
 **Backlog:** 180 pontos
 **Velocidade:**
-- Pessimista: 18 pts/Sprint → 10 Sprints (20 semanas)
-- Provável: 20 pts/Sprint → 9 Sprints (18 semanas) ⭐
-- Otimista: 22 pts/Sprint → 8,2 Sprints (16 semanas)
-**Última atualização:** Sprint 3 Review
-**Próxima recalibração:** Sprint 4 Review
-Recalibração automática:
+- Pessimista: 18 pts/Sprint â†’ 10 Sprints (20 semanas)
+- ProvÃ¡vel: 20 pts/Sprint â†’ 9 Sprints (18 semanas) â­
+- Otimista: 22 pts/Sprint â†’ 8,2 Sprints (16 semanas)
+**Ãšltima atualizaÃ§Ã£o:** Sprint 3 Review
+**PrÃ³xima recalibraÃ§Ã£o:** Sprint 4 Review
+RecalibraÃ§Ã£o automÃ¡tica:
 
-A cada Sprint Review, recalcular previsão
+A cada Sprint Review, recalcular previsÃ£o
 Atualizar faixas baseado em velocidade real
-Notificar stakeholders se previsão mudou significativamente
-🔥 INSIGHT #7: Sprint Planning em 2 Partes (Separação Clara)
-💡 Por que Separar
-Planning A (com PO): "O quê" e "Pra quê"
+Notificar stakeholders se previsÃ£o mudou significativamente
+ðŸ”¥ INSIGHT #7: Sprint Planning em 2 Partes (SeparaÃ§Ã£o Clara)
+ðŸ’¡ Por que Separar
+Planning A (com PO): "O quÃª" e "Pra quÃª"
 
-Escolher histórias do Sprint
+Escolher histÃ³rias do Sprint
 Alinhar entendimento
 Definir Sprint Goal
-Critérios de aceite
-Planning B (só Time + SM): "Como" e "Tarefas"
+CritÃ©rios de aceite
+Planning B (sÃ³ Time + SM): "Como" e "Tarefas"
 
-Quebrar histórias em tarefas técnicas
-Estimar esforço
+Quebrar histÃ³rias em tarefas tÃ©cnicas
+Estimar esforÃ§o
 Distribuir no Kanban
 Definir WIP
-🎯 Aplicação no Sistema de Gestão
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Template "Sprint Planning":
 
 ## Sprint Planning [N]
 ### Planning A (com PO) - 45-90 min
 - [ ] Sprint Goal definido (1 frase)
-- [ ] Histórias selecionadas do topo do backlog
-- [ ] Critérios de aceite definidos
+- [ ] HistÃ³rias selecionadas do topo do backlog
+- [ ] CritÃ©rios de aceite definidos
 - [ ] PO entende o que vai ver na Review
-### Planning B (só Time) - 60-120 min
-- [ ] Histórias quebradas em tarefas ≤ 1 dia
-- [ ] Tarefas distribuídas no Kanban
-- [ ] WIP definido (ex.: máximo 3 tarefas ativas)
+### Planning B (sÃ³ Time) - 60-120 min
+- [ ] HistÃ³rias quebradas em tarefas â‰¤ 1 dia
+- [ ] Tarefas distribuÃ­das no Kanban
+- [ ] WIP definido (ex.: mÃ¡ximo 3 tarefas ativas)
 - [ ] Time se comprometeu com Sprint Goal
-Separação visual:
+SeparaÃ§Ã£o visual:
 
-Planning A → Histórias (nível Product Backlog)
-Planning B → Tarefas (nível Sprint Backlog)
-🔥 INSIGHT #8: Burndown como Radar (Não Chicote)
-💡 Como Usar Direito
-✅ Serve para:
+Planning A â†’ HistÃ³rias (nÃ­vel Product Backlog)
+Planning B â†’ Tarefas (nÃ­vel Sprint Backlog)
+ðŸ”¥ INSIGHT #8: Burndown como Radar (NÃ£o Chicote)
+ðŸ’¡ Como Usar Direito
+âœ… Serve para:
 
-Visualizar se Sprint está "atrás"
-Permitir correção rápida (ajuste de plano interno)
-Transparência total do progresso
-❌ NÃO serve para:
+Visualizar se Sprint estÃ¡ "atrÃ¡s"
+Permitir correÃ§Ã£o rÃ¡pida (ajuste de plano interno)
+TransparÃªncia total do progresso
+âŒ NÃƒO serve para:
 
 Punir pessoas
 "Cobrar" individualmente pontos
-Gerar pressão irreal
-🎯 Aplicação no Sistema de Gestão
+Gerar pressÃ£o irreal
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Dashboard "Burndown do Sprint":
 
 Trabalho Restante
    ^
- 25|●
+ 25|â—
    |  \
  20|    \
-   |      ●
+   |      â—
  15|        \
-   |          ●
+   |          â—
  10|            \
-   |              ●
+   |              â—
   5|                \
-   |                  ●
+   |                  â—
   0+------------------> Dias
     1  2  3  4  5  6  7  8  9  10
 Linha ideal (diagonal) vs progresso real (pontos)
 
 Alertas:
 
-⚠️ Burndown flat até dia N-2, depois vertical (planejamento ruim)
-⚠️ Linha real muito acima da ideal (atrasando)
-⚠️ Linha real muito abaixo da ideal (adiantando — revisar estimativas)
-Regra: Burndown é ferramenta de transparência, não de cobrança.
+âš ï¸ Burndown flat atÃ© dia N-2, depois vertical (planejamento ruim)
+âš ï¸ Linha real muito acima da ideal (atrasando)
+âš ï¸ Linha real muito abaixo da ideal (adiantando â€” revisar estimativas)
+Regra: Burndown Ã© ferramenta de transparÃªncia, nÃ£o de cobranÃ§a.
 
-🔥 INSIGHT #9: Sprint Review = Demo Funcional (Não Slide)
-💡 O que é Review de Verdade
+ðŸ”¥ INSIGHT #9: Sprint Review = Demo Funcional (NÃ£o Slide)
+ðŸ’¡ O que Ã© Review de Verdade
 Objetivo: Validar incremento e colher feedback real.
 
 Roteiro:
 
 Relembrar Sprint Goal
 Demo do que funciona (sem slide, com produto)
-Para cada história: mostrar critério de aceite
-PO aceita ou não aceita
-Itens novos viram backlog (não viram "corrigir agora")
-🎯 Aplicação no Sistema de Gestão
+Para cada histÃ³ria: mostrar critÃ©rio de aceite
+PO aceita ou nÃ£o aceita
+Itens novos viram backlog (nÃ£o viram "corrigir agora")
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Template "Sprint Review":
 
 ## Sprint Review [N] - [Data]
 **Sprint Goal:** [Relembrar]
-**Duração:** 30-60 min (Sprint 1 semana) / 60-120 min (Sprint 2 semanas)
+**DuraÃ§Ã£o:** 30-60 min (Sprint 1 semana) / 60-120 min (Sprint 2 semanas)
 ### Demo
-- [ ] História 1: [Nome] - [Demo funcional]
-- [ ] História 2: [Nome] - [Demo funcional]
-- [ ] História 3: [Nome] - [Demo funcional]
+- [ ] HistÃ³ria 1: [Nome] - [Demo funcional]
+- [ ] HistÃ³ria 2: [Nome] - [Demo funcional]
+- [ ] HistÃ³ria 3: [Nome] - [Demo funcional]
 ### Aceites
-- [ ] História 1: ✅ Aceita | ❌ Rejeitada (motivo: [X])
-- [ ] História 2: ✅ Aceita | ❌ Rejeitada (motivo: [X])
-- [ ] História 3: ✅ Aceita | ❌ Rejeitada (motivo: [X])
-### Feedback → Backlog
-- [ ] Item 1: [Descrição] → Backlog (prioridade: [X])
-- [ ] Item 2: [Descrição] → Backlog (prioridade: [X])
+- [ ] HistÃ³ria 1: âœ… Aceita | âŒ Rejeitada (motivo: [X])
+- [ ] HistÃ³ria 2: âœ… Aceita | âŒ Rejeitada (motivo: [X])
+- [ ] HistÃ³ria 3: âœ… Aceita | âŒ Rejeitada (motivo: [X])
+### Feedback â†’ Backlog
+- [ ] Item 1: [DescriÃ§Ã£o] â†’ Backlog (prioridade: [X])
+- [ ] Item 2: [DescriÃ§Ã£o] â†’ Backlog (prioridade: [X])
 ### Velocidade
 - **Pontos Done:** [X]
-- **Velocidade média (últimos 3 Sprints):** [Y]
-Regra: Se não tem demo funcional, não é Review — é reunião de status.
+- **Velocidade mÃ©dia (Ãºltimos 3 Sprints):** [Y]
+Regra: Se nÃ£o tem demo funcional, nÃ£o Ã© Review â€” Ã© reuniÃ£o de status.
 
-🔥 INSIGHT #10: Retrospectiva = 1-3 Ações Mensuráveis
-💡 O que é Retro de Verdade
+ðŸ”¥ INSIGHT #10: Retrospectiva = 1-3 AÃ§Ãµes MensurÃ¡veis
+ðŸ’¡ O que Ã© Retro de Verdade
 Objetivo: Melhorar o processo.
 
 Roteiro simples:
 
 O que funcionou?
 O que deu ruim?
-O que vamos tentar melhorar no próximo Sprint? (1-3 ações)
-🎯 Aplicação no Sistema de Gestão
+O que vamos tentar melhorar no prÃ³ximo Sprint? (1-3 aÃ§Ãµes)
+ðŸŽ¯ AplicaÃ§Ã£o no Sistema de GestÃ£o
 Template "Sprint Retrospective":
 
 ## Sprint Retrospective [N] - [Data]
-**Duração:** 30-60 min
+**DuraÃ§Ã£o:** 30-60 min
 **Participantes:** Time + SM (PO opcional)
 ### O que funcionou?
 - [ ] Item 1
@@ -347,75 +352,75 @@ Template "Sprint Retrospective":
 - [ ] Item 1
 - [ ] Item 2
 - [ ] Item 3
-### Ações para Próximo Sprint (1-3)
-- [ ] **Ação 1:** [Descrição] - Métrica: [Como medir]
-- [ ] **Ação 2:** [Descrição] - Métrica: [Como medir]
-- [ ] **Ação 3:** [Descrição] - Métrica: [Como medir]
-### Revisão Ações do Sprint Anterior
-- [ ] Ação 1: ✅ Melhorou | ❌ Não melhorou (motivo: [X])
-- [ ] Ação 2: ✅ Melhorou | ❌ Não melhorou (motivo: [X])
-Regra: Se Retro não gera ação mensurável, não é Retro — é reclamação.
+### AÃ§Ãµes para PrÃ³ximo Sprint (1-3)
+- [ ] **AÃ§Ã£o 1:** [DescriÃ§Ã£o] - MÃ©trica: [Como medir]
+- [ ] **AÃ§Ã£o 2:** [DescriÃ§Ã£o] - MÃ©trica: [Como medir]
+- [ ] **AÃ§Ã£o 3:** [DescriÃ§Ã£o] - MÃ©trica: [Como medir]
+### RevisÃ£o AÃ§Ãµes do Sprint Anterior
+- [ ] AÃ§Ã£o 1: âœ… Melhorou | âŒ NÃ£o melhorou (motivo: [X])
+- [ ] AÃ§Ã£o 2: âœ… Melhorou | âŒ NÃ£o melhorou (motivo: [X])
+Regra: Se Retro nÃ£o gera aÃ§Ã£o mensurÃ¡vel, nÃ£o Ã© Retro â€” Ã© reclamaÃ§Ã£o.
 
-🎯 CHECKLIST: Sistema de Gestão com Sprints
-✅ Funcionalidades Mínimas
- Sprint com duração fixa (campo não editável após início)
- Sprint Goal (1 frase obrigatória)
- Proteção do Sprint (não permite adicionar histórias no meio)
- Planning em 2 partes (A: com PO, B: só time)
- Burndown automático (atualizado diariamente)
+ðŸŽ¯ CHECKLIST: Sistema de GestÃ£o com Sprints
+âœ… Funcionalidades MÃ­nimas
+ Sprint com duraÃ§Ã£o fixa (campo nÃ£o editÃ¡vel apÃ³s inÃ­cio)
+ Sprint Goal (1 frase obrigatÃ³ria)
+ ProteÃ§Ã£o do Sprint (nÃ£o permite adicionar histÃ³rias no meio)
+ Planning em 2 partes (A: com PO, B: sÃ³ time)
+ Burndown automÃ¡tico (atualizado diariamente)
  Velocidade calculada (pontos Done por Sprint)
- Previsão por faixas (pessimista/provável/otimista)
+ PrevisÃ£o por faixas (pessimista/provÃ¡vel/otimista)
  Sprint Review (template com demo funcional)
- Retrospectiva (template com 1-3 ações mensuráveis)
- Métricas de saúde (duração fixa, % interrupção, carry-over)
-✅ Dashboards Recomendados
+ Retrospectiva (template com 1-3 aÃ§Ãµes mensurÃ¡veis)
+ MÃ©tricas de saÃºde (duraÃ§Ã£o fixa, % interrupÃ§Ã£o, carry-over)
+âœ… Dashboards Recomendados
 Dashboard "Sprint Atual"
 
 Sprint Goal
 Countdown (dias restantes)
 Burndown
-Histórias (To Do / In Progress / Done / Accepted)
+HistÃ³rias (To Do / In Progress / Done / Accepted)
 Dashboard "Velocidade"
 
-Gráfico de velocidade por Sprint
-Média (últimos 3 Sprints)
-Tendência (↑ Estável | ↓ Caindo | ↑ Subindo)
-Dashboard "Previsão de Prazo"
+GrÃ¡fico de velocidade por Sprint
+MÃ©dia (Ãºltimos 3 Sprints)
+TendÃªncia (â†‘ EstÃ¡vel | â†“ Caindo | â†‘ Subindo)
+Dashboard "PrevisÃ£o de Prazo"
 
 Backlog restante (pontos)
-Velocidade média
-Sprints restantes (pessimista/provável/otimista)
+Velocidade mÃ©dia
+Sprints restantes (pessimista/provÃ¡vel/otimista)
 Prazo em semanas
-Dashboard "Saúde do Scrum"
+Dashboard "SaÃºde do Scrum"
 
-Duração Sprint fixa há 3+ ciclos? (SIM/NÃO)
-% Interrupção (< 10% saudável)
-Carry-over (< 15% saudável)
-Velocidade variando > 30%? (SIM/NÃO)
-🚨 ANTI-PADRÕES (Evitar no Sistema)
-Anti-Padrão	Como Detectar	Correção
-❌ Sprint muda duração	Histórico mostra variação	Alertar: "Sprint deve ter duração fixa"
-❌ Histórias entram no meio	Log mostra adição após Planning	Bloquear: "Sprint protegido, adicionar no próximo"
-❌ Burndown flat até final	Gráfico mostra linha horizontal	Alertar: "Planejamento ruim ou interrupções"
-❌ Velocidade fake	Histórias "Done" voltam para retrabalho > 20%	Alertar: "DoD fraco, velocidade não confiável"
-❌ Review sem demo	Review sem evidência funcional	Obrigar: "Review precisa de demo funcional"
-❌ Retro sem ação	Retro sem ação mensurável	Obrigar: "Retro precisa de 1-3 ações"
-📊 MÉTRICAS ESSENCIAIS (Implementar)
-Métricas de Processo
-Métrica	Fórmula	Threshold Saudável	Red Flag
-Duração Sprint fixa	Contar dias/semanas	Exatamente igual por 3+ ciclos	Variação > 0 dias
-% Interrupção	(tasks fora backlog / total tasks) × 100	< 10%	> 25%
-Carry-over	Stories arrastadas para próximo Sprint	< 15%	> 30%
-Velocidade estável	Variação entre Sprints	< 20%	> 30%
-Métricas de Qualidade
-Métrica	Fórmula	Threshold Saudável	Red Flag
-Taxa de Rejeição PO	(Histórias rejeitadas / total Done) × 100	< 5%	> 15%
-Retrabalho	(Histórias refeitas / total Done) × 100	< 10%	> 25%
-Done Real	(Histórias Accepted / Histórias Done) × 100	> 95%	< 80%
-📊 Última Atualização: 2026-02-02
-👤 Autor: Análise baseada em documentação Scrum UzzAI
-📈 Versão: 1.0
-🎯 Objetivo: Insights práticos para sistema de gestão
+DuraÃ§Ã£o Sprint fixa hÃ¡ 3+ ciclos? (SIM/NÃƒO)
+% InterrupÃ§Ã£o (< 10% saudÃ¡vel)
+Carry-over (< 15% saudÃ¡vel)
+Velocidade variando > 30%? (SIM/NÃƒO)
+ðŸš¨ ANTI-PADRÃ•ES (Evitar no Sistema)
+Anti-PadrÃ£o	Como Detectar	CorreÃ§Ã£o
+âŒ Sprint muda duraÃ§Ã£o	HistÃ³rico mostra variaÃ§Ã£o	Alertar: "Sprint deve ter duraÃ§Ã£o fixa"
+âŒ HistÃ³rias entram no meio	Log mostra adiÃ§Ã£o apÃ³s Planning	Bloquear: "Sprint protegido, adicionar no prÃ³ximo"
+âŒ Burndown flat atÃ© final	GrÃ¡fico mostra linha horizontal	Alertar: "Planejamento ruim ou interrupÃ§Ãµes"
+âŒ Velocidade fake	HistÃ³rias "Done" voltam para retrabalho > 20%	Alertar: "DoD fraco, velocidade nÃ£o confiÃ¡vel"
+âŒ Review sem demo	Review sem evidÃªncia funcional	Obrigar: "Review precisa de demo funcional"
+âŒ Retro sem aÃ§Ã£o	Retro sem aÃ§Ã£o mensurÃ¡vel	Obrigar: "Retro precisa de 1-3 aÃ§Ãµes"
+ðŸ“Š MÃ‰TRICAS ESSENCIAIS (Implementar)
+MÃ©tricas de Processo
+MÃ©trica	FÃ³rmula	Threshold SaudÃ¡vel	Red Flag
+DuraÃ§Ã£o Sprint fixa	Contar dias/semanas	Exatamente igual por 3+ ciclos	VariaÃ§Ã£o > 0 dias
+% InterrupÃ§Ã£o	(tasks fora backlog / total tasks) Ã— 100	< 10%	> 25%
+Carry-over	Stories arrastadas para prÃ³ximo Sprint	< 15%	> 30%
+Velocidade estÃ¡vel	VariaÃ§Ã£o entre Sprints	< 20%	> 30%
+MÃ©tricas de Qualidade
+MÃ©trica	FÃ³rmula	Threshold SaudÃ¡vel	Red Flag
+Taxa de RejeiÃ§Ã£o PO	(HistÃ³rias rejeitadas / total Done) Ã— 100	< 5%	> 15%
+Retrabalho	(HistÃ³rias refeitas / total Done) Ã— 100	< 10%	> 25%
+Done Real	(HistÃ³rias Accepted / HistÃ³rias Done) Ã— 100	> 95%	< 80%
+ðŸ“Š Ãšltima AtualizaÃ§Ã£o: 2026-02-02
+ðŸ‘¤ Autor: AnÃ¡lise baseada em documentaÃ§Ã£o Scrum UzzAI
+ðŸ“ˆ VersÃ£o: 1.0
+ðŸŽ¯ Objetivo: Insights prÃ¡ticos para sistema de gestÃ£o
 
-Sistema: Insights Sprints para Gestão UzzAI
+Sistema: Insights Sprints para GestÃ£o UzzAI
 Baseado em: Guia Scrum Parte 2 (Cap. 7-8) + Parte 3 (Cap. 9-12) + Parte 2 (Cap. 5-6)

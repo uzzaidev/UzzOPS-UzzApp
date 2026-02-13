@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx supabase:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(tail:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(dir \"C:\\Projetos Uzz.Ai\\UzzOPS - UzzApp\\src\\app\\(dashboard)\" /B)",
+      "Bash(dir \"C:\\Projetos Uzz.Ai\\UzzOPS - UzzApp\\src\\app\\api\\projects\" /B)",
+      "Bash(Remove-Item -Recurse -Force \"C:\\Projetos Uzz.Ai\\UzzOPS - UzzApp\\src\\app\\(dashboard)\")",
+      "Bash(cut:*)"
+    ]
+  }
+}

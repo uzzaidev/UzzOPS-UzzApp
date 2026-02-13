@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import type { ProjectOverview } from '@/types';
+import { requireTenant } from '@/lib/tenant';
 
 export async function GET(
   request: Request,
@@ -10,6 +11,17 @@ export async function GET(
     const { id } = await params;
     console.log('[Overview API] Fetching overview for project:', id);
     const supabase = await createClient();
+
+    const { data: projectTenant } = await supabase
+      .from('projects')
+      .select('tenant_id')
+      .eq('id', id)
+      .single();
+
+    const { error: authError } = await requireTenant(supabase, {
+      tenantId: projectTenant?.tenant_id ?? null,
+    });
+    if (authError) return authError;
 
     // Buscar projeto
     const { data: project, error: projectError } = await supabase
@@ -73,6 +85,13 @@ export async function GET(
     // Calcular progresso
     const progress = totalFeatures > 0 ? Math.round((featuresDone / totalFeatures) * 100) : 0;
 
+    // Calcular média de DoD
+    const avgDodProgress = totalFeatures > 0
+      ? Math.round(
+          features.reduce((sum, f) => sum + (f.dod_progress || 0), 0) / totalFeatures
+        )
+      : 0;
+
     // Sprint atual (primeiro ativo, ou o mais recente planejado)
     const currentSprint =
       sprints?.find((s) => s.status === 'active') ||
@@ -90,6 +109,7 @@ export async function GET(
       featuresInProgress,
       featuresTodo,
       progress,
+      avgDodProgress,
       teamSize: teamMembers?.length || 0,
       currentSprint,
       activeSprints,
