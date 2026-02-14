@@ -1,6 +1,8 @@
 'use client';
 
 import type { UzzappClient } from '@/types';
+import { Flame, CalendarClock, Handshake, TrendingUp, Thermometer, Snowflake, Sparkles, Users } from 'lucide-react';
+import { KpiCard } from '@/components/dashboard/kpi-card';
 
 function sum(values: Array<number | null | undefined>) {
   return values.reduce<number>((acc, n) => acc + (typeof n === 'number' ? n : 0), 0);
@@ -23,39 +25,21 @@ export function CrmKpiStrip({ clients }: { clients: UzzappClient[] }) {
   ).length;
 
   return (
-    <div className="grid gap-2 rounded-lg border bg-white p-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
-      <Kpi label="Hot" value={String(hot)} tone="text-red-700" cardTone="bg-red-50/60 border-red-100" />
-      <Kpi label="Warm" value={String(warm)} tone="text-amber-700" cardTone="bg-amber-50/60 border-amber-100" />
-      <Kpi label="Cold" value={String(cold)} tone="text-blue-700" cardTone="bg-blue-50/60 border-blue-100" />
-      <Kpi label="Future" value={String(future)} tone="text-violet-700" cardTone="bg-violet-50/60 border-violet-100" />
-      <Kpi label="Pipeline" value={money(pipeline)} />
-      <Kpi label="Fechados" value={String(closed)} />
-      <Kpi
-        label="Acao vencida"
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
+      <KpiCard title="Hot" value={String(hot)} icon={Flame} tone="text-red-700" accent="border-red-200" />
+      <KpiCard title="Warm" value={String(warm)} icon={Thermometer} tone="text-amber-700" accent="border-amber-200" />
+      <KpiCard title="Cold" value={String(cold)} icon={Snowflake} tone="text-blue-700" accent="border-blue-200" />
+      <KpiCard title="Future" value={String(future)} icon={Sparkles} tone="text-violet-700" accent="border-violet-200" />
+      <KpiCard title="Pipeline" value={money(pipeline)} icon={TrendingUp} accent="border-slate-200" />
+      <KpiCard title="Fechados" value={String(closed)} icon={Handshake} accent="border-emerald-200" tone="text-emerald-700" />
+      <KpiCard
+        title="Acao vencida"
         value={String(overdueActions)}
+        icon={CalendarClock}
         tone={overdueActions > 0 ? 'text-red-700' : 'text-slate-700'}
-        cardTone={overdueActions > 0 ? 'bg-red-50/60 border-red-100' : undefined}
+        accent={overdueActions > 0 ? 'border-red-200' : 'border-slate-200'}
       />
-      <Kpi label="Total clientes" value={String(clients.length)} />
-    </div>
-  );
-}
-
-function Kpi({
-  label,
-  value,
-  tone = 'text-slate-800',
-  cardTone,
-}: {
-  label: string;
-  value: string;
-  tone?: string;
-  cardTone?: string;
-}) {
-  return (
-    <div className={`rounded-md border bg-slate-50 p-2 shadow-sm ${cardTone ?? ''}`}>
-      <p className="text-[11px] text-slate-500">{label}</p>
-      <p className={`text-sm font-semibold ${tone}`}>{value}</p>
+      <KpiCard title="Total clientes" value={String(clients.length)} icon={Users} accent="border-slate-200" />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { CrmKpiStrip } from '@/components/clients/crm-kpi-strip';
 import { ClientKanbanBoard } from '@/components/clients/client-kanban-board';
 import { useClients, useUpdateClient } from '@/hooks/useClients';
 import { funnelLabel } from '@/lib/crm/labels';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type Props = {
   projectId: string;
@@ -61,24 +62,36 @@ export function CrmDashboardContent({ projectId }: Props) {
 
   return (
     <div className="space-y-4">
-      <CrmKpiStrip clients={clients} />
+      <div className="sticky top-2 z-20 -mx-2 rounded-lg border border-slate-200 bg-white/95 p-2 shadow-sm backdrop-blur">
+        <CrmKpiStrip clients={clients} />
+      </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <div className="rounded-lg border bg-white p-4 xl:col-span-2">
-          <h2 className="text-lg font-semibold text-slate-900">Pipeline por etapa</h2>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <Card className="xl:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-base">Pipeline por etapa</CardTitle>
+            <Link href={`/projects/${projectId}/clients`} className="text-xs text-uzzai-primary underline">
+              Ver clientes
+            </Link>
+          </CardHeader>
+          <CardContent className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {stageCounts.map((item) => (
               <div key={item.stage} className="rounded-md border bg-slate-50 p-3">
                 <p className="text-xs text-slate-500">{funnelLabel(item.stage)}</p>
                 <p className="text-lg font-semibold text-slate-900">{item.count}</p>
               </div>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="rounded-lg border bg-white p-4">
-          <h2 className="text-lg font-semibold text-slate-900">Top pipeline</h2>
-          <div className="mt-3 space-y-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-base">Top pipeline</CardTitle>
+            <Link href={`/projects/${projectId}/clients`} className="text-xs text-uzzai-primary underline">
+              Ver tudo
+            </Link>
+          </CardHeader>
+          <CardContent className="space-y-2">
             {topPipeline.length === 0 ? (
               <p className="text-sm text-slate-500">Sem clientes.</p>
             ) : (
@@ -95,17 +108,19 @@ export function CrmDashboardContent({ projectId }: Props) {
                 </Link>
               ))
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="rounded-lg border bg-white p-4">
-        <h2 className="text-lg font-semibold text-slate-900">Kanban operacional</h2>
-        <p className="mt-1 text-sm text-slate-500">Arraste os cards para atualizar o estagio do funil.</p>
-        <div className="mt-3">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Kanban operacional</CardTitle>
+          <p className="text-sm text-slate-500">Arraste os cards para atualizar o estagio do funil.</p>
+        </CardHeader>
+        <CardContent className="pt-0">
           <ClientKanbanBoard clients={clients} projectId={projectId} onStageChange={handleStageChange} />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -63,7 +63,7 @@ export function Sidebar({ projectId, projectName }: SidebarProps) {
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 min-h-0 overflow-y-auto px-4 py-6 [scrollbar-gutter:stable]">
+      <nav className="sidebar-scroll flex-1 min-h-0 overflow-y-auto px-4 py-6 [scrollbar-gutter:stable]">
         <div className="space-y-1 pr-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
