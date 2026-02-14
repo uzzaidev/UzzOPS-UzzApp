@@ -12,6 +12,8 @@ import { ScoreRadarChart } from '@/components/clients/score-radar-chart';
 import { BANTFITEvolution } from '@/components/clients/bant-fit-evolution';
 import { IcpBadge } from '@/components/clients/icp-badge';
 import { ProbabilityGauge } from '@/components/clients/probability-gauge';
+import { LeadVolumeMeter } from '@/components/clients/lead-volume-meter';
+import { StakeholderCard } from '@/components/clients/stakeholder-card';
 import { useClient, useClientContacts } from '@/hooks/useClients';
 import { dealOutcomeLabel, funnelLabel, negotiationLabel, priorityLabel, sentimentLabel, statusLabel } from '@/lib/crm/labels';
 
@@ -248,8 +250,9 @@ export function ClientDetailsContent({ projectId, clientId }: Props) {
           <p className="text-xs text-gray-500">CRM estrategico</p>
           <p className="mt-2 text-xs text-gray-500">ICP / Origem</p>
           <p className="text-sm font-medium">{asText(client.icp_classification)} / {asText(client.lead_source)}</p>
-          <p className="mt-2 text-xs text-gray-500">Leads por dia</p>
-          <p className="text-sm font-medium">{asText(client.lead_daily_volume)}</p>
+          <div className="mt-3">
+            <LeadVolumeMeter value={client.lead_daily_volume} />
+          </div>
           <p className="mt-2 text-xs text-gray-500">Ultimo contato</p>
           <p className="text-sm font-medium">{formatDate(client.last_contact_date)}</p>
           <p className="mt-2 text-xs text-gray-500">Contexto</p>
@@ -546,16 +549,7 @@ export function ClientDetailsContent({ projectId, clientId }: Props) {
                     <div className="mt-2 grid gap-2 md:grid-cols-2">
                       {asArray(client.stakeholders_json).map((x, i) => {
                         const obj = asObject(x);
-                        return (
-                          <div key={i} className="rounded border bg-gray-50 p-2 text-sm">
-                            <p className="font-medium">{asText(obj?.name)}</p>
-                            <p className="text-xs text-gray-500">{asText(obj?.role)}</p>
-                            <p className="mt-1 text-xs">
-                              Poder: {asText(obj?.decision_power)} | Influencia: {asText(obj?.influence)}
-                            </p>
-                            <p className="mt-1">{asText(obj?.notes)}</p>
-                          </div>
-                        );
+                        return obj ? <StakeholderCard key={i} stakeholder={obj} /> : null;
                       })}
                     </div>
                   )}

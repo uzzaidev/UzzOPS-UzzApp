@@ -36,7 +36,7 @@ export function Sidebar({ projectId, projectName }: SidebarProps) {
   const menuItems = getMenuItems(projectId);
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-uzzai-primary to-uzzai-primary/90 text-white flex flex-col">
+    <aside className="flex h-full min-h-0 w-64 flex-col bg-gradient-to-b from-uzzai-primary to-uzzai-primary/90 text-white">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
@@ -63,7 +63,8 @@ export function Sidebar({ projectId, projectName }: SidebarProps) {
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <nav className="flex-1 min-h-0 overflow-y-auto px-4 py-6 [scrollbar-gutter:stable]">
+        <div className="space-y-1 pr-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -84,10 +85,11 @@ export function Sidebar({ projectId, projectName }: SidebarProps) {
             </Link>
           );
         })}
+        </div>
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-white/10">
+      <div className="shrink-0 border-t border-white/10 p-4">
         <Link
           href="/settings"
           className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors text-white/80 hover:text-white"

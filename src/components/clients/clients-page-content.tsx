@@ -180,6 +180,7 @@ export function ClientsPageContent({ projectId }: Props) {
   const [icpFilter, setIcpFilter] = useState<'all' | 'hot' | 'warm' | 'cold' | 'future'>('all');
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'trial' | 'paused' | 'churned'>('all');
+  const [productFilter, setProductFilter] = useState<string>('all');
   const [form, setForm] = useState<NewClientForm>(INITIAL_FORM);
   const filterStorageKey = `crm-clients-filters:${projectId}`;
 
@@ -194,12 +195,14 @@ export function ClientsPageContent({ projectId }: Props) {
         icpFilter: 'all' | 'hot' | 'warm' | 'cold' | 'future';
         stageFilter: string;
         statusFilter: 'all' | 'active' | 'trial' | 'paused' | 'churned';
+        productFilter: string;
       }>;
       if (typeof parsed.query === 'string') setQuery(parsed.query);
       if (parsed.mode === 'lista' || parsed.mode === 'pipeline') setMode(parsed.mode);
       if (parsed.icpFilter) setIcpFilter(parsed.icpFilter);
       if (typeof parsed.stageFilter === 'string') setStageFilter(parsed.stageFilter);
       if (parsed.statusFilter) setStatusFilter(parsed.statusFilter);
+      if (typeof parsed.productFilter === 'string') setProductFilter(parsed.productFilter);
     } catch {
       // ignore malformed saved filters
     }
@@ -213,9 +216,10 @@ export function ClientsPageContent({ projectId }: Props) {
       icpFilter,
       stageFilter,
       statusFilter,
+      productFilter,
     };
     window.localStorage.setItem(filterStorageKey, JSON.stringify(payload));
-  }, [filterStorageKey, icpFilter, mode, projectId, query, stageFilter, statusFilter]);
+  }, [filterStorageKey, icpFilter, mode, productFilter, projectId, query, stageFilter, statusFilter]);
 
   const filtered = useMemo(() => {
     const items = data ?? [];
@@ -237,9 +241,12 @@ export function ClientsPageContent({ projectId }: Props) {
     const byStatus = statusFilter === 'all'
       ? byStage
       : byStage.filter((client) => (client.status ?? 'trial') === statusFilter);
+    const byProduct = productFilter === 'all'
+      ? byStatus
+      : byStatus.filter((client) => (client.product_focus ?? 'OUTRO') === productFilter);
 
-    return byStatus;
-  }, [data, icpFilter, query, stageFilter, statusFilter]);
+    return byProduct;
+  }, [data, icpFilter, productFilter, query, stageFilter, statusFilter]);
 
   const handleCreate = () => {
     if (!form.name.trim()) {
@@ -288,6 +295,7 @@ export function ClientsPageContent({ projectId }: Props) {
     setIcpFilter('all');
     setStageFilter('all');
     setStatusFilter('all');
+    setProductFilter('all');
   };
 
   if (isLoading) {
@@ -375,6 +383,19 @@ export function ClientsPageContent({ projectId }: Props) {
             <option value="active">Ativo</option>
             <option value="paused">Pausado</option>
             <option value="churned">Churn</option>
+          </select>
+          <span className="text-xs text-slate-500">Produto:</span>
+          <select
+            className="h-8 rounded-md border px-2 text-xs"
+            value={productFilter}
+            onChange={(e) => setProductFilter(e.target.value)}
+          >
+            <option value="all">Todos</option>
+            <option value="CHATBOT">Chatbot</option>
+            <option value="SITE-BUILDER">Site Builder</option>
+            <option value="UzzBIM">UzzBIM</option>
+            <option value="NutriTrain">NutriTrain</option>
+            <option value="OUTRO">Outro</option>
           </select>
           <Button size="sm" variant="ghost" onClick={clearFilters}>
             Limpar filtros

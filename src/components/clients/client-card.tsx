@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { UzzappClient } from '@/types';
 import { IcpBadge } from '@/components/clients/icp-badge';
 import { ProbabilityGauge } from '@/components/clients/probability-gauge';
+import { LeadVolumeMeter } from '@/components/clients/lead-volume-meter';
 import { priorityLabel } from '@/lib/crm/labels';
 
 function asText(v: unknown) {
@@ -50,6 +51,9 @@ export function ClientCard({
       <p className="mt-2 text-xs text-slate-600">
         {asText(client.product_focus)} | Ultimo: {formatDate(client.last_contact_date)}
       </p>
+      <div className="mt-2">
+        <LeadVolumeMeter value={client.lead_daily_volume} />
+      </div>
       <div className="mt-2 flex items-center justify-between">
         <p className="text-xs font-medium text-slate-800">{money(client.potential_value)}</p>
         {isOverdue(client.next_action_deadline) ? (

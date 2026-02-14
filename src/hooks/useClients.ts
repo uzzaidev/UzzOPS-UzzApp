@@ -64,6 +64,34 @@ export function useClients(projectId: string) {
   });
 }
 
+export function useClientStats(projectId: string) {
+  return useQuery({
+    queryKey: ['clients-stats', projectId],
+    queryFn: async () => {
+      const res = await tenantFetch(`/api/projects/${projectId}/clients`);
+      if (!res.ok) throw new Error('Failed to fetch client stats');
+      const { data } = await res.json();
+      const clients = (data ?? []) as UzzappClient[];
+      const today = new Date().toISOString().slice(0, 10);
+
+      return {
+        total: clients.length,
+        hot: clients.filter((c) => c.icp_classification === 'hot').length,
+        warm: clients.filter((c) => c.icp_classification === 'warm').length,
+        cold: clients.filter((c) => c.icp_classification === 'cold').length,
+        future: clients.filter((c) => c.icp_classification === 'future').length,
+        closed: clients.filter((c) => c.negotiation_status === 'Fechado').length,
+        pipelineValue: clients.reduce((sum, c) => sum + (c.potential_value ?? 0), 0),
+        overdueActions: clients.filter(
+          (c) => !!c.next_action_deadline && c.next_action_deadline < today && c.status !== 'churned'
+        ).length,
+      };
+    },
+    enabled: !!projectId,
+    staleTime: 30_000,
+  });
+}
+
 export function useClient(clientId: string) {
   return useQuery({
     queryKey: ['client', clientId],
