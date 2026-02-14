@@ -13,7 +13,7 @@ interface SprintGoalSectionProps {
 
 export function SprintGoalSection({ sprint }: SprintGoalSectionProps) {
     const [isEditing, setIsEditing] = useState(false);
-    const [goalValue, setGoalValue] = useState(sprint.sprint_goal || '');
+    const [goalValue, setGoalValue] = useState(sprint.goal || sprint.sprint_goal || '');
 
     const updateSprint = useUpdateSprint();
 
@@ -21,7 +21,7 @@ export function SprintGoalSection({ sprint }: SprintGoalSectionProps) {
         try {
             await updateSprint.mutateAsync({
                 id: sprint.id,
-                data: { sprint_goal: goalValue }
+                data: { goal: goalValue }
             });
             setIsEditing(false);
         } catch (error) {
@@ -31,7 +31,7 @@ export function SprintGoalSection({ sprint }: SprintGoalSectionProps) {
     };
 
     const handleCancel = () => {
-        setGoalValue(sprint.sprint_goal || '');
+        setGoalValue(sprint.goal || sprint.sprint_goal || '');
         setIsEditing(false);
     };
 
@@ -91,7 +91,7 @@ export function SprintGoalSection({ sprint }: SprintGoalSectionProps) {
                 </div>
             ) : (
                 <p className="text-muted-foreground whitespace-pre-wrap">
-                    {sprint.sprint_goal || 'Nenhum objetivo definido para este sprint.'}
+                    {sprint.goal || sprint.sprint_goal || 'Nenhum objetivo definido para este sprint.'}
                 </p>
             )}
         </Card>

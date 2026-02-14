@@ -38,7 +38,7 @@ export function SprintWorkflows({ sprint }: SprintWorkflowsProps) {
                     status: 'active',
                     is_protected: true,
                     started_at: new Date().toISOString()
-                }
+                } as any
             });
             setStartDialogOpen(false);
             router.refresh();
@@ -56,7 +56,7 @@ export function SprintWorkflows({ sprint }: SprintWorkflowsProps) {
                 data: {
                     status: 'completed',
                     completed_at: new Date().toISOString()
-                }
+                } as any
             });
             setCompleteDialogOpen(false);
             router.refresh();
@@ -75,7 +75,7 @@ export function SprintWorkflows({ sprint }: SprintWorkflowsProps) {
                 data: {
                     status: 'completed', // Ou criar um status 'cancelled'
                     completed_at: new Date().toISOString()
-                }
+                } as any
             });
             setCancelDialogOpen(false);
             router.refresh();

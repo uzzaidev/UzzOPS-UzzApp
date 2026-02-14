@@ -87,10 +87,10 @@ export function EditRiskModal({ open, onOpenChange, risk }: EditRiskModalProps) 
     defaultValues: {
       title: risk.title,
       description: risk.description || '',
-      gut_g: risk.gut_g,
-      gut_u: risk.gut_u,
-      gut_t: risk.gut_t,
-      status: risk.status,
+      gut_g: risk.gut_g ?? 1,
+      gut_u: risk.gut_u ?? 1,
+      gut_t: risk.gut_t ?? 1,
+      status: risk.status ?? 'identified',
       mitigation_plan: risk.mitigation_plan || '',
     },
   });

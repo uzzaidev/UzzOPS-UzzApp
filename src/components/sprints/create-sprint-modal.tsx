@@ -62,13 +62,24 @@ const formSchema = z
         path: ['end_date'],
     });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.output<typeof formSchema>;
+type FormInput = {
+    code: string;
+    name: string;
+    sprint_goal: string;
+    duration_weeks: number | string;
+    start_date: string;
+    end_date: string;
+    status: 'planned' | 'active' | 'completed' | 'cancelled';
+    capacity_total?: number | string;
+    velocity_target?: number | string;
+};
 
 export function CreateSprintModal({ open, onOpenChange, projectId }: CreateSprintModalProps) {
     const createSprint = useCreateSprint();
 
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<FormInput, unknown, FormValues>({
+        resolver: zodResolver(formSchema) as any,
         defaultValues: {
             code: '',
             name: '',

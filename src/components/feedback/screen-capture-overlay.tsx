@@ -182,7 +182,6 @@ export function ScreenCaptureOverlay({
       return;
     }
     try {
-      // @ts-expect-error ClipboardItem pode nao estar tipado no TS target atual
       await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
       toast.success('Imagem copiada. Reabra o feedback e cole com Ctrl+V.');
       onCancel();

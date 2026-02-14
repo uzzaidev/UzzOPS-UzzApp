@@ -75,12 +75,13 @@ export async function GET(
       .eq('project_id', id)
       .gte('gut_score', 100); // Riscos com GUT >= 100 são críticos
 
+    const featuresList = features ?? [];
+
     // Calcular KPIs
-    const totalFeatures = features?.length || 0;
-    const featuresDone = features?.filter((f) => f.status === 'done').length || 0;
-    const featuresInProgress = features?.filter((f) => f.status === 'in_progress').length || 0;
-    const featuresTodo =
-      features?.filter((f) => ['backlog', 'todo'].includes(f.status)).length || 0;
+    const totalFeatures = featuresList.length;
+    const featuresDone = featuresList.filter((f) => f.status === 'done').length;
+    const featuresInProgress = featuresList.filter((f) => f.status === 'in_progress').length;
+    const featuresTodo = featuresList.filter((f) => ['backlog', 'todo'].includes(f.status)).length;
 
     // Calcular progresso
     const progress = totalFeatures > 0 ? Math.round((featuresDone / totalFeatures) * 100) : 0;
@@ -88,7 +89,7 @@ export async function GET(
     // Calcular média de DoD
     const avgDodProgress = totalFeatures > 0
       ? Math.round(
-          features.reduce((sum, f) => sum + (f.dod_progress || 0), 0) / totalFeatures
+          featuresList.reduce((sum, f) => sum + (f.dod_progress || 0), 0) / totalFeatures
         )
       : 0;
 

@@ -3,7 +3,7 @@
 import type { UzzappClient } from '@/types';
 
 function sum(values: Array<number | null | undefined>) {
-  return values.reduce((acc, n) => acc + (typeof n === 'number' ? n : 0), 0);
+  return values.reduce<number>((acc, n) => acc + (typeof n === 'number' ? n : 0), 0);
 }
 
 function money(value: number) {

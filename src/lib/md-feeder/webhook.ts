@@ -28,7 +28,7 @@ export async function sendMdFeederWebhook(payload: ImportWebhookPayload) {
       signal: controller.signal,
     });
     return {
-      sent: response.ok as const,
+      sent: response.ok,
       status: response.status,
     };
   } catch {
@@ -37,4 +37,3 @@ export async function sendMdFeederWebhook(payload: ImportWebhookPayload) {
     clearTimeout(timeout);
   }
 }
-

@@ -1085,7 +1085,10 @@ async function createUzzappClient(
     lead_source: asString(raw.lead_source) || null,
     icp_classification: asString(raw.icp_classification) || null,
     business_context: asString(raw.business_context) || null,
-    lead_daily_volume: Number.isInteger(leadDailyVolume) && leadDailyVolume >= 0 ? leadDailyVolume : null,
+    lead_daily_volume:
+      typeof leadDailyVolume === 'number' && Number.isInteger(leadDailyVolume) && leadDailyVolume >= 0
+        ? leadDailyVolume
+        : null,
     stakeholders_json: asJsonArray(raw.stakeholders_json) ?? [],
     bant_snapshot:
       asJsonObject(raw.bant_snapshot) ??
