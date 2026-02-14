@@ -336,6 +336,60 @@ export interface TeamMemberFull {
   updated_at: string;
 }
 
+export type UzzappClientStatus = 'active' | 'trial' | 'churned' | 'paused';
+export type UzzappClientPlan = 'starter' | 'pro' | 'enterprise' | 'custom' | null;
+
+export interface UzzappClient {
+  id: string;
+  tenant_id: string | null;
+  name: string;
+  legal_name: string | null;
+  cnpj: string | null;
+  company: string | null;
+  segment: string | null;
+  company_size: 'micro' | 'pequena' | 'media' | 'grande' | null;
+  city: string | null;
+  state: string | null;
+  address_full: string | null;
+  website: string | null;
+  phone: string | null;
+  email: string | null;
+  main_contact_name: string | null;
+  main_contact_role: string | null;
+  whatsapp_business: string | null;
+  plan: UzzappClientPlan;
+  status: UzzappClientStatus | null;
+  funnel_stage: string | null;
+  negotiation_status: string | null;
+  closing_probability: number | null;
+  priority: 'critica' | 'alta' | 'media' | 'baixa' | null;
+  potential_value: number | null;
+  monthly_fee_value: number | null;
+  setup_fee_value: number | null;
+  next_interaction_date: string | null;
+  next_action_deadline: string | null;
+  sales_owner_id: string | null;
+  followup_owner_id: string | null;
+  technical_owner_id: string | null;
+  product_focus: string | null;
+  project_label: string | null;
+  preferred_channel: string | null;
+  general_sentiment: string | null;
+  lead_source: 'indicacao' | 'linkedin' | 'evento' | 'cold-outreach' | 'inbound' | 'parceiro' | 'outro' | null;
+  icp_classification: 'hot' | 'warm' | 'cold' | 'future' | null;
+  business_context: string | null;
+  lead_daily_volume: number | null;
+  stakeholders_json: unknown[] | null;
+  bant_snapshot: Record<string, unknown> | null;
+  fit_snapshot: Record<string, unknown> | null;
+  last_contact_date: string | null;
+  tags: string[] | null;
+  notes: string | null;
+  onboarded_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
 // =====================================================
 // SPRINT 6 TYPES
 // =====================================================

@@ -141,6 +141,29 @@ export default function FeatureDetailPage({
 
           <FeatureKnowledgeSection feature={feature} />
 
+          {Array.isArray((feature as any).observations) && (feature as any).observations.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Observações de Import</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {(feature as any).observations.map((obs: any, idx: number) => (
+                    <div key={`${idx}-${obs?.imported_at ?? ''}`} className="rounded-md border p-3">
+                      <p className="text-sm whitespace-pre-wrap">{obs?.text ?? '-'}</p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        fonte: {obs?.source ?? '-'} | por: {obs?.imported_by_name ?? '-'} | em:{' '}
+                        {obs?.imported_at
+                          ? format(new Date(obs.imported_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })
+                          : '-'}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Tasks (se houver) */}
           {(feature as any).tasks && (feature as any).tasks.length > 0 && (
             <Card>

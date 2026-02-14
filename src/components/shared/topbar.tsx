@@ -2,6 +2,7 @@ import { UserMenu } from './user-menu';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { ArrowLeftRight } from 'lucide-react';
+import { MdFeederButton } from '@/components/import/md-feeder-button';
 
 interface TopbarProps {
   projectId?: string;
@@ -35,6 +36,7 @@ export async function Topbar({ projectId, projectName }: TopbarProps) {
       </div>
 
       <div className="flex items-center gap-4">
+        {projectId ? <MdFeederButton projectId={projectId} /> : null}
         <UserMenu
           user={{
             email: user?.email,
