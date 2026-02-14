@@ -28,7 +28,7 @@ Status atual: base multi-tenant endurecida (migracoes 013-015) e QA concluido co
 ```bash
 pnpm install
 ```
-2. Configurar `.env.local` a partir de `.env.local.example`
+2. Configurar `.env.local` a partir de `.env.example`
 3. Aplicar migracoes no Supabase em ordem numerica de `database/migrations`
 4. Rodar aplicacao:
 ```bash

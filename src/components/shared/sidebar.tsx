@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, FileText, Calendar, Users, AlertTriangle, BarChart3, Star, Spade, Network, ShieldCheck, ClipboardList, Settings, FolderOpen, TrendingUp, Megaphone, Building2 } from 'lucide-react';
+import { Home, FileText, Calendar, Users, AlertTriangle, BarChart3, Star, Spade, Network, ShieldCheck, ClipboardList, Settings, FolderOpen, TrendingUp, Megaphone, Building2, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -26,6 +26,7 @@ function getMenuItems(projectId: string) {
     { icon: Users, label: 'Team', href: `/projects/${projectId}/team` },
     { icon: Building2, label: 'Clientes', href: `/projects/${projectId}/clients` },
     { icon: BarChart3, label: 'CRM Dashboard', href: `/projects/${projectId}/crm-dashboard` },
+    { icon: MessageSquare, label: 'Feedbacks', href: `/projects/${projectId}/feedback` },
     { icon: AlertTriangle, label: 'Risks', href: `/projects/${projectId}/risks` },
   ];
 }
