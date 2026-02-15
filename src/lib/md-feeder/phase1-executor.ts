@@ -1571,6 +1571,544 @@ async function createClientContact(
   return { id: (data as any).id as string, code: clientRefName || clientId };
 }
 
+async function resolveIdByCodeOrId(
+  supabase: SupabaseClient,
+  table: string,
+  tenantId: string,
+  idValue: unknown,
+  codeValue: unknown
+) {
+  const id = asString(idValue);
+  if (id) return id;
+  const code = asString(codeValue);
+  if (!code) return null;
+  const { data } = await supabase
+    .from(table as any)
+    .select('id')
+    .eq('tenant_id', tenantId)
+    .eq('code', code)
+    .limit(1)
+    .maybeSingle();
+  return ((data as any)?.id as string | undefined) ?? null;
+}
+
+async function createProductCharter(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para product_charter.');
+  const raw = item.rawData;
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    version: raw.version == null ? 1 : Number(raw.version),
+    status: asString(raw.status) || 'draft',
+    vision_outcome: asString(raw.vision_outcome),
+    target_users_json: asJsonArray(raw.target_users_json) ?? [],
+    critical_hypotheses_json: asJsonArray(raw.critical_hypotheses_json) ?? [],
+    mvp_anchor_cases_json: asJsonArray(raw.mvp_anchor_cases_json) ?? [],
+    success_metrics_json: asJsonArray(raw.success_metrics_json) ?? [],
+    non_negotiables_json: asJsonArray(raw.non_negotiables_json) ?? [],
+    top_risks_json: asJsonArray(raw.top_risks_json) ?? [],
+    ip_rules_json: asJsonArray(raw.ip_rules_json) ?? [],
+    source_ref: asString(raw.source_ref) || null,
+    valid_from: asString(raw.valid_from) || null,
+    valid_to: asString(raw.valid_to) || null,
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('product_charters').insert(payload).select('id, version').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar product_charter.');
+  return { id: (data as any).id as string, code: `charter-v${(data as any).version}` };
+}
+
+async function createOutcomeTree(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para outcome_tree.');
+  const raw = item.rawData;
+  const charterId = await resolveIdByCodeOrId(supabase, 'product_charters', ctx.tenantId, raw.charter_id, raw.charter_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    charter_id: charterId,
+    code: asString(raw.code) || null,
+    title: asString(raw.title),
+    outcome_statement: asString(raw.outcome_statement),
+    status: asString(raw.status) || 'active',
+    horizon_label: asString(raw.horizon_label) || null,
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('outcome_trees').insert(payload).select('id, code').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar outcome_tree.');
+  return { id: (data as any).id as string, code: (data as any).code || asString(raw.title) };
+}
+
+async function createOutcomeOpportunity(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para outcome_opportunity.');
+  const raw = item.rawData;
+  const outcomeTreeId = await resolveIdByCodeOrId(
+    supabase, 'outcome_trees', ctx.tenantId, raw.outcome_tree_id, raw.outcome_tree_code
+  );
+  if (!outcomeTreeId) throw new Error('outcome_tree_id/outcome_tree_code obrigatorio para outcome_opportunity.');
+  const parentOpportunityId = asString(raw.parent_opportunity_id) || null;
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    outcome_tree_id: outcomeTreeId,
+    parent_opportunity_id: parentOpportunityId,
+    title: asString(raw.title),
+    problem_statement: asString(raw.problem_statement) || null,
+    evidence_json: asJsonArray(raw.evidence_json) ?? [],
+    risk_type: asString(raw.risk_type) || null,
+    priority: raw.priority == null ? 3 : Number(raw.priority),
+    status: asString(raw.status) || 'mapped',
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('outcome_opportunities').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar outcome_opportunity.');
+  return { id: (data as any).id as string, code: asString(raw.title) };
+}
+
+async function createOpportunitySolution(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para opportunity_solution.');
+  const raw = item.rawData;
+  const opportunityId = asString(raw.opportunity_id);
+  if (!opportunityId) throw new Error('opportunity_id obrigatorio para opportunity_solution.');
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    opportunity_id: opportunityId,
+    title: asString(raw.title),
+    description: asString(raw.description) || null,
+    maturity: asString(raw.maturity) || 'idea',
+    expected_impact_score:
+      raw.expected_impact_score == null ? null : Number(raw.expected_impact_score),
+    expected_effort_score:
+      raw.expected_effort_score == null ? null : Number(raw.expected_effort_score),
+    confidence_score:
+      raw.confidence_score == null ? null : Number(raw.confidence_score),
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('opportunity_solutions').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar opportunity_solution.');
+  return { id: (data as any).id as string, code: asString(raw.title) };
+}
+
+async function createSolutionTest(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para solution_test.');
+  const raw = item.rawData;
+  const solutionId = asString(raw.solution_id);
+  if (!solutionId) throw new Error('solution_id obrigatorio para solution_test.');
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    solution_id: solutionId,
+    sprint_id: sprintId,
+    test_type: asString(raw.test_type),
+    hypothesis: asString(raw.hypothesis),
+    method: asString(raw.method) || null,
+    success_criteria_json: asJsonObject(raw.success_criteria_json) ?? {},
+    evidence_json: asJsonObject(raw.evidence_json) ?? {},
+    result: asString(raw.result) || 'pending',
+    decision: asString(raw.decision) || null,
+    started_at: asString(raw.started_at) || null,
+    completed_at: asString(raw.completed_at) || null,
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('solution_tests').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar solution_test.');
+  return { id: (data as any).id as string, code: asString(raw.test_type) };
+}
+
+async function createRoadmap(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para roadmap.');
+  const raw = item.rawData;
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    code: asString(raw.code) || null,
+    name: asString(raw.name),
+    status: asString(raw.status) || 'active',
+    planning_model: asString(raw.planning_model) || 'scrum',
+    horizon_start: asString(raw.horizon_start) || null,
+    horizon_end: asString(raw.horizon_end) || null,
+    release_reference_sprints:
+      raw.release_reference_sprints == null ? null : Number(raw.release_reference_sprints),
+    notes: asString(raw.notes) || null,
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('roadmaps').insert(payload).select('id, code').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar roadmap.');
+  return { id: (data as any).id as string, code: (data as any).code || asString(raw.name) };
+}
+
+async function createRoadmapItem(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para roadmap_item.');
+  const raw = item.rawData;
+  const roadmapId = await resolveIdByCodeOrId(supabase, 'roadmaps', ctx.tenantId, raw.roadmap_id, raw.roadmap_code);
+  if (!roadmapId) throw new Error('roadmap_id/roadmap_code obrigatorio para roadmap_item.');
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    roadmap_id: roadmapId,
+    parent_item_id: asString(raw.parent_item_id) || null,
+    sprint_id: sprintId,
+    code: asString(raw.code) || null,
+    item_type: asString(raw.item_type),
+    title: asString(raw.title),
+    description: asString(raw.description) || null,
+    status: asString(raw.status) || 'planned',
+    confidence_pct: raw.confidence_pct == null ? null : Number(raw.confidence_pct),
+    planned_start: asString(raw.planned_start) || null,
+    planned_end: asString(raw.planned_end) || null,
+    actual_start: asString(raw.actual_start) || null,
+    actual_end: asString(raw.actual_end) || null,
+    dependencies_json: asJsonArray(raw.dependencies_json) ?? [],
+    success_metrics_json: asJsonArray(raw.success_metrics_json) ?? [],
+    risk_notes: asString(raw.risk_notes) || null,
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('roadmap_items').insert(payload).select('id, code').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar roadmap_item.');
+  return { id: (data as any).id as string, code: (data as any).code || asString(raw.title) };
+}
+
+async function createProjectHypothesis(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para project_hypothesis.');
+  const raw = item.rawData;
+  const roadmapItemId = await resolveIdByCodeOrId(
+    supabase, 'roadmap_items', ctx.tenantId, raw.roadmap_item_id, raw.roadmap_item_code
+  );
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    roadmap_item_id: roadmapItemId,
+    title: asString(raw.title),
+    statement: asString(raw.statement),
+    risk_type: asString(raw.risk_type),
+    metric_name: asString(raw.metric_name) || null,
+    threshold_expression: asString(raw.threshold_expression) || null,
+    baseline_value: asString(raw.baseline_value) || null,
+    target_value: asString(raw.target_value) || null,
+    evidence_required: asString(raw.evidence_required) || null,
+    status: asString(raw.status) || 'backlog',
+    confidence_before: raw.confidence_before == null ? null : Number(raw.confidence_before),
+    confidence_after: raw.confidence_after == null ? null : Number(raw.confidence_after),
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('project_hypotheses').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar project_hypothesis.');
+  return { id: (data as any).id as string, code: asString(raw.title) };
+}
+
+async function createHypothesisExperiment(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para hypothesis_experiment.');
+  const raw = item.rawData;
+  const hypothesisId = asString(raw.hypothesis_id);
+  if (!hypothesisId) throw new Error('hypothesis_id obrigatorio para hypothesis_experiment.');
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    hypothesis_id: hypothesisId,
+    sprint_id: sprintId,
+    experiment_type: asString(raw.experiment_type),
+    question: asString(raw.question),
+    timebox_hours: raw.timebox_hours == null ? null : Number(raw.timebox_hours),
+    protocol_json: asJsonObject(raw.protocol_json) ?? {},
+    collected_data_json: asJsonObject(raw.collected_data_json) ?? {},
+    result_summary: asString(raw.result_summary) || null,
+    outcome: asString(raw.outcome) || null,
+    started_at: asString(raw.started_at) || null,
+    completed_at: asString(raw.completed_at) || null,
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('hypothesis_experiments').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar hypothesis_experiment.');
+  return { id: (data as any).id as string, code: asString(raw.experiment_type) };
+}
+
+async function createDecisionLog(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para decision_log.');
+  const raw = item.rawData;
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const roadmapItemId = await resolveIdByCodeOrId(
+    supabase, 'roadmap_items', ctx.tenantId, raw.roadmap_item_id, raw.roadmap_item_code
+  );
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    sprint_id: sprintId,
+    roadmap_item_id: roadmapItemId,
+    decision_date: asString(raw.decision_date) || new Date().toISOString().slice(0, 10),
+    category: asString(raw.category),
+    title: asString(raw.title),
+    decision_text: asString(raw.decision_text),
+    evidence_text: asString(raw.evidence_text) || null,
+    impact_summary: asString(raw.impact_summary) || null,
+    impact_json: asJsonObject(raw.impact_json) ?? {},
+    supersedes_decision_id: asString(raw.supersedes_decision_id) || null,
+    status: asString(raw.status) || 'active',
+    decided_by: await resolveTeamMemberId(supabase, ctx, asString(raw.decided_by_name || raw.decided_by)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('project_decision_log').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar decision_log.');
+  return { id: (data as any).id as string, code: asString(raw.title) };
+}
+
+async function createAdr(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para adr.');
+  const raw = item.rawData;
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    decision_log_id: asString(raw.decision_log_id) || null,
+    adr_code: asString(raw.adr_code),
+    title: asString(raw.title),
+    status: asString(raw.status) || 'proposed',
+    context: asString(raw.context),
+    decision: asString(raw.decision),
+    alternatives_json: asJsonArray(raw.alternatives_json) ?? [],
+    tradeoffs_json: asJsonArray(raw.tradeoffs_json) ?? [],
+    consequences: asString(raw.consequences) || null,
+    reevaluation_triggers_json: asJsonArray(raw.reevaluation_triggers_json) ?? [],
+    related_links_json: asJsonArray(raw.related_links_json) ?? [],
+    decided_at: asString(raw.decided_at) || null,
+    decided_by: await resolveTeamMemberId(supabase, ctx, asString(raw.decided_by_name || raw.decided_by)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('architecture_decision_records').insert(payload).select('id, adr_code').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar ADR.');
+  return { id: (data as any).id as string, code: (data as any).adr_code as string };
+}
+
+async function createSprintCeremony(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para sprint_ceremony.');
+  const raw = item.rawData;
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    sprint_id: sprintId,
+    ceremony_type: asString(raw.ceremony_type),
+    session_date: asString(raw.session_date),
+    duration_minutes: raw.duration_minutes == null ? null : Number(raw.duration_minutes),
+    objective: asString(raw.objective) || null,
+    input_summary: asString(raw.input_summary) || null,
+    output_summary: asString(raw.output_summary) || null,
+    decisions_json: asJsonArray(raw.decisions_json) ?? [],
+    metrics_snapshot_json: asJsonObject(raw.metrics_snapshot_json) ?? {},
+    attendees_json: asJsonArray(raw.attendees_json) ?? [],
+    action_items_json: asJsonArray(raw.action_items_json) ?? [],
+    facilitator_id: await resolveTeamMemberId(supabase, ctx, asString(raw.facilitator_name || raw.facilitator)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('sprint_ceremonies').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar sprint_ceremony.');
+  return { id: (data as any).id as string, code: asString(raw.ceremony_type) };
+}
+
+async function createReleaseForecast(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para release_forecast.');
+  const raw = item.rawData;
+  const roadmapId = await resolveIdByCodeOrId(supabase, 'roadmaps', ctx.tenantId, raw.roadmap_id, raw.roadmap_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    roadmap_id: roadmapId,
+    label: asString(raw.label),
+    forecast_model: asString(raw.forecast_model) || 'velocity_range',
+    unit: asString(raw.unit) || 'story_points',
+    history_window_sprints: raw.history_window_sprints == null ? null : Number(raw.history_window_sprints),
+    sample_size: raw.sample_size == null ? null : Number(raw.sample_size),
+    confidence_levels_json: asJsonArray(raw.confidence_levels_json) ?? [0.5, 0.8, 0.9],
+    backlog_scope_json: asJsonArray(raw.backlog_scope_json) ?? [],
+    assumptions_json: asJsonObject(raw.assumptions_json) ?? {},
+    output_json: asJsonObject(raw.output_json) ?? {},
+    generated_at: asString(raw.generated_at) || new Date().toISOString(),
+    generated_by: ctx.actorUserId,
+    notes: asString(raw.notes) || null,
+  };
+  const { data, error } = await supabase.from('release_forecasts').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar release_forecast.');
+  return { id: (data as any).id as string, code: asString(raw.label) };
+}
+
+async function createPilotProgram(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para pilot_program.');
+  const raw = item.rawData;
+  const roadmapItemId = await resolveIdByCodeOrId(
+    supabase, 'roadmap_items', ctx.tenantId, raw.roadmap_item_id, raw.roadmap_item_code
+  );
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    roadmap_item_id: roadmapItemId,
+    name: asString(raw.name),
+    status: asString(raw.status) || 'planned',
+    pilot_goal: asString(raw.pilot_goal),
+    phases_json: asJsonArray(raw.phases_json) ?? [],
+    success_criteria_json: asJsonArray(raw.success_criteria_json) ?? [],
+    start_date: asString(raw.start_date) || null,
+    end_date: asString(raw.end_date) || null,
+    owner_id: await resolveTeamMemberId(supabase, ctx, asString(raw.owner_name || raw.owner)),
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('pilot_programs').insert(payload).select('id, name').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar pilot_program.');
+  return { id: (data as any).id as string, code: (data as any).name as string };
+}
+
+async function createPilotOffice(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para pilot_office.');
+  const raw = item.rawData;
+  const pilotProgramId = asString(raw.pilot_program_id);
+  if (!pilotProgramId) throw new Error('pilot_program_id obrigatorio para pilot_office.');
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    pilot_program_id: pilotProgramId,
+    office_name: asString(raw.office_name),
+    company_name: asString(raw.company_name) || null,
+    contact_name: asString(raw.contact_name) || null,
+    contact_email: asString(raw.contact_email) || null,
+    status: asString(raw.status) || 'onboarding',
+    setup_completed_at: asString(raw.setup_completed_at) || null,
+    notes: asString(raw.notes) || null,
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('pilot_offices').insert(payload).select('id, office_name').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar pilot_office.');
+  return { id: (data as any).id as string, code: (data as any).office_name as string };
+}
+
+async function createPilotValidationEvent(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para pilot_validation_event.');
+  const raw = item.rawData;
+  const pilotProgramId = asString(raw.pilot_program_id);
+  if (!pilotProgramId) throw new Error('pilot_program_id obrigatorio para pilot_validation_event.');
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    pilot_program_id: pilotProgramId,
+    pilot_office_id: asString(raw.pilot_office_id) || null,
+    sprint_id: sprintId,
+    phase: asString(raw.phase),
+    event_date: asString(raw.event_date),
+    event_type: asString(raw.event_type),
+    metrics_json: asJsonObject(raw.metrics_json) ?? {},
+    incidents_json: asJsonArray(raw.incidents_json) ?? [],
+    qualitative_feedback: asString(raw.qualitative_feedback) || null,
+    decision: asString(raw.decision) || null,
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('pilot_validation_events').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar pilot_validation_event.');
+  return { id: (data as any).id as string, code: asString(raw.event_type) };
+}
+
+async function createProductChangelog(
+  supabase: SupabaseClient,
+  item: Phase1ValidatedItem,
+  ctx: ImportContext
+) {
+  if (!ctx.projectId) throw new Error('project_id obrigatorio para product_changelog.');
+  const raw = item.rawData;
+  const sprintId = await resolveIdByCodeOrId(supabase, 'sprints', ctx.tenantId, raw.sprint_id, raw.sprint_code);
+  const roadmapItemId = await resolveIdByCodeOrId(
+    supabase, 'roadmap_items', ctx.tenantId, raw.roadmap_item_id, raw.roadmap_item_code
+  );
+  const payload = {
+    tenant_id: ctx.tenantId,
+    project_id: ctx.projectId,
+    sprint_id: sprintId,
+    roadmap_item_id: roadmapItemId,
+    release_label: asString(raw.release_label) || null,
+    change_date: asString(raw.change_date) || new Date().toISOString().slice(0, 10),
+    change_type: asString(raw.change_type),
+    title: asString(raw.title),
+    summary: asString(raw.summary),
+    impact_area: asString(raw.impact_area) || null,
+    evidence_links_json: asJsonArray(raw.evidence_links_json) ?? [],
+    visibility: asString(raw.visibility) || 'internal',
+    created_by: ctx.actorUserId,
+  };
+  const { data, error } = await supabase.from('product_changelog_entries').insert(payload).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'Falha ao criar product_changelog.');
+  return { id: (data as any).id as string, code: asString(raw.title) };
+}
+
 export async function executePhase1Import(
   supabase: SupabaseClient,
   items: Phase1ValidatedItem[],
@@ -1666,6 +2204,57 @@ export async function executePhase1Import(
           created += 1;
         } else if (item.itemType === 'marketing_post') {
           entity = await createMarketingPost(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'product_charter') {
+          entity = await createProductCharter(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'outcome_tree') {
+          entity = await createOutcomeTree(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'outcome_opportunity') {
+          entity = await createOutcomeOpportunity(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'opportunity_solution') {
+          entity = await createOpportunitySolution(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'solution_test') {
+          entity = await createSolutionTest(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'roadmap') {
+          entity = await createRoadmap(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'roadmap_item') {
+          entity = await createRoadmapItem(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'project_hypothesis') {
+          entity = await createProjectHypothesis(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'hypothesis_experiment') {
+          entity = await createHypothesisExperiment(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'decision_log') {
+          entity = await createDecisionLog(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'adr') {
+          entity = await createAdr(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'sprint_ceremony') {
+          entity = await createSprintCeremony(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'release_forecast') {
+          entity = await createReleaseForecast(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'pilot_program') {
+          entity = await createPilotProgram(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'pilot_office') {
+          entity = await createPilotOffice(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'pilot_validation_event') {
+          entity = await createPilotValidationEvent(supabase, item, ctx);
+          created += 1;
+        } else if (item.itemType === 'product_changelog') {
+          entity = await createProductChangelog(supabase, item, ctx);
           created += 1;
         } else {
           throw new Error(`Acao create nao suportada para ${item.itemType}.`);

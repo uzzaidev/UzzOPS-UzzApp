@@ -4,8 +4,16 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { MarkdownRenderer } from '@/components/shared/markdown-renderer';
 import { ContactTimeline } from '@/components/clients/contact-timeline';
 import { ScoreRadarChart } from '@/components/clients/score-radar-chart';
@@ -14,7 +22,8 @@ import { IcpBadge } from '@/components/clients/icp-badge';
 import { ProbabilityGauge } from '@/components/clients/probability-gauge';
 import { LeadVolumeMeter } from '@/components/clients/lead-volume-meter';
 import { StakeholderCard } from '@/components/clients/stakeholder-card';
-import { useClient, useClientContacts } from '@/hooks/useClients';
+import { useClient, useClientContacts, useUpdateClient } from '@/hooks/useClients';
+import { toast } from 'sonner';
 import { dealOutcomeLabel, funnelLabel, negotiationLabel, priorityLabel, sentimentLabel, statusLabel } from '@/lib/crm/labels';
 
 function money(v: unknown) {
@@ -126,7 +135,19 @@ type Props = {
 export function ClientDetailsContent({ projectId, clientId }: Props) {
   const { data: client, isLoading, error } = useClient(clientId);
   const { data: contacts, isLoading: contactsLoading } = useClientContacts(projectId, clientId);
+  const updateClient = useUpdateClient(projectId);
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [clientDraft, setClientDraft] = useState({
+    name: '',
+    company: '',
+    main_contact_name: '',
+    main_contact_role: '',
+    email: '',
+    phone: '',
+    product_focus: '',
+    business_context: '',
+  });
 
   const sortedContacts = useMemo(() => {
     return [...(contacts ?? [])].sort((a: any, b: any) => {
@@ -160,6 +181,45 @@ export function ClientDetailsContent({ projectId, clientId }: Props) {
     return <p className="text-sm text-destructive">Erro ao carregar cliente.</p>;
   }
 
+  const startEditClient = () => {
+    setClientDraft({
+      name: asText(client.name) === '-' ? '' : asText(client.name),
+      company: asText(client.company) === '-' ? '' : asText(client.company),
+      main_contact_name: asText(client.main_contact_name) === '-' ? '' : asText(client.main_contact_name),
+      main_contact_role: asText(client.main_contact_role) === '-' ? '' : asText(client.main_contact_role),
+      email: asText(client.email) === '-' ? '' : asText(client.email),
+      phone: asText(client.phone) === '-' ? '' : asText(client.phone),
+      product_focus: asText(client.product_focus) === '-' ? '' : asText(client.product_focus),
+      business_context: asText(client.business_context) === '-' ? '' : asText(client.business_context),
+    });
+    setEditOpen(true);
+  };
+
+  const saveClientEdit = () => {
+    updateClient.mutate(
+      {
+        clientId,
+        updates: {
+          name: clientDraft.name.trim(),
+          company: clientDraft.company.trim() || null,
+          main_contact_name: clientDraft.main_contact_name.trim() || null,
+          main_contact_role: clientDraft.main_contact_role.trim() || null,
+          email: clientDraft.email.trim() || null,
+          phone: clientDraft.phone.trim() || null,
+          product_focus: clientDraft.product_focus.trim() || null,
+          business_context: clientDraft.business_context.trim() || null,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Cliente atualizado com sucesso.');
+          setEditOpen(false);
+        },
+        onError: (err) => toast.error(err.message),
+      }
+    );
+  };
+
   const dashboardExec = asObject(selectedContact?.dashboard_exec) ?? {};
   const bantScores = asObject(selectedContact?.bant_scores) ?? {};
   const fitScores = asObject(selectedContact?.fit_scores) ?? {};
@@ -186,6 +246,9 @@ export function ClientDetailsContent({ projectId, clientId }: Props) {
               Ultimo contato: {formatDate(client.last_contact_date)} | Produto: {asText(client.product_focus)}
             </p>
             <div className="flex flex-wrap items-center gap-2 pt-1">
+              <Button size="sm" variant="outline" onClick={startEditClient}>
+                Editar cliente
+              </Button>
               <Button asChild size="sm" variant="outline">
                 <Link href={`/projects/${projectId}/crm-dashboard`}>Abrir dashboard CRM</Link>
               </Button>
@@ -209,6 +272,67 @@ export function ClientDetailsContent({ projectId, clientId }: Props) {
           </div>
         </div>
       </div>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Editar cliente</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-2">
+            <Input
+              placeholder="Nome"
+              value={clientDraft.name}
+              onChange={(e) => setClientDraft((p) => ({ ...p, name: e.target.value }))}
+            />
+            <Input
+              placeholder="Empresa"
+              value={clientDraft.company}
+              onChange={(e) => setClientDraft((p) => ({ ...p, company: e.target.value }))}
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                placeholder="Contato principal"
+                value={clientDraft.main_contact_name}
+                onChange={(e) => setClientDraft((p) => ({ ...p, main_contact_name: e.target.value }))}
+              />
+              <Input
+                placeholder="Cargo do contato"
+                value={clientDraft.main_contact_role}
+                onChange={(e) => setClientDraft((p) => ({ ...p, main_contact_role: e.target.value }))}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                placeholder="Email"
+                value={clientDraft.email}
+                onChange={(e) => setClientDraft((p) => ({ ...p, email: e.target.value }))}
+              />
+              <Input
+                placeholder="Telefone"
+                value={clientDraft.phone}
+                onChange={(e) => setClientDraft((p) => ({ ...p, phone: e.target.value }))}
+              />
+            </div>
+            <Input
+              placeholder="Produto foco"
+              value={clientDraft.product_focus}
+              onChange={(e) => setClientDraft((p) => ({ ...p, product_focus: e.target.value }))}
+            />
+            <Textarea
+              rows={5}
+              placeholder="Contexto de negócio"
+              value={clientDraft.business_context}
+              onChange={(e) => setClientDraft((p) => ({ ...p, business_context: e.target.value }))}
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+              <Button onClick={saveClientEdit} disabled={updateClient.isPending}>
+                {updateClient.isPending ? 'Salvando...' : 'Salvar'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-lg border bg-white p-4 md:col-span-1">

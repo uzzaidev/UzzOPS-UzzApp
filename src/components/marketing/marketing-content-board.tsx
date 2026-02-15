@@ -24,7 +24,9 @@ import {
   useCreateMarketingContent,
   useMarketingContent,
   useTenantProjects,
+  useUpdateMarketingContent,
   type MarketingChannel,
+  type MarketingContentPiece,
   type MarketingContentStatus,
   type MarketingContentType,
 } from '@/hooks/useMarketing';
@@ -56,6 +58,11 @@ export function MarketingContentBoard({ projectId }: { projectId: string }) {
   const [newType, setNewType] = useState<MarketingContentType>('feed');
   const [newBrief, setNewBrief] = useState('');
   const [newProjectScope, setNewProjectScope] = useState<string>('current');
+  const [editingContentId, setEditingContentId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editType, setEditType] = useState<MarketingContentType>('feed');
+  const [editStatus, setEditStatus] = useState<MarketingContentStatus>('idea');
+  const [editBrief, setEditBrief] = useState('');
   const [selectedContentId, setSelectedContentId] = useState<string>('');
   const [batchDate, setBatchDate] = useState(new Date().toISOString().slice(0, 10));
   const [batchChannels, setBatchChannels] = useState<MarketingChannel[]>(['instagram']);
@@ -65,6 +72,7 @@ export function MarketingContentBoard({ projectId }: { projectId: string }) {
     search: search || undefined,
   });
   const createContent = useCreateMarketingContent(projectId);
+  const updateContent = useUpdateMarketingContent();
   const createBatch = useBatchCreatePublications();
   const projectsQuery = useTenantProjects();
 
@@ -83,6 +91,14 @@ export function MarketingContentBoard({ projectId }: { projectId: string }) {
     setBatchChannels((prev) =>
       checked ? Array.from(new Set([...prev, channel])) : prev.filter((v) => v !== channel)
     );
+  }
+
+  function openEditModal(item: MarketingContentPiece) {
+    setEditingContentId(item.id);
+    setEditTitle(item.title ?? '');
+    setEditType(item.content_type);
+    setEditStatus(item.status);
+    setEditBrief(item.brief ?? '');
   }
 
   return (
@@ -252,6 +268,88 @@ export function MarketingContentBoard({ projectId }: { projectId: string }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <Dialog
+          open={Boolean(editingContentId)}
+          onOpenChange={(open) => {
+            if (!open) setEditingContentId(null);
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar conteudo</DialogTitle>
+              <DialogDescription>Atualize os campos principais diretamente do board.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div>
+                <Label>Titulo</Label>
+                <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div>
+                  <Label>Tipo</Label>
+                  <Select value={editType} onValueChange={(v) => setEditType(v as MarketingContentType)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="feed">Feed</SelectItem>
+                      <SelectItem value="reels">Reels</SelectItem>
+                      <SelectItem value="carrossel">Carrossel</SelectItem>
+                      <SelectItem value="stories">Stories</SelectItem>
+                      <SelectItem value="artigo">Artigo</SelectItem>
+                      <SelectItem value="video">Video</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Select value={editStatus} onValueChange={(v) => setEditStatus(v as MarketingContentStatus)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statuses.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {statusLabels[status]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <Label>Brief</Label>
+                <Textarea value={editBrief} onChange={(e) => setEditBrief(e.target.value)} rows={4} />
+              </div>
+              <Button
+                className="w-full"
+                disabled={updateContent.isPending || !editingContentId || !editTitle.trim()}
+                onClick={() => {
+                  if (!editingContentId) return;
+                  updateContent.mutate(
+                    {
+                      id: editingContentId,
+                      payload: {
+                        title: editTitle.trim(),
+                        content_type: editType,
+                        status: editStatus,
+                        brief: editBrief.trim() || null,
+                      },
+                    },
+                    {
+                      onSuccess: () => {
+                        setEditingContentId(null);
+                      },
+                    }
+                  );
+                }}
+              >
+                {updateContent.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                Salvar alteracoes
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
         {contentQuery.isLoading ? (
           <div className="flex h-24 items-center justify-center">
             <Loader2 className="h-6 w-6 animate-spin text-uzzai-primary" />
@@ -275,9 +373,14 @@ export function MarketingContentBoard({ projectId }: { projectId: string }) {
                         {item.project?.name ? <Badge variant="outline">{item.project.name}</Badge> : null}
                       </div>
                       <div className="mt-2">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/projects/${projectId}/marketing/conteudos/${item.id}`}>Detalhe</Link>
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" asChild>
+                            <Link href={`/projects/${projectId}/marketing/conteudos/${item.id}`}>Detalhe</Link>
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => openEditModal(item)}>
+                            Editar
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}

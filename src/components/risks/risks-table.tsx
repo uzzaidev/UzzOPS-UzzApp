@@ -169,7 +169,7 @@ export function RisksTable({ projectId }: RisksTableProps) {
                 <TableHead className="w-[120px]">GUT Score</TableHead>
                 <TableHead className="w-[100px]">Nível</TableHead>
                 <TableHead className="w-[150px]">Status</TableHead>
-                <TableHead className="w-[120px] text-right">Ações</TableHead>
+                <TableHead className="w-[180px] text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -223,11 +223,13 @@ export function RisksTable({ projectId }: RisksTableProps) {
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleEdit(risk)}
+                          className="h-8 gap-1"
                         >
                           <Edit className="w-4 h-4" />
+                          Editar
                         </Button>
                         <Button
                           variant="ghost"

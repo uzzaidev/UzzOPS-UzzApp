@@ -132,7 +132,7 @@ export function SprintsTable({ projectId }: SprintsTableProps) {
                                 <TableHead>Período</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Velocity</TableHead>
-                                <TableHead className="text-right">Ações</TableHead>
+                                <TableHead className="w-[220px] text-right">Ações</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -204,15 +204,16 @@ export function SprintsTable({ projectId }: SprintsTableProps) {
                                                     <ListPlus className="w-4 h-4" />
                                                 </Button>
                                                 <Button
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0"
+                                                    className="h-8 gap-1"
                                                     onClick={() => {
                                                         setSelectedSprint(sprint);
                                                         setIsEditModalOpen(true);
                                                     }}
                                                 >
                                                     <Edit className="w-4 h-4" />
+                                                    Editar
                                                 </Button>
                                                 <Button
                                                     variant="ghost"

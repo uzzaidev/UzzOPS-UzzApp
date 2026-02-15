@@ -15,6 +15,8 @@ import {
   useCreateMarketingChannel,
   useMarketingCampaigns,
   useMarketingChannels,
+  useUpdateMarketingCampaign,
+  useUpdateMarketingChannel,
   useTenantProjects,
 } from '@/hooks/useMarketing';
 
@@ -31,9 +33,23 @@ export function MarketingCampaignsContent({ projectId }: { projectId: string }) 
     search: search || undefined,
   });
   const createCampaign = useCreateMarketingCampaign();
+  const updateCampaign = useUpdateMarketingCampaign();
   const createChannel = useCreateMarketingChannel();
+  const updateChannel = useUpdateMarketingChannel();
   const channelsQuery = useMarketingChannels();
   const projectsQuery = useTenantProjects();
+  const [editCampaignId, setEditCampaignId] = useState<string | null>(null);
+  const [campaignDraft, setCampaignDraft] = useState({
+    name: '',
+    description: '',
+    objective: '',
+    status: 'draft' as 'active' | 'draft' | 'completed' | 'archived',
+  });
+  const [editChannelId, setEditChannelId] = useState<string | null>(null);
+  const [channelDraft, setChannelDraft] = useState({
+    name: '',
+    profile_url: '',
+  });
 
   return (
     <div className="space-y-6">
@@ -129,6 +145,91 @@ export function MarketingCampaignsContent({ projectId }: { projectId: string }) 
                   <Badge variant="outline">{campaign.objective ?? '-'}</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">{campaign.description ?? 'Sem descricao'}</p>
+                <div className="pt-1">
+                  <Dialog
+                    open={editCampaignId === campaign.id}
+                    onOpenChange={(open) => setEditCampaignId(open ? campaign.id : null)}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setCampaignDraft({
+                            name: campaign.name ?? '',
+                            description: campaign.description ?? '',
+                            objective: campaign.objective ?? '',
+                            status: (campaign.status as any) ?? 'draft',
+                          });
+                          setEditCampaignId(campaign.id);
+                        }}
+                      >
+                        Editar
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Editar campanha</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-2">
+                        <Input
+                          placeholder="Nome"
+                          value={campaignDraft.name}
+                          onChange={(e) => setCampaignDraft((p) => ({ ...p, name: e.target.value }))}
+                        />
+                        <Input
+                          placeholder="Objetivo"
+                          value={campaignDraft.objective}
+                          onChange={(e) => setCampaignDraft((p) => ({ ...p, objective: e.target.value }))}
+                        />
+                        <Select
+                          value={campaignDraft.status}
+                          onValueChange={(v) =>
+                            setCampaignDraft((p) => ({
+                              ...p,
+                              status: v as 'active' | 'draft' | 'completed' | 'archived',
+                            }))
+                          }
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="draft">draft</SelectItem>
+                            <SelectItem value="active">active</SelectItem>
+                            <SelectItem value="completed">completed</SelectItem>
+                            <SelectItem value="archived">archived</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          placeholder="Descricao"
+                          value={campaignDraft.description}
+                          onChange={(e) => setCampaignDraft((p) => ({ ...p, description: e.target.value }))}
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button variant="outline" onClick={() => setEditCampaignId(null)}>Cancelar</Button>
+                          <Button
+                            disabled={updateCampaign.isPending || !campaignDraft.name.trim()}
+                            onClick={() =>
+                              updateCampaign.mutate(
+                                {
+                                  id: campaign.id,
+                                  payload: {
+                                    name: campaignDraft.name.trim(),
+                                    objective: campaignDraft.objective.trim() || null,
+                                    description: campaignDraft.description.trim() || null,
+                                    status: campaignDraft.status,
+                                  },
+                                },
+                                { onSuccess: () => setEditCampaignId(null) }
+                              )
+                            }
+                          >
+                            {updateCampaign.isPending ? 'Salvando...' : 'Salvar'}
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -175,6 +276,77 @@ export function MarketingCampaignsContent({ projectId }: { projectId: string }) 
                 <div className="mt-1 flex gap-2">
                   <Badge variant="outline">{channel.platform}</Badge>
                   <Badge variant="outline">{channel.is_active ? 'ativo' : 'inativo'}</Badge>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      updateChannel.mutate({
+                        id: channel.id,
+                        payload: { is_active: !channel.is_active },
+                      })
+                    }
+                  >
+                    {channel.is_active ? 'Desativar' : 'Ativar'}
+                  </Button>
+                  <Dialog
+                    open={editChannelId === channel.id}
+                    onOpenChange={(open) => setEditChannelId(open ? channel.id : null)}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setChannelDraft({
+                            name: channel.name ?? '',
+                            profile_url: channel.profile_url ?? '',
+                          });
+                          setEditChannelId(channel.id);
+                        }}
+                      >
+                        Editar
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Editar canal</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-2">
+                        <Input
+                          placeholder="Nome"
+                          value={channelDraft.name}
+                          onChange={(e) => setChannelDraft((p) => ({ ...p, name: e.target.value }))}
+                        />
+                        <Input
+                          placeholder="URL do perfil"
+                          value={channelDraft.profile_url}
+                          onChange={(e) => setChannelDraft((p) => ({ ...p, profile_url: e.target.value }))}
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button variant="outline" onClick={() => setEditChannelId(null)}>Cancelar</Button>
+                          <Button
+                            disabled={updateChannel.isPending || !channelDraft.name.trim()}
+                            onClick={() =>
+                              updateChannel.mutate(
+                                {
+                                  id: channel.id,
+                                  payload: {
+                                    name: channelDraft.name.trim(),
+                                    profile_url: channelDraft.profile_url.trim() || null,
+                                  },
+                                },
+                                { onSuccess: () => setEditChannelId(null) }
+                              )
+                            }
+                          >
+                            {updateChannel.isPending ? 'Salvando...' : 'Salvar'}
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
             ))}

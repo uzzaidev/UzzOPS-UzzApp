@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useTeam, useUpdateMember, useDeactivateMember } from '@/hooks/useTeam';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -19,6 +22,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { CheckCircle2, Clock, MoreHorizontal, ShieldCheck, UserX, XCircle } from 'lucide-react';
 import type { TeamMemberFull } from '@/types';
 import { toast } from 'sonner';
@@ -37,6 +47,13 @@ const PERMISSION_CONFIG = {
 function MemberRow({ member }: { member: TeamMemberFull }) {
   const updateMember = useUpdateMember();
   const deactivate = useDeactivateMember();
+  const [editOpen, setEditOpen] = useState(false);
+  const [draft, setDraft] = useState({
+    name: member.name ?? '',
+    role: member.role ?? '',
+    department: member.department ?? '',
+    allocation_percent: member.allocation_percent == null ? '' : String(member.allocation_percent),
+  });
 
   const statusCfg = STATUS_CONFIG[member.status] ?? STATUS_CONFIG.active;
   const StatusIcon = statusCfg.icon;
@@ -71,6 +88,34 @@ function MemberRow({ member }: { member: TeamMemberFull }) {
       { memberId: member.id, updates: { status: 'active' } },
       { onSuccess: () => toast.success(`${member.name} reativado`),
         onError: () => toast.error('Erro ao reativar') }
+    );
+  };
+
+  const handleSaveEdit = () => {
+    const allocation =
+      draft.allocation_percent.trim() === '' ? undefined : Number(draft.allocation_percent);
+    if (allocation != null && (Number.isNaN(allocation) || allocation < 0 || allocation > 100)) {
+      toast.error('Alocacao deve ser um numero entre 0 e 100.');
+      return;
+    }
+
+    updateMember.mutate(
+      {
+        memberId: member.id,
+        updates: {
+          name: draft.name.trim(),
+          role: draft.role.trim(),
+          department: draft.department.trim() || null,
+          allocation_percent: allocation,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Membro atualizado.');
+          setEditOpen(false);
+        },
+        onError: () => toast.error('Erro ao atualizar membro'),
+      }
     );
   };
 
@@ -115,38 +160,78 @@ function MemberRow({ member }: { member: TeamMemberFull }) {
         )}
       </TableCell>
       <TableCell>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {member.status === 'pending' && (
-              <DropdownMenuItem onClick={handleApprove} className="text-green-600">
-                <CheckCircle2 className="mr-2 h-4 w-4" />
-                Aprovar acesso
+        <div className="flex items-center justify-end gap-1">
+          <Dialog open={editOpen} onOpenChange={setEditOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">Editar</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Editar membro</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-2">
+                <Input
+                  placeholder="Nome"
+                  value={draft.name}
+                  onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))}
+                />
+                <Input
+                  placeholder="Cargo"
+                  value={draft.role}
+                  onChange={(e) => setDraft((p) => ({ ...p, role: e.target.value }))}
+                />
+                <Input
+                  placeholder="Departamento"
+                  value={draft.department}
+                  onChange={(e) => setDraft((p) => ({ ...p, department: e.target.value }))}
+                />
+                <Input
+                  placeholder="Alocacao (%)"
+                  value={draft.allocation_percent}
+                  onChange={(e) => setDraft((p) => ({ ...p, allocation_percent: e.target.value }))}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+                  <Button onClick={handleSaveEdit} disabled={updateMember.isPending}>
+                    {updateMember.isPending ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {member.status === 'pending' && (
+                <DropdownMenuItem onClick={handleApprove} className="text-green-600">
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                  Aprovar acesso
+                </DropdownMenuItem>
+              )}
+              {member.status === 'inactive' && (
+                <DropdownMenuItem onClick={handleReactivate} className="text-blue-600">
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                  Reativar
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={handleToggleAdmin}>
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                {member.permission_level === 'admin' ? 'Remover admin' : 'Tornar admin'}
               </DropdownMenuItem>
-            )}
-            {member.status === 'inactive' && (
-              <DropdownMenuItem onClick={handleReactivate} className="text-blue-600">
-                <CheckCircle2 className="mr-2 h-4 w-4" />
-                Reativar
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem onClick={handleToggleAdmin}>
-              <ShieldCheck className="mr-2 h-4 w-4" />
-              {member.permission_level === 'admin' ? 'Remover admin' : 'Tornar admin'}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {member.status !== 'inactive' && (
-              <DropdownMenuItem onClick={handleDeactivate} className="text-destructive">
-                <UserX className="mr-2 h-4 w-4" />
-                Desativar
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuSeparator />
+              {member.status !== 'inactive' && (
+                <DropdownMenuItem onClick={handleDeactivate} className="text-destructive">
+                  <UserX className="mr-2 h-4 w-4" />
+                  Desativar
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </TableCell>
     </TableRow>
   );

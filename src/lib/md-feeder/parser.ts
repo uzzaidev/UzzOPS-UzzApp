@@ -20,7 +20,24 @@ export type MdFeederSupportedType =
   | 'marketing_post'
   | 'team_member'
   | 'uzzapp_client'
-  | 'contato_cliente';
+  | 'contato_cliente'
+  | 'product_charter'
+  | 'outcome_tree'
+  | 'outcome_opportunity'
+  | 'opportunity_solution'
+  | 'solution_test'
+  | 'roadmap'
+  | 'roadmap_item'
+  | 'project_hypothesis'
+  | 'hypothesis_experiment'
+  | 'decision_log'
+  | 'adr'
+  | 'sprint_ceremony'
+  | 'release_forecast'
+  | 'pilot_program'
+  | 'pilot_office'
+  | 'pilot_validation_event'
+  | 'product_changelog';
 
 export interface MdFeederFrontmatter {
   template?: string;
@@ -99,6 +116,30 @@ const CONTACT_PRIORITY_VALUES = new Set(['critica', 'alta', 'media', 'baixa']);
 const PRODUCT_VALUES = new Set(['CHATBOT', 'SITE-BUILDER', 'UzzBIM', 'NutriTrain', 'OUTRO']);
 const CHANNEL_VALUES = new Set(['presencial', 'videochamada', 'telefone', 'whatsapp', 'email']);
 const SENTIMENT_VALUES = new Set(['Positivo', 'Neutro', 'Negativo']);
+const CHARTER_STATUS_VALUES = new Set(['draft', 'active', 'archived']);
+const ROADMAP_STATUS_VALUES = new Set(['draft', 'active', 'archived']);
+const ROADMAP_PLANNING_MODEL_VALUES = new Set(['scrum', 'kanban', 'hybrid']);
+const ROADMAP_ITEM_TYPE_VALUES = new Set(['outcome', 'milestone', 'release', 'pilot_phase', 'initiative']);
+const ROADMAP_ITEM_STATUS_VALUES = new Set(['planned', 'in_progress', 'done', 'blocked', 'cancelled']);
+const HYPOTHESIS_RISK_TYPE_VALUES = new Set([
+  'value', 'usability', 'feasibility', 'viability', 'business', 'legal', 'security', 'performance',
+]);
+const HYPOTHESIS_STATUS_VALUES = new Set(['backlog', 'in_test', 'validated', 'invalidated', 'pivoted', 'parked']);
+const EXPERIMENT_TYPE_VALUES = new Set(['mvp_test', 'spike', 'prototype', 'ux_interview', 'pilot_run', 'benchmark', 'simulation']);
+const EXPERIMENT_OUTCOME_VALUES = new Set(['go', 'no_go', 'iterate', 'pivot', 'inconclusive']);
+const DECISION_CATEGORY_VALUES = new Set(['product', 'technical', 'process', 'roadmap', 'risk', 'legal', 'governance']);
+const DECISION_STATUS_VALUES = new Set(['active', 'superseded', 'reverted']);
+const ADR_STATUS_VALUES = new Set(['proposed', 'accepted', 'deprecated', 'superseded', 'rejected']);
+const CEREMONY_TYPE_VALUES = new Set(['planning', 'daily', 'review', 'retrospective']);
+const FORECAST_MODEL_VALUES = new Set(['velocity_range', 'throughput_range', 'monte_carlo']);
+const FORECAST_UNIT_VALUES = new Set(['story_points', 'items']);
+const PILOT_PROGRAM_STATUS_VALUES = new Set(['planned', 'running', 'completed', 'cancelled']);
+const PILOT_OFFICE_STATUS_VALUES = new Set(['onboarding', 'guided_use', 'expansion', 'completed', 'dropped']);
+const PILOT_PHASE_VALUES = new Set(['onboarding', 'guided_use', 'expansion']);
+const PILOT_EVENT_TYPE_VALUES = new Set(['setup', 'training', 'usage_review', 'incident', 'feedback', 'checkpoint']);
+const PILOT_DECISION_VALUES = new Set(['continue', 'adjust', 'pause', 'stop']);
+const CHANGELOG_TYPE_VALUES = new Set(['feature', 'improvement', 'fix', 'risk_mitigation', 'process', 'breaking_change']);
+const CHANGELOG_VISIBILITY_VALUES = new Set(['internal', 'customer_facing', 'public']);
 
 function parseScalar(value: string): unknown {
   const v = value.trim();
@@ -403,7 +444,24 @@ export function validatePhase1Items(
       type !== 'marketing_post' &&
       type !== 'team_member' &&
       type !== 'uzzapp_client' &&
-      type !== 'contato_cliente'
+      type !== 'contato_cliente' &&
+      type !== 'product_charter' &&
+      type !== 'outcome_tree' &&
+      type !== 'outcome_opportunity' &&
+      type !== 'opportunity_solution' &&
+      type !== 'solution_test' &&
+      type !== 'roadmap' &&
+      type !== 'roadmap_item' &&
+      type !== 'project_hypothesis' &&
+      type !== 'hypothesis_experiment' &&
+      type !== 'decision_log' &&
+      type !== 'adr' &&
+      type !== 'sprint_ceremony' &&
+      type !== 'release_forecast' &&
+      type !== 'pilot_program' &&
+      type !== 'pilot_office' &&
+      type !== 'pilot_validation_event' &&
+      type !== 'product_changelog'
     ) {
       errors.push(`item_type "${type}" ainda nao suportado.`);
     }
@@ -893,6 +951,215 @@ export function validatePhase1Items(
       validationStatus = 'valid';
       action = 'create';
       summary = `contato_cliente: ${cliente || '(sem cliente)'}`;
+    }
+
+    if (type === 'product_charter') {
+      const visionOutcome = asString(raw.vision_outcome);
+      const status = asString(raw.status) || 'draft';
+      const version = raw.version == null ? 1 : Number(raw.version);
+      if (!visionOutcome) errors.push('vision_outcome obrigatorio para product_charter.');
+      if (!CHARTER_STATUS_VALUES.has(status)) errors.push('status invalido para product_charter.');
+      if (!Number.isInteger(version) || version < 1) errors.push('version deve ser inteiro >= 1.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `product_charter: v${version}`;
+    }
+
+    if (type === 'outcome_tree') {
+      const title = asString(raw.title);
+      const outcomeStatement = asString(raw.outcome_statement);
+      const status = asString(raw.status) || 'active';
+      if (!title) errors.push('title obrigatorio para outcome_tree.');
+      if (!outcomeStatement) errors.push('outcome_statement obrigatorio para outcome_tree.');
+      if (!CHARTER_STATUS_VALUES.has(status)) errors.push('status invalido para outcome_tree.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `outcome_tree: ${title || '(sem titulo)'}`;
+    }
+
+    if (type === 'outcome_opportunity') {
+      const title = asString(raw.title);
+      if (!title) errors.push('title obrigatorio para outcome_opportunity.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `outcome_opportunity: ${title || '(sem titulo)'}`;
+    }
+
+    if (type === 'opportunity_solution') {
+      const title = asString(raw.title);
+      const maturity = asString(raw.maturity) || 'idea';
+      if (!title) errors.push('title obrigatorio para opportunity_solution.');
+      if (
+        maturity &&
+        !['idea', 'prototype', 'mvp_test', 'delivery_candidate', 'implemented', 'discarded'].includes(maturity)
+      ) errors.push('maturity invalido para opportunity_solution.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `opportunity_solution: ${title || '(sem titulo)'}`;
+    }
+
+    if (type === 'solution_test') {
+      const hypothesis = asString(raw.hypothesis);
+      const testType = asString(raw.test_type);
+      if (!hypothesis) errors.push('hypothesis obrigatorio para solution_test.');
+      if (testType && !['mvp_test', 'prototype', 'spike', 'ux_test', 'pilot', 'benchmark', 'ab_test'].includes(testType)) {
+        errors.push('test_type invalido para solution_test.');
+      }
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `solution_test: ${testType || '(sem tipo)'}`;
+    }
+
+    if (type === 'roadmap') {
+      const name = asString(raw.name);
+      const status = asString(raw.status) || 'active';
+      const planningModel = asString(raw.planning_model) || 'scrum';
+      if (!name) errors.push('name obrigatorio para roadmap.');
+      if (!ROADMAP_STATUS_VALUES.has(status)) errors.push('status invalido para roadmap.');
+      if (!ROADMAP_PLANNING_MODEL_VALUES.has(planningModel)) errors.push('planning_model invalido para roadmap.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `roadmap: ${name || '(sem nome)'}`;
+    }
+
+    if (type === 'roadmap_item') {
+      const title = asString(raw.title);
+      const itemType = asString(raw.item_type);
+      const status = asString(raw.status) || 'planned';
+      if (!title) errors.push('title obrigatorio para roadmap_item.');
+      if (!itemType || !ROADMAP_ITEM_TYPE_VALUES.has(itemType)) errors.push('item_type invalido para roadmap_item.');
+      if (!ROADMAP_ITEM_STATUS_VALUES.has(status)) errors.push('status invalido para roadmap_item.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `roadmap_item: ${title || '(sem titulo)'}`;
+    }
+
+    if (type === 'project_hypothesis') {
+      const title = asString(raw.title);
+      const statement = asString(raw.statement);
+      const riskType = asString(raw.risk_type);
+      const status = asString(raw.status) || 'backlog';
+      if (!title) errors.push('title obrigatorio para project_hypothesis.');
+      if (!statement) errors.push('statement obrigatorio para project_hypothesis.');
+      if (!riskType || !HYPOTHESIS_RISK_TYPE_VALUES.has(riskType)) errors.push('risk_type invalido para project_hypothesis.');
+      if (!HYPOTHESIS_STATUS_VALUES.has(status)) errors.push('status invalido para project_hypothesis.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `project_hypothesis: ${title || '(sem titulo)'}`;
+    }
+
+    if (type === 'hypothesis_experiment') {
+      const question = asString(raw.question);
+      const experimentType = asString(raw.experiment_type);
+      const outcome = asString(raw.outcome);
+      if (!question) errors.push('question obrigatorio para hypothesis_experiment.');
+      if (!experimentType || !EXPERIMENT_TYPE_VALUES.has(experimentType)) errors.push('experiment_type invalido para hypothesis_experiment.');
+      if (outcome && !EXPERIMENT_OUTCOME_VALUES.has(outcome)) errors.push('outcome invalido para hypothesis_experiment.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `hypothesis_experiment: ${experimentType || '(sem tipo)'}`;
+    }
+
+    if (type === 'decision_log') {
+      const title = asString(raw.title);
+      const category = asString(raw.category);
+      const decisionText = asString(raw.decision_text);
+      const status = asString(raw.status) || 'active';
+      if (!title) errors.push('title obrigatorio para decision_log.');
+      if (!category || !DECISION_CATEGORY_VALUES.has(category)) errors.push('category invalido para decision_log.');
+      if (!decisionText) errors.push('decision_text obrigatorio para decision_log.');
+      if (!DECISION_STATUS_VALUES.has(status)) errors.push('status invalido para decision_log.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `decision_log: ${title || '(sem titulo)'}`;
+    }
+
+    if (type === 'adr') {
+      const adrCode = asString(raw.adr_code);
+      const title = asString(raw.title);
+      const status = asString(raw.status) || 'proposed';
+      if (!adrCode) errors.push('adr_code obrigatorio para adr.');
+      if (!title) errors.push('title obrigatorio para adr.');
+      if (!asString(raw.context)) errors.push('context obrigatorio para adr.');
+      if (!asString(raw.decision)) errors.push('decision obrigatorio para adr.');
+      if (!ADR_STATUS_VALUES.has(status)) errors.push('status invalido para adr.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `adr: ${adrCode || '(sem codigo)'}`;
+    }
+
+    if (type === 'sprint_ceremony') {
+      const ceremonyType = asString(raw.ceremony_type);
+      const sessionDate = asString(raw.session_date);
+      if (!ceremonyType || !CEREMONY_TYPE_VALUES.has(ceremonyType)) errors.push('ceremony_type invalido para sprint_ceremony.');
+      if (!sessionDate || !isIsoDate(sessionDate)) errors.push('session_date obrigatorio em YYYY-MM-DD para sprint_ceremony.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `sprint_ceremony: ${ceremonyType || '(sem tipo)'}`;
+    }
+
+    if (type === 'release_forecast') {
+      const label = asString(raw.label);
+      const model = asString(raw.forecast_model) || 'velocity_range';
+      const unit = asString(raw.unit) || 'story_points';
+      if (!label) errors.push('label obrigatorio para release_forecast.');
+      if (!FORECAST_MODEL_VALUES.has(model)) errors.push('forecast_model invalido para release_forecast.');
+      if (!FORECAST_UNIT_VALUES.has(unit)) errors.push('unit invalido para release_forecast.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `release_forecast: ${label || '(sem label)'}`;
+    }
+
+    if (type === 'pilot_program') {
+      const name = asString(raw.name);
+      const status = asString(raw.status) || 'planned';
+      const goal = asString(raw.pilot_goal);
+      if (!name) errors.push('name obrigatorio para pilot_program.');
+      if (!goal) errors.push('pilot_goal obrigatorio para pilot_program.');
+      if (!PILOT_PROGRAM_STATUS_VALUES.has(status)) errors.push('status invalido para pilot_program.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `pilot_program: ${name || '(sem nome)'}`;
+    }
+
+    if (type === 'pilot_office') {
+      const officeName = asString(raw.office_name);
+      const status = asString(raw.status) || 'onboarding';
+      if (!officeName) errors.push('office_name obrigatorio para pilot_office.');
+      if (!PILOT_OFFICE_STATUS_VALUES.has(status)) errors.push('status invalido para pilot_office.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `pilot_office: ${officeName || '(sem nome)'}`;
+    }
+
+    if (type === 'pilot_validation_event') {
+      const phase = asString(raw.phase);
+      const eventType = asString(raw.event_type);
+      const eventDate = asString(raw.event_date);
+      const decision = asString(raw.decision);
+      if (!phase || !PILOT_PHASE_VALUES.has(phase)) errors.push('phase invalido para pilot_validation_event.');
+      if (!eventType || !PILOT_EVENT_TYPE_VALUES.has(eventType)) errors.push('event_type invalido para pilot_validation_event.');
+      if (!eventDate || !isIsoDate(eventDate)) errors.push('event_date obrigatorio em YYYY-MM-DD para pilot_validation_event.');
+      if (decision && !PILOT_DECISION_VALUES.has(decision)) errors.push('decision invalido para pilot_validation_event.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `pilot_validation_event: ${eventType || '(sem tipo)'}`;
+    }
+
+    if (type === 'product_changelog') {
+      const title = asString(raw.title);
+      const summaryText = asString(raw.summary);
+      const changeType = asString(raw.change_type);
+      const visibility = asString(raw.visibility) || 'internal';
+      const changeDate = asString(raw.change_date);
+      if (!title) errors.push('title obrigatorio para product_changelog.');
+      if (!summaryText) errors.push('summary obrigatorio para product_changelog.');
+      if (!changeType || !CHANGELOG_TYPE_VALUES.has(changeType)) errors.push('change_type invalido para product_changelog.');
+      if (!CHANGELOG_VISIBILITY_VALUES.has(visibility)) errors.push('visibility invalido para product_changelog.');
+      if (changeDate && !isIsoDate(changeDate)) errors.push('change_date deve estar em YYYY-MM-DD.');
+      validationStatus = 'valid';
+      action = 'create';
+      summary = `product_changelog: ${title || '(sem titulo)'}`;
     }
 
     if (errors.length > 0) {

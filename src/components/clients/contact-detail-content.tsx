@@ -5,8 +5,15 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { ScoreRadarChart } from '@/components/clients/score-radar-chart';
 import { MarkdownRenderer } from '@/components/shared/markdown-renderer';
 import { useClientContact, useUpdateClientContact } from '@/hooks/useClients';
@@ -86,6 +93,50 @@ function sentimentClass(value: string) {
   return 'bg-amber-50 text-amber-700 border-amber-200';
 }
 
+const ARRAY_ITEM_TEMPLATES: Record<
+  | 'dores_json'
+  | 'objecoes_json'
+  | 'insights_json'
+  | 'riscos_json'
+  | 'proximos_passos_json'
+  | 'quality_checklist',
+  Record<string, unknown>
+> = {
+  dores_json: {
+    dor: 'Nova dor',
+    descricao: '',
+    urgencia: 'media',
+  },
+  objecoes_json: {
+    codigo: '',
+    objecao: 'Nova objecao',
+    tipo: '',
+    status: 'Nao Resolvida',
+  },
+  insights_json: {
+    titulo: 'Novo insight',
+    descricao: '',
+    tipo: 'geral',
+  },
+  riscos_json: {
+    risco: 'Novo risco',
+    probabilidade: '',
+    impacto: '',
+    severidade: 'media',
+    mitigacao: '',
+  },
+  proximos_passos_json: {
+    acao: 'Nova acao',
+    responsavel: '',
+    prazo: '',
+    canal: '',
+  },
+  quality_checklist: {
+    item: 'Novo item de checklist',
+    done: false,
+  },
+};
+
 type Props = {
   projectId: string;
   clientId: string;
@@ -99,8 +150,23 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
   const clientName = asText(contact?.client?.name);
 
   const [editing, setEditing] = useState(false);
+  const [metaEditOpen, setMetaEditOpen] = useState(false);
+  const [arrayEditOpen, setArrayEditOpen] = useState(false);
+  const [arrayEditField, setArrayEditField] = useState<
+    'dores_json' | 'objecoes_json' | 'insights_json' | 'riscos_json' | null
+  >(null);
+  const [arrayEditTitle, setArrayEditTitle] = useState('');
+  const [arrayEditDraft, setArrayEditDraft] = useState('[]');
   const [nextStepsDraft, setNextStepsDraft] = useState('');
   const [checklistDraft, setChecklistDraft] = useState('');
+  const [metaDraft, setMetaDraft] = useState({
+    title: '',
+    status: 'realizado',
+    sentimento_geral: 'Neutro',
+    canal: 'videochamada',
+    probabilidade_fechamento: '',
+    summary_md: '',
+  });
 
   const normalizedNextSteps = useMemo(
     () => JSON.stringify(asArray(contact?.proximos_passos_json), null, 2),
@@ -110,6 +176,83 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
     () => JSON.stringify(asArray(contact?.quality_checklist), null, 2),
     [contact?.quality_checklist]
   );
+
+  const openArrayEditor = (
+    field: 'dores_json' | 'objecoes_json' | 'insights_json' | 'riscos_json',
+    title: string
+  ) => {
+    setArrayEditField(field);
+    setArrayEditTitle(title);
+    setArrayEditDraft(JSON.stringify(asArray(contact?.[field]), null, 2));
+    setArrayEditOpen(true);
+  };
+
+  const updateArrayField = async (
+    field:
+      | 'dores_json'
+      | 'objecoes_json'
+      | 'insights_json'
+      | 'riscos_json'
+      | 'proximos_passos_json'
+      | 'quality_checklist',
+    title: string,
+    nextValue: unknown[]
+  ) => {
+    try {
+      await updateContact.mutateAsync({ [field]: nextValue });
+      toast.success(`${title} atualizado com sucesso.`);
+    } catch {
+      toast.error(`Falha ao atualizar ${title.toLowerCase()}.`);
+    }
+  };
+
+  const addArrayItem = async (
+    field:
+      | 'dores_json'
+      | 'objecoes_json'
+      | 'insights_json'
+      | 'riscos_json'
+      | 'proximos_passos_json'
+      | 'quality_checklist',
+    title: string
+  ) => {
+    const current = asArray(contact?.[field]);
+    const nextValue = [...current, ARRAY_ITEM_TEMPLATES[field]];
+    await updateArrayField(field, title, nextValue);
+  };
+
+  const removeArrayItem = async (
+    field:
+      | 'dores_json'
+      | 'objecoes_json'
+      | 'insights_json'
+      | 'riscos_json'
+      | 'proximos_passos_json'
+      | 'quality_checklist',
+    title: string,
+    index: number
+  ) => {
+    const current = asArray(contact?.[field]);
+    const nextValue = current.filter((_, i) => i !== index);
+    await updateArrayField(field, title, nextValue);
+  };
+
+  const saveArrayEdit = async () => {
+    if (!arrayEditField) return;
+    try {
+      const parsed = JSON.parse(arrayEditDraft);
+      if (!Array.isArray(parsed)) {
+        toast.error('O campo precisa ser um array JSON.');
+        return;
+      }
+      await updateContact.mutateAsync({ [arrayEditField]: parsed });
+      toast.success(`${arrayEditTitle} atualizado com sucesso.`);
+      setArrayEditOpen(false);
+      setArrayEditField(null);
+    } catch {
+      toast.error('Falha ao salvar. Verifique o JSON informado.');
+    }
+  };
 
   if (isLoading) return <Skeleton className="h-40 rounded-lg" />;
   if (error || !contact) return <p className="text-sm text-destructive">Erro ao carregar ATA.</p>;
@@ -143,6 +286,43 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
     }
   };
 
+  const startMetaEdit = () => {
+    setMetaDraft({
+      title: asText(contact.title) === '-' ? '' : asText(contact.title),
+      status: asText(contact.status) === '-' ? 'realizado' : asText(contact.status),
+      sentimento_geral: asText(contact.sentimento_geral) === '-' ? 'Neutro' : asText(contact.sentimento_geral),
+      canal: asText(contact.canal) === '-' ? 'videochamada' : asText(contact.canal),
+      probabilidade_fechamento:
+        contact.probabilidade_fechamento == null ? '' : String(contact.probabilidade_fechamento),
+      summary_md: asText(contact.summary_md) === '-' ? '' : asText(contact.summary_md),
+    });
+    setMetaEditOpen(true);
+  };
+
+  const saveMetaEdit = async () => {
+    try {
+      const probabilityValue =
+        metaDraft.probabilidade_fechamento === '' ? null : Number(metaDraft.probabilidade_fechamento);
+      if (probabilityValue != null && (Number.isNaN(probabilityValue) || probabilityValue < 0 || probabilityValue > 100)) {
+        toast.error('Probabilidade deve ser um numero entre 0 e 100.');
+        return;
+      }
+
+      await updateContact.mutateAsync({
+        title: metaDraft.title.trim() || null,
+        status: metaDraft.status as 'rascunho' | 'realizado' | 'agendado' | 'cancelado',
+        sentimento_geral: metaDraft.sentimento_geral as 'Positivo' | 'Neutro' | 'Negativo',
+        canal: metaDraft.canal as 'presencial' | 'videochamada' | 'telefone' | 'whatsapp' | 'email',
+        probabilidade_fechamento: probabilityValue,
+        summary_md: metaDraft.summary_md.trim() || null,
+      });
+      toast.success('Contato atualizado com sucesso.');
+      setMetaEditOpen(false);
+    } catch {
+      toast.error('Falha ao salvar contato.');
+    }
+  };
+
   return (
     <div className="space-y-4 pb-6">
       <div className="sticky top-0 z-10 rounded-lg border bg-white/95 p-3 backdrop-blur">
@@ -156,6 +336,7 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
               {asText(contact.contact_subtype)} | {asText(contact.data_contato)} | {asText(contact.canal)}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Button size="sm" variant="outline" onClick={startMetaEdit}>Editar contato</Button>
               <Button asChild size="sm" variant="outline">
                 <Link href={`/projects/${projectId}/clients/${clientId}`}>Voltar ao perfil</Link>
               </Button>
@@ -175,6 +356,100 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
           </div>
         </div>
       </div>
+
+      <Dialog open={metaEditOpen} onOpenChange={setMetaEditOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Editar contato</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-2">
+            <Input
+              placeholder="Título"
+              value={metaDraft.title}
+              onChange={(e) => setMetaDraft((p) => ({ ...p, title: e.target.value }))}
+            />
+            <div className="grid grid-cols-3 gap-2">
+              <select
+                className="h-10 rounded-md border px-3 text-sm"
+                value={metaDraft.status}
+                onChange={(e) => setMetaDraft((p) => ({ ...p, status: e.target.value }))}
+              >
+                <option value="rascunho">rascunho</option>
+                <option value="realizado">realizado</option>
+                <option value="agendado">agendado</option>
+                <option value="cancelado">cancelado</option>
+              </select>
+              <select
+                className="h-10 rounded-md border px-3 text-sm"
+                value={metaDraft.sentimento_geral}
+                onChange={(e) => setMetaDraft((p) => ({ ...p, sentimento_geral: e.target.value }))}
+              >
+                <option value="Positivo">Positivo</option>
+                <option value="Neutro">Neutro</option>
+                <option value="Negativo">Negativo</option>
+              </select>
+              <select
+                className="h-10 rounded-md border px-3 text-sm"
+                value={metaDraft.canal}
+                onChange={(e) => setMetaDraft((p) => ({ ...p, canal: e.target.value }))}
+              >
+                <option value="presencial">presencial</option>
+                <option value="videochamada">videochamada</option>
+                <option value="telefone">telefone</option>
+                <option value="whatsapp">whatsapp</option>
+                <option value="email">email</option>
+              </select>
+            </div>
+            <Input
+              placeholder="Probabilidade de fechamento (0-100)"
+              value={metaDraft.probabilidade_fechamento}
+              onChange={(e) => setMetaDraft((p) => ({ ...p, probabilidade_fechamento: e.target.value }))}
+            />
+            <Textarea
+              rows={8}
+              placeholder="Resumo MD (summary_md)"
+              value={metaDraft.summary_md}
+              onChange={(e) => setMetaDraft((p) => ({ ...p, summary_md: e.target.value }))}
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setMetaEditOpen(false)}>Cancelar</Button>
+              <Button onClick={saveMetaEdit} disabled={updateContact.isPending}>
+                {updateContact.isPending ? 'Salvando...' : 'Salvar'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={arrayEditOpen}
+        onOpenChange={(open) => {
+          setArrayEditOpen(open);
+          if (!open) setArrayEditField(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Editar {arrayEditTitle}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            <p className="text-xs text-slate-500">Informe um array JSON valido.</p>
+            <Textarea
+              rows={14}
+              value={arrayEditDraft}
+              onChange={(e) => setArrayEditDraft(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setArrayEditOpen(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={saveArrayEdit} disabled={updateContact.isPending}>
+                {updateContact.isPending ? 'Salvando...' : 'Salvar'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Card title="Desfecho">
@@ -235,7 +510,28 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card title="Objecoes">
+        <Card
+          title="Objecoes"
+          action={
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={updateContact.isPending}
+                onClick={() => addArrayItem('objecoes_json', 'Objecoes')}
+              >
+                + Item
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => openArrayEditor('objecoes_json', 'Objecoes')}
+              >
+                Editar JSON
+              </Button>
+            </div>
+          }
+        >
           {asArray(contact.objecoes_json).length === 0 ? (
             <p className="text-sm">-</p>
           ) : (
@@ -246,9 +542,20 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
                   <div key={i} className="rounded border bg-gray-50 p-2 text-sm">
                     <div className="flex items-center justify-between gap-2">
                       <p className="font-medium">{asText(obj?.codigo ?? `Objecao ${i + 1}`)}</p>
-                      <Badge variant="outline" className={objectionStatusClass(asText(obj?.status))}>
-                        {asText(obj?.status)}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className={objectionStatusClass(asText(obj?.status))}>
+                          {asText(obj?.status)}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 px-2"
+                          disabled={updateContact.isPending}
+                          onClick={() => removeArrayItem('objecoes_json', 'Objecoes', i)}
+                        >
+                          -
+                        </Button>
+                      </div>
                     </div>
                     <p className="mt-1">{asText(obj?.objecao ?? x)}</p>
                     <p className="mt-1 text-xs text-slate-600">Tipo: {asText(obj?.tipo)}</p>
@@ -269,26 +576,70 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
                 </Button>
               </div>
             ) : (
-              <Button size="sm" variant="outline" onClick={startEdit}>Editar</Button>
+              <Button size="sm" variant="outline" onClick={startEdit}>Editar JSON</Button>
             )
           }
         >
           {!editing ? (
             <div className="space-y-4">
               <div>
-                <p className="text-xs text-slate-500">Proximos passos</p>
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <p className="text-xs text-slate-500">Proximos passos</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2"
+                    disabled={updateContact.isPending}
+                    onClick={() => addArrayItem('proximos_passos_json', 'Proximos passos')}
+                  >
+                    + Item
+                  </Button>
+                </div>
                 <ul className="mt-1 list-disc pl-5 text-sm">
                   {asArray(contact.proximos_passos_json).map((x, i) => (
-                    <li key={i}>{renderListItem(x, ['acao', 'responsavel', 'prazo', 'canal'])}</li>
+                    <li key={i} className="flex items-start justify-between gap-2">
+                      <span>{renderListItem(x, ['acao', 'responsavel', 'prazo', 'canal'])}</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2"
+                        disabled={updateContact.isPending}
+                        onClick={() => removeArrayItem('proximos_passos_json', 'Proximos passos', i)}
+                      >
+                        -
+                      </Button>
+                    </li>
                   ))}
                   {asArray(contact.proximos_passos_json).length === 0 && <li>-</li>}
                 </ul>
               </div>
               <div>
-                <p className="text-xs text-slate-500">Checklist</p>
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <p className="text-xs text-slate-500">Checklist</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2"
+                    disabled={updateContact.isPending}
+                    onClick={() => addArrayItem('quality_checklist', 'Checklist')}
+                  >
+                    + Item
+                  </Button>
+                </div>
                 <ul className="mt-1 list-disc pl-5 text-sm">
                   {asArray(contact.quality_checklist).map((x, i) => (
-                    <li key={i}>{renderListItem(x, ['item', 'done'])}</li>
+                    <li key={i} className="flex items-start justify-between gap-2">
+                      <span>{renderListItem(x, ['item', 'done'])}</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2"
+                        disabled={updateContact.isPending}
+                        onClick={() => removeArrayItem('quality_checklist', 'Checklist', i)}
+                      >
+                        -
+                      </Button>
+                    </li>
                   ))}
                   {asArray(contact.quality_checklist).length === 0 && <li>-</li>}
                 </ul>
@@ -310,7 +661,28 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <Card title="Dores">
+        <Card
+          title="Dores"
+          action={
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={updateContact.isPending}
+                onClick={() => addArrayItem('dores_json', 'Dores')}
+              >
+                + Item
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => openArrayEditor('dores_json', 'Dores')}
+              >
+                Editar JSON
+              </Button>
+            </div>
+          }
+        >
           {asArray(contact.dores_json).length === 0 ? (
             <p className="text-sm">-</p>
           ) : (
@@ -321,9 +693,20 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
                   <div key={i} className="rounded border bg-gray-50 p-2 text-sm">
                     <div className="flex items-center justify-between gap-2">
                       <p className="font-medium">{asText(obj?.dor ?? `Dor ${i + 1}`)}</p>
-                      <Badge variant="outline" className={urgencyClass(asText(obj?.urgencia))}>
-                        {asText(obj?.urgencia)}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className={urgencyClass(asText(obj?.urgencia))}>
+                          {asText(obj?.urgencia)}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 px-2"
+                          disabled={updateContact.isPending}
+                          onClick={() => removeArrayItem('dores_json', 'Dores', i)}
+                        >
+                          -
+                        </Button>
+                      </div>
                     </div>
                     <p className="mt-1 text-xs text-slate-600">{asText(obj?.descricao ?? x)}</p>
                   </div>
@@ -333,7 +716,28 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
           )}
         </Card>
 
-        <Card title="Insights">
+        <Card
+          title="Insights"
+          action={
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={updateContact.isPending}
+                onClick={() => addArrayItem('insights_json', 'Insights')}
+              >
+                + Item
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => openArrayEditor('insights_json', 'Insights')}
+              >
+                Editar JSON
+              </Button>
+            </div>
+          }
+        >
           {asArray(contact.insights_json).length === 0 ? (
             <p className="text-sm">-</p>
           ) : (
@@ -344,9 +748,20 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
                   <div key={i} className="rounded border bg-gray-50 p-2 text-sm">
                     <div className="flex items-center justify-between gap-2">
                       <p className="font-medium">{asText(obj?.titulo ?? `Insight ${i + 1}`)}</p>
-                      <Badge variant="outline" className={insightTypeClass(asText(obj?.tipo))}>
-                        {asText(obj?.tipo)}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className={insightTypeClass(asText(obj?.tipo))}>
+                          {asText(obj?.tipo)}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 px-2"
+                          disabled={updateContact.isPending}
+                          onClick={() => removeArrayItem('insights_json', 'Insights', i)}
+                        >
+                          -
+                        </Button>
+                      </div>
                     </div>
                     <p className="mt-1 text-xs text-slate-600">{asText(obj?.descricao ?? x)}</p>
                   </div>
@@ -357,7 +772,28 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
         </Card>
       </div>
 
-      <Card title="Riscos">
+      <Card
+        title="Riscos"
+        action={
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={updateContact.isPending}
+              onClick={() => addArrayItem('riscos_json', 'Riscos')}
+            >
+              + Item
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => openArrayEditor('riscos_json', 'Riscos')}
+            >
+              Editar JSON
+            </Button>
+          </div>
+        }
+      >
         {asArray(contact.riscos_json).length === 0 ? (
           <p className="text-sm">-</p>
         ) : (
@@ -368,12 +804,23 @@ export function ContactDetailContent({ projectId, clientId, contactId }: Props) 
                 <div key={i} className="rounded border bg-gray-50 p-2 text-sm">
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-medium">{asText(obj?.risco ?? `Risco ${i + 1}`)}</p>
-                    <Badge
-                      variant="outline"
-                      className={riskClass(asText(obj?.severidade ?? obj?.impacto))}
-                    >
-                      {asText(obj?.severidade ?? obj?.impacto)}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={riskClass(asText(obj?.severidade ?? obj?.impacto))}
+                      >
+                        {asText(obj?.severidade ?? obj?.impacto)}
+                      </Badge>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2"
+                        disabled={updateContact.isPending}
+                        onClick={() => removeArrayItem('riscos_json', 'Riscos', i)}
+                      >
+                        -
+                      </Button>
+                    </div>
                   </div>
                   <p className="mt-1 text-xs text-slate-600">
                     Probabilidade: {asText(obj?.probabilidade)} | Impacto: {asText(obj?.impacto)}

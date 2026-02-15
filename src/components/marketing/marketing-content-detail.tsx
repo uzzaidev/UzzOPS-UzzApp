@@ -9,6 +9,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   useApproveMarketingAsset,
   useBatchCreatePublications,
@@ -16,11 +25,26 @@ import {
   useMarketingAssets,
   useMarketingContentById,
   useMarketingPublications,
+  useUpdateMarketingContent,
   useUploadMarketingAsset,
   type MarketingChannel,
+  type MarketingContentStatus,
+  type MarketingContentType,
 } from '@/hooks/useMarketing';
 
 const channels: MarketingChannel[] = ['instagram', 'linkedin', 'site', 'tiktok', 'youtube', 'whatsapp'];
+
+const statuses: MarketingContentStatus[] = [
+  'idea',
+  'briefing',
+  'production',
+  'review',
+  'approved',
+  'done',
+  'archived',
+];
+
+const types: MarketingContentType[] = ['feed', 'reels', 'carrossel', 'stories', 'artigo', 'video'];
 
 export function MarketingContentDetail({ projectId, contentId }: { projectId: string; contentId: string }) {
   const contentQuery = useMarketingContentById(contentId);
@@ -31,10 +55,23 @@ export function MarketingContentDetail({ projectId, contentId }: { projectId: st
   const deleteAsset = useDeleteMarketingAsset();
   const approveAsset = useApproveMarketingAsset();
   const batchPublication = useBatchCreatePublications();
+  const updateContent = useUpdateMarketingContent();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [batchDate, setBatchDate] = useState(new Date().toISOString().slice(0, 10));
   const [batchChannels, setBatchChannels] = useState<MarketingChannel[]>(['instagram']);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editType, setEditType] = useState<MarketingContentType>('feed');
+  const [editStatus, setEditStatus] = useState<MarketingContentStatus>('idea');
+  const [editTopic, setEditTopic] = useState('');
+  const [editObjective, setEditObjective] = useState('');
+  const [editBrief, setEditBrief] = useState('');
+  const [editCaptionBase, setEditCaptionBase] = useState('');
+  const [editCta, setEditCta] = useState('');
+  const [editHashtags, setEditHashtags] = useState('');
+  const [editDueDate, setEditDueDate] = useState('');
+  const [editNotes, setEditNotes] = useState('');
 
   const content = contentQuery.data;
 
@@ -42,6 +79,22 @@ export function MarketingContentDetail({ projectId, contentId }: { projectId: st
     setBatchChannels((prev) =>
       checked ? Array.from(new Set([...prev, channel])) : prev.filter((v) => v !== channel)
     );
+  }
+
+  function openEditModal() {
+    if (!content) return;
+    setEditTitle(content.title ?? '');
+    setEditType(content.content_type);
+    setEditStatus(content.status);
+    setEditTopic(content.topic ?? '');
+    setEditObjective(content.objective ?? '');
+    setEditBrief(content.brief ?? '');
+    setEditCaptionBase(content.caption_base ?? '');
+    setEditCta(content.cta ?? '');
+    setEditHashtags((content.hashtags ?? []).join(', '));
+    setEditDueDate(content.due_date ? String(content.due_date).slice(0, 10) : '');
+    setEditNotes(content.notes ?? '');
+    setIsEditOpen(true);
   }
 
   if (contentQuery.isLoading) {
@@ -70,15 +123,136 @@ export function MarketingContentDetail({ projectId, contentId }: { projectId: st
             {content.project?.name ? <Badge variant="outline">{content.project.name}</Badge> : <Badge variant="outline">Global</Badge>}
           </div>
         </div>
-        <Button
-          variant="outline"
-          onClick={() =>
-            window.open(`/api/marketing/content/${contentId}/assets/export`, '_blank')
-          }
-        >
-          <Download className="mr-2 h-4 w-4" /> Exportar ZIP
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={openEditModal}>
+            Editar conteudo
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() =>
+              window.open(`/api/marketing/content/${contentId}/assets/export`, '_blank')
+            }
+          >
+            <Download className="mr-2 h-4 w-4" /> Exportar ZIP
+          </Button>
+        </div>
       </div>
+
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar conteudo</DialogTitle>
+            <DialogDescription>Atualize os dados principais e de planejamento editorial.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Titulo</Label>
+              <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <Label>Tipo</Label>
+                <Select value={editType} onValueChange={(v) => setEditType(v as MarketingContentType)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {types.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Status</Label>
+                <Select value={editStatus} onValueChange={(v) => setEditStatus(v as MarketingContentStatus)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statuses.map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <Label>Topico</Label>
+                <Input value={editTopic} onChange={(e) => setEditTopic(e.target.value)} />
+              </div>
+              <div>
+                <Label>Objetivo</Label>
+                <Input value={editObjective} onChange={(e) => setEditObjective(e.target.value)} />
+              </div>
+            </div>
+            <div>
+              <Label>Brief</Label>
+              <Textarea value={editBrief} onChange={(e) => setEditBrief(e.target.value)} rows={4} />
+            </div>
+            <div>
+              <Label>Caption base</Label>
+              <Textarea value={editCaptionBase} onChange={(e) => setEditCaptionBase(e.target.value)} rows={3} />
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <Label>CTA</Label>
+                <Input value={editCta} onChange={(e) => setEditCta(e.target.value)} />
+              </div>
+              <div>
+                <Label>Data limite</Label>
+                <Input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} />
+              </div>
+            </div>
+            <div>
+              <Label>Hashtags (separadas por virgula)</Label>
+              <Input value={editHashtags} onChange={(e) => setEditHashtags(e.target.value)} />
+            </div>
+            <div>
+              <Label>Notas</Label>
+              <Textarea value={editNotes} onChange={(e) => setEditNotes(e.target.value)} rows={3} />
+            </div>
+            <Button
+              className="w-full"
+              disabled={updateContent.isPending || !editTitle.trim()}
+              onClick={() =>
+                updateContent.mutate(
+                  {
+                    id: contentId,
+                    payload: {
+                      title: editTitle.trim(),
+                      content_type: editType,
+                      status: editStatus,
+                      topic: editTopic.trim() || null,
+                      objective: editObjective.trim() || null,
+                      brief: editBrief.trim() || null,
+                      caption_base: editCaptionBase.trim() || null,
+                      cta: editCta.trim() || null,
+                      due_date: editDueDate || null,
+                      hashtags: editHashtags
+                        .split(',')
+                        .map((tag) => tag.trim())
+                        .filter(Boolean),
+                      notes: editNotes.trim() || null,
+                    },
+                  },
+                  {
+                    onSuccess: () => setIsEditOpen(false),
+                  }
+                )
+              }
+            >
+              {updateContent.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Salvar alteracoes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>

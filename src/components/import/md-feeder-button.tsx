@@ -74,7 +74,13 @@ type HistoryItem = {
   completed_at: string | null;
 };
 
-export function MdFeederButton({ projectId }: { projectId?: string }) {
+type MdFeederButtonProps = {
+  projectId?: string;
+  initialMarkdown?: string;
+  triggerLabel?: string;
+};
+
+export function MdFeederButton({ projectId, initialMarkdown, triggerLabel }: MdFeederButtonProps) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'upload' | 'preview' | 'result'>('upload');
   const [file, setFile] = useState<File | null>(null);
@@ -130,6 +136,16 @@ export function MdFeederButton({ projectId }: { projectId?: string }) {
     if (!open || step !== 'upload') return;
     void loadHistory();
   }, [open, step, projectId]);
+
+  useEffect(() => {
+    if (!open || step !== 'upload' || !initialMarkdown) return;
+    if (file) return;
+    const stamp = new Date().toISOString().slice(0, 10);
+    const generated = new File([initialMarkdown], `planejamento-${stamp}.md`, {
+      type: 'text/markdown',
+    });
+    setFile(generated);
+  }, [open, step, initialMarkdown, file]);
 
   async function handleParse() {
     if (!file) return;
@@ -211,7 +227,7 @@ export function MdFeederButton({ projectId }: { projectId?: string }) {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Upload className="mr-2 h-4 w-4" />
-          Importar MD
+          {triggerLabel ?? 'Importar MD'}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-4xl">
@@ -230,6 +246,11 @@ export function MdFeederButton({ projectId }: { projectId?: string }) {
               accept=".md,text/markdown"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
+            {file ? (
+              <p className="text-xs text-emerald-700">
+                Arquivo selecionado: <strong>{file.name}</strong>
+              </p>
+            ) : null}
             <div className="text-xs text-muted-foreground">
               Aceita apenas <code>.md</code> (max 500KB) com frontmatter <code>template: uzzops-feeder</code>.
             </div>

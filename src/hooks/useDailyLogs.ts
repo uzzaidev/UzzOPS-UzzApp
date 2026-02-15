@@ -54,3 +54,40 @@ export function useCreateDailyLog() {
     },
   });
 }
+
+export function useUpdateDailyLog() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: {
+      id: string;
+      projectId: string;
+      sprintId?: string | null;
+      logDate?: string;
+      whatDidYesterday?: string;
+      whatWillDoToday?: string;
+      impediments?: string[];
+    }) => {
+      const res = await tenantFetch(`/api/daily-logs/${payload.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sprintId: payload.sprintId,
+          logDate: payload.logDate,
+          whatDidYesterday: payload.whatDidYesterday,
+          whatWillDoToday: payload.whatWillDoToday,
+          impediments: payload.impediments,
+        }),
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: 'Failed to update daily log' }));
+        throw new Error(error ?? 'Failed to update daily log');
+      }
+      const { data } = await res.json();
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['daily-logs', variables.projectId] });
+      queryClient.invalidateQueries({ queryKey: ['my-latest-daily', variables.projectId] });
+    },
+  });
+}

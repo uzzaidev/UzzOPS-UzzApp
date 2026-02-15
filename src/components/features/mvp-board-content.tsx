@@ -1,12 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { useFeatures } from '@/hooks/useFeatures';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Star, CheckCircle2, Circle, Clock, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { MvpToggle } from './mvp-toggle';
+import { EditFeatureModal } from './edit-feature-modal';
 import type { Feature } from '@/types';
 
 interface Props {
@@ -25,7 +28,13 @@ const STATUS_CONFIG: Record<string, { label: string; icon: typeof Circle; color:
 
 const COLUMNS = ['backlog', 'todo', 'in_progress', 'review', 'testing', 'done'] as const;
 
-function MvpFeatureCard({ feature }: { feature: Feature }) {
+function MvpFeatureCard({
+  feature,
+  onEdit,
+}: {
+  feature: Feature;
+  onEdit: (feature: Feature) => void;
+}) {
   const config = STATUS_CONFIG[feature.status] ?? STATUS_CONFIG['backlog'];
   const Icon = config.icon;
 
@@ -63,12 +72,18 @@ function MvpFeatureCard({ feature }: { feature: Feature }) {
           <p className="mt-0.5 text-xs text-muted-foreground">DoD {feature.dod_progress}%</p>
         </div>
       )}
+      <div className="mt-2">
+        <Button variant="outline" size="sm" className="w-full" onClick={() => onEdit(feature)}>
+          Editar
+        </Button>
+      </div>
     </div>
   );
 }
 
 export function MvpBoardContent({ projectId }: Props) {
   const { data: featuresResponse, isLoading } = useFeatures({ projectId });
+  const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
 
   const { data: mvpProgress } = useQuery({
     queryKey: ['mvp-progress', projectId],
@@ -118,6 +133,14 @@ export function MvpBoardContent({ projectId }: Props) {
 
   return (
     <div className="space-y-6">
+      <EditFeatureModal
+        open={Boolean(editingFeature)}
+        onOpenChange={(open) => {
+          if (!open) setEditingFeature(null);
+        }}
+        feature={editingFeature}
+      />
+
       {/* Barra de progresso MVP */}
       <Card className="border-yellow-200 bg-yellow-50">
         <CardContent className="pt-6">
@@ -158,7 +181,7 @@ export function MvpBoardContent({ projectId }: Props) {
               </div>
               <div className="space-y-2">
                 {features.map((feature) => (
-                  <MvpFeatureCard key={feature.id} feature={feature} />
+                  <MvpFeatureCard key={feature.id} feature={feature} onEdit={setEditingFeature} />
                 ))}
                 {features.length === 0 && (
                   <div className="rounded-lg border-2 border-dashed border-gray-200 p-4 text-center">

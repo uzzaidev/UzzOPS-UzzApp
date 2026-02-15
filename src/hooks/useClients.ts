@@ -235,8 +235,9 @@ export function useUpdateClient(projectId: string) {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['clients', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['client', variables.clientId] });
     },
   });
 }

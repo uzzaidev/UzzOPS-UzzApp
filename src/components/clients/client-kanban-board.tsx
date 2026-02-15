@@ -19,9 +19,22 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import Link from 'next/link';
 import { funnelLabel } from '@/lib/crm/labels';
 import type { UzzappClient } from '@/types';
 import { ClientCard } from '@/components/clients/client-card';
+import { useUpdateClient } from '@/hooks/useClients';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 const COLUMNS: Array<{ key: string; label: string }> = [
   { key: 'lead-novo', label: funnelLabel('lead-novo') },
@@ -224,6 +237,17 @@ function SortableClientCard({
   client: UzzappClient;
   projectId: string;
 }) {
+  const updateClient = useUpdateClient(projectId);
+  const [editOpen, setEditOpen] = useState(false);
+  const [draft, setDraft] = useState({
+    name: client.name ?? '',
+    company: client.company ?? '',
+    phone: client.phone ?? '',
+    email: client.email ?? '',
+    main_contact_name: client.main_contact_name ?? '',
+    main_contact_role: client.main_contact_role ?? '',
+    notes: client.notes ?? '',
+  });
   const {
     attributes,
     listeners,
@@ -237,6 +261,30 @@ function SortableClientCard({
     transition,
   };
 
+  const saveQuickEdit = () => {
+    updateClient.mutate(
+      {
+        clientId: client.id,
+        updates: {
+          name: draft.name.trim(),
+          company: draft.company.trim() || null,
+          phone: draft.phone.trim() || null,
+          email: draft.email.trim() || null,
+          main_contact_name: draft.main_contact_name.trim() || null,
+          main_contact_role: draft.main_contact_role.trim() || null,
+          notes: draft.notes.trim() || null,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Cliente atualizado.');
+          setEditOpen(false);
+        },
+        onError: (err) => toast.error(err.message),
+      }
+    );
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -246,6 +294,84 @@ function SortableClientCard({
       {...listeners}
     >
       <ClientCard client={client} projectId={projectId} />
+      <div className="mt-1 flex items-center gap-1">
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 px-2 text-xs"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Editar
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Editar cliente</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-2">
+              <Input
+                placeholder="Nome"
+                value={draft.name}
+                onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))}
+              />
+              <Input
+                placeholder="Empresa"
+                value={draft.company}
+                onChange={(e) => setDraft((p) => ({ ...p, company: e.target.value }))}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="Telefone"
+                  value={draft.phone}
+                  onChange={(e) => setDraft((p) => ({ ...p, phone: e.target.value }))}
+                />
+                <Input
+                  placeholder="Email"
+                  value={draft.email}
+                  onChange={(e) => setDraft((p) => ({ ...p, email: e.target.value }))}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="Contato principal"
+                  value={draft.main_contact_name}
+                  onChange={(e) => setDraft((p) => ({ ...p, main_contact_name: e.target.value }))}
+                />
+                <Input
+                  placeholder="Cargo contato"
+                  value={draft.main_contact_role}
+                  onChange={(e) => setDraft((p) => ({ ...p, main_contact_role: e.target.value }))}
+                />
+              </div>
+              <Textarea
+                rows={4}
+                placeholder="Observações"
+                value={draft.notes}
+                onChange={(e) => setDraft((p) => ({ ...p, notes: e.target.value }))}
+              />
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+                <Button onClick={saveQuickEdit} disabled={updateClient.isPending}>
+                  {updateClient.isPending ? 'Salvando...' : 'Salvar'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Button
+          asChild
+          size="sm"
+          variant="ghost"
+          className="h-7 px-2 text-xs"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Link href={`/projects/${projectId}/clients/${client.id}`}>Abrir</Link>
+        </Button>
+      </div>
     </div>
   );
 }

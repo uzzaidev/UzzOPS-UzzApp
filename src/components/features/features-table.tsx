@@ -217,7 +217,7 @@ export function FeaturesTable({ projectId }: FeaturesTableProps) {
               <TableHead className="w-[80px]">Prioridade</TableHead>
               <TableHead className="w-[100px]">DoD</TableHead>
               <TableHead className="w-[150px]">Responsaveis</TableHead>
-              <TableHead className="w-[120px] text-right">Acoes</TableHead>
+              <TableHead className="w-[180px] text-right">Acoes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -293,15 +293,16 @@ export function FeaturesTable({ projectId }: FeaturesTableProps) {
                         </Link>
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="h-8 w-8 p-0"
+                        className="h-8 gap-1"
                         onClick={() => {
                           setSelectedFeature(feature);
                           setIsEditModalOpen(true);
                         }}
                       >
                         <Edit className="h-4 w-4" />
+                        Editar
                       </Button>
                       <Button
                         variant="ghost"
